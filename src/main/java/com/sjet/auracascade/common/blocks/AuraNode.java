@@ -70,29 +70,13 @@ public class AuraNode extends Block {
     @SuppressWarnings("deprecation")
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        TileEntity tile = world.getTileEntity(pos);
-        //check to make sure TE is correct
-        if(!(tile instanceof AuraNodeTile)) {
-            return ActionResultType.PASS;
-        }
-
-        AuraNodeTile node = (AuraNodeTile) tile;
+        AuraNodeTile node = (AuraNodeTile) world.getTileEntity(pos);
         ItemStack heldItem = player.getHeldItem(handIn);
 
-        //early exit for empty hand
-        if(heldItem.isEmpty()) {
-            return ActionResultType.PASS;
+        if (!heldItem.isEmpty()) {
+            boolean result  = node.playerAddAura(player, heldItem);
+            return result ? ActionResultType.CONSUME : ActionResultType.PASS;
         }
-
-        //
-        if (heldItem.getItem() instanceof AuraCrystalItem) {
-            //Add Aura to the TE
-            node.addAura(pos, ((AuraCrystalItem) heldItem.getItem()).getColor(), ((AuraCrystalItem) heldItem.getItem()).getAura());
-            heldItem.shrink(1);
-            return ActionResultType.CONSUME;
-        }
-
-        //default
         return super.onBlockActivated(state, world, pos, player, handIn, hit);
     }
 

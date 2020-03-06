@@ -1,8 +1,11 @@
 package com.sjet.auracascade.common.tiles;
 
 import com.sjet.auracascade.common.api.IAuraColor;
+import com.sjet.auracascade.common.items.AuraCrystalItem;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -12,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nullable;
 import java.util.LinkedList;
 
 public abstract class AuraTile extends TileEntity implements ITickableTileEntity {
@@ -45,6 +49,7 @@ public abstract class AuraTile extends TileEntity implements ITickableTileEntity
                 }
             }
         }
+        this.markDirty();
     }
 
     public void connect(BlockPos pos) {
@@ -98,8 +103,31 @@ public abstract class AuraTile extends TileEntity implements ITickableTileEntity
         mc.fontRenderer.drawStringWithShadow(auraString, x + 20, y + 5, 0xFFFFFF);
     }
 
-    public void addAura(BlockPos sourcePos, IAuraColor color, int auraIn) {
-        auraStorage += auraIn;
+    /**
+     * To be used to add aura to a node from another node
+     * @param sourcePos the source of the aura to be added
+     * @param color the IAuraColor enum of the aura to be added
+     * @param aura the amount of aura to be added
+     */
+    public void addAura(BlockPos sourcePos, IAuraColor color, int aura) {
+        auraStorage += aura;
         this.markDirty();
+    }
+
+    /**
+     * To be used when a player adds aura to the node
+     * @param player
+     * @param stack
+     * @return
+     */
+    public boolean playerAddAura(@Nullable PlayerEntity player, ItemStack stack) {
+        if (stack.getItem() instanceof AuraCrystalItem) {
+            addAura(this.pos, ((AuraCrystalItem) stack.getItem()).getColor(), ((AuraCrystalItem) stack.getItem()).getAura());
+            if (player == null || !player.abilities.isCreativeMode) {
+                stack.shrink(1);
+                return true;
+            }
+        }
+        return false;
     }
 }
