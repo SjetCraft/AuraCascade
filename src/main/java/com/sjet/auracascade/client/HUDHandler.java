@@ -1,8 +1,8 @@
 /**
  * This class was based on the 'HUDHandler' class created by <Vazkii>.
  * Get the Source Code in github: https://github.com/Vazkii/Botania
+ *
  */
-
 package com.sjet.auracascade.client;
 
 import com.sjet.auracascade.AuraCascade;

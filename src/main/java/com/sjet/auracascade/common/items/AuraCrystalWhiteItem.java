@@ -11,6 +11,6 @@ public class AuraCrystalWhiteItem extends AuraCrystalItem {
 
         this.setRegistryName(AuraCascade.MODID, "aura_crystal_white");
 
-        this.color = IAuraColor.WHITE;
+        this.auraColor = IAuraColor.WHITE;
     }
 }

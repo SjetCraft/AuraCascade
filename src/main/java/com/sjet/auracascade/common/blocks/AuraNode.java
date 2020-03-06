@@ -75,7 +75,7 @@ public class AuraNode extends Block {
 
         if (!heldItem.isEmpty()) {
             boolean result  = node.playerAddAura(player, heldItem);
-            return result ? ActionResultType.CONSUME : ActionResultType.PASS;
+            return result ? ActionResultType.SUCCESS : ActionResultType.PASS;
         }
         return super.onBlockActivated(state, world, pos, player, handIn, hit);
     }
@@ -84,6 +84,4 @@ public class AuraNode extends Block {
     public void renderHUD(Minecraft mc, World world, BlockPos pos) {
         ((AuraNodeTile) world.getTileEntity(pos)).renderHUD(mc);
     }
-
-
 }

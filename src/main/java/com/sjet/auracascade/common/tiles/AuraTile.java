@@ -1,5 +1,7 @@
 package com.sjet.auracascade.common.tiles;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.sjet.auracascade.common.api.IAuraColor;
 import com.sjet.auracascade.common.items.AuraCrystalItem;
 import net.minecraft.block.Block;
@@ -19,13 +21,27 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public abstract class AuraTile extends TileEntity implements ITickableTileEntity {
 
-    public LinkedList<BlockPos> connectedNodes = new LinkedList<BlockPos>();
-    private int auraStorage = 0;
-    private int auraEnergy = 0;
+    protected HashMap<IAuraColor, Integer> auraMap = new HashMap<IAuraColor, Integer>() {
+        {
+            put(IAuraColor.WHITE, 0);
+            put(IAuraColor.YELLOW, 0);
+            put(IAuraColor.ORANGE, 0);
+            put(IAuraColor.RED, 0);
+            put(IAuraColor.GREEN, 0);
+            put(IAuraColor.BLUE, 0);
+            put(IAuraColor.VIOLET, 0);
+            put(IAuraColor.BLACK, 0);
+        }
+    };
+
+    protected LinkedList<BlockPos> connectedNodes = new LinkedList<BlockPos>();
+    protected int auraEnergy;
 
     public AuraTile(TileEntityType<?> type) {
         super(type);
@@ -79,20 +95,31 @@ public abstract class AuraTile extends TileEntity implements ITickableTileEntity
 
         //false if block is not air and if block is not transparent or an aura node
         return !block.isAir(block.getDefaultState(), world, target) &&
-                !(isAuraTile(target)  || !block.isSolid(block.getDefaultState()));
+                !(isAuraTile(target) || !block.isSolid(block.getDefaultState()));
     }
 
     @Override
     public void read(CompoundNBT tag) {
         super.read(tag);
-        auraStorage = tag.getInt("storage");
+        Gson gson = new Gson();
+        String jsonString;
+
         auraEnergy = tag.getInt("energy");
+        jsonString = tag.getString("auraMap");
+
+        Type type = new TypeToken<HashMap<IAuraColor, Integer>>() {
+        }.getType();
+        auraMap = gson.fromJson(jsonString, type);
     }
 
     @Override
     public CompoundNBT write(CompoundNBT tag) {
-        tag.putInt("storage", auraStorage);
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(new HashMap(auraMap));
+
         tag.putInt("energy", auraEnergy);
+        tag.putString("auraMap", jsonString);
+
         return super.write(tag);
     }
 
@@ -121,29 +148,40 @@ public abstract class AuraTile extends TileEntity implements ITickableTileEntity
         world.notifyBlockUpdate(pos, state, state, 3);
     }
 
+    /**
+     * Used to render the amount of Aura on the screen
+     *
+     * @param mc
+     */
     @OnlyIn(Dist.CLIENT)
     public void renderHUD(Minecraft mc) {
-        String auraString = "White Aura: " + auraStorage;
-        int width = 16 + mc.fontRenderer.getStringWidth(auraString) / 2;
+        String auraWhiteString = "Aura: " + auraMap.get(IAuraColor.WHITE);
+        int width = 16 + mc.fontRenderer.getStringWidth(auraWhiteString) / 2;
         int x = mc.getMainWindow().getScaledWidth() / 2 - width;
         int y = mc.getMainWindow().getScaledHeight() / 2 + 50;
 
-        mc.fontRenderer.drawStringWithShadow(auraString, x + 20, y + 5, 0xFFFFFF);
+        mc.fontRenderer.drawStringWithShadow(auraWhiteString, x + 20, y + 5, 0xFFFFFF);
     }
 
     /**
      * To be used to add aura to a node from another node
+     *
      * @param sourcePos the source of the aura to be added
-     * @param color the IAuraColor enum of the aura to be added
-     * @param aura the amount of aura to be added
+     * @param color     the IAuraColor enum of the aura to be added
+     * @param aura      the amount of aura to be added
      */
     public void addAura(BlockPos sourcePos, IAuraColor color, int aura) {
-        auraStorage += aura;
+        //add the aura type to the auraMap
+        int newAura = auraMap.get(color);
+        newAura += aura;
+        auraMap.replace(color, newAura);
+
         this.markDirty();
     }
 
     /**
      * To be used when a player adds aura to the node
+     *
      * @param player
      * @param stack
      * @return
@@ -151,10 +189,10 @@ public abstract class AuraTile extends TileEntity implements ITickableTileEntity
     public boolean playerAddAura(@Nullable PlayerEntity player, ItemStack stack) {
         if (stack.getItem() instanceof AuraCrystalItem) {
             addAura(this.pos, ((AuraCrystalItem) stack.getItem()).getColor(), ((AuraCrystalItem) stack.getItem()).getAura());
-            if (player == null || !player.abilities.isCreativeMode) {
+            if (!player.abilities.isCreativeMode) {
                 stack.shrink(1);
-                return true;
             }
+            return true;
         }
         return false;
     }

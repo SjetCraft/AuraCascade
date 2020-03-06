@@ -5,14 +5,14 @@ import net.minecraft.item.Item;
 
 public abstract class AuraCrystalItem extends Item {
 
-    protected IAuraColor color;
+    protected IAuraColor auraColor;
 
     public AuraCrystalItem(Item.Properties properties) {
         super(properties);
     }
 
     public IAuraColor getColor() {
-        return color;
+        return auraColor;
     }
 
     public int getAura() {
