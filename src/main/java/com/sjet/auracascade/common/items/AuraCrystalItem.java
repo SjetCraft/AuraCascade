@@ -1,22 +1,21 @@
 package com.sjet.auracascade.common.items;
 
+import com.sjet.auracascade.common.api.IAuraColor;
 import net.minecraft.item.Item;
 
 public abstract class AuraCrystalItem extends Item {
+
+    protected IAuraColor color;
 
     public AuraCrystalItem(Item.Properties properties) {
         super(properties);
     }
 
-    enum Crystal {WHITE, YELLOW, ORANGE, RED, GREEN, BLUE, VIOLET, BLACK}
-
-    private Crystal color;
-
-    public Crystal getColor() {
+    public IAuraColor getColor() {
         return color;
     }
 
-    public void setColor(Crystal color) {
-        this.color = color;
+    public int getAura() {
+        return 1000;
     }
 }

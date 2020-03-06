@@ -1,6 +1,7 @@
 package com.sjet.auracascade.common.items;
 
 import com.sjet.auracascade.AuraCascade;
+import com.sjet.auracascade.common.api.IAuraColor;
 import net.minecraft.item.Item;
 
 public class AuraCrystalWhiteItem extends AuraCrystalItem {
@@ -10,6 +11,6 @@ public class AuraCrystalWhiteItem extends AuraCrystalItem {
 
         this.setRegistryName(AuraCascade.MODID, "aura_crystal_white");
 
-        setColor(Crystal.WHITE);
+        this.color = IAuraColor.WHITE;
     }
 }

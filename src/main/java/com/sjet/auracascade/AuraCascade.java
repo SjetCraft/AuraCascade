@@ -20,7 +20,7 @@ public class AuraCascade {
 
     public static IProxy proxy = DistExecutor.runForDist( () -> () -> new ClientProxy(), () -> () -> new ServerProxy() );
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger(MODID);
 
     public AuraCascade() {
         CommonSetup commonSetup = new CommonSetup();
