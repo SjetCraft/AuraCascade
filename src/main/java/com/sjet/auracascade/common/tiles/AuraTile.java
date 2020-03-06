@@ -3,10 +3,13 @@ package com.sjet.auracascade.common.tiles;
 import com.sjet.auracascade.common.api.IAuraColor;
 import com.sjet.auracascade.common.items.AuraCrystalItem;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -80,17 +83,42 @@ public abstract class AuraTile extends TileEntity implements ITickableTileEntity
     }
 
     @Override
-    public void read(CompoundNBT nbt) {
-        super.read(nbt);
-        auraStorage = nbt.getInt("storage");
-        auraEnergy = nbt.getInt("energy");
+    public void read(CompoundNBT tag) {
+        super.read(tag);
+        auraStorage = tag.getInt("storage");
+        auraEnergy = tag.getInt("energy");
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbt) {
-        nbt.putInt("storage", auraStorage);
-        nbt.putInt("energy", auraEnergy);
-        return super.write(nbt);
+    public CompoundNBT write(CompoundNBT tag) {
+        tag.putInt("storage", auraStorage);
+        tag.putInt("energy", auraEnergy);
+        return super.write(tag);
+    }
+
+    @Override
+    public CompoundNBT getUpdateTag() {
+        return write(new CompoundNBT());
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundNBT tag) {
+        read(tag);
+    }
+
+    @Nullable
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(this.pos, 0, getUpdateTag());
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
+        super.onDataPacket(net, packet);
+        handleUpdateTag(packet.getNbtCompound());
+
+        BlockState state = world.getBlockState(pos);
+        world.notifyBlockUpdate(pos, state, state, 3);
     }
 
     @OnlyIn(Dist.CLIENT)
