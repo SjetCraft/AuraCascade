@@ -1,5 +1,7 @@
 package com.sjet.auracascade.common.api;
 
+import org.apache.commons.lang3.StringUtils;
+
 public enum IAuraColor {
     WHITE,
     YELLOW,
@@ -8,5 +10,9 @@ public enum IAuraColor {
     GREEN,
     BLUE,
     VIOLET,
-    BLACK
+    BLACK;
+
+    public String capitalizedName() {
+        return StringUtils.capitalize(super.toString().toLowerCase());
+    }
 }

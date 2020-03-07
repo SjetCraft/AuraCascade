@@ -7,7 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.registries.ObjectHolder;
 
 
-public class AuraNodeTile extends AuraTile  {
+public class AuraNodeTile extends BaseAuraTile {
 
     @ObjectHolder(AuraCascade.MODID + ":aura_node")
     public static final TileEntityType<AuraNodeTile> TYPE = null;

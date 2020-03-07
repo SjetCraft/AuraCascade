@@ -17,6 +17,8 @@ public class AuraCascade {
 
     public static final String MODID = "auracascade";
     public static final ItemGroup MAIN_GROUP = new MainItemGroup();
+    public static final int MAX_DISTANCE = 15;
+    public static final int AURA_IN_ITEM = 1000;
 
     public static IProxy proxy = DistExecutor.runForDist( () -> () -> new ClientProxy(), () -> () -> new ServerProxy() );
 

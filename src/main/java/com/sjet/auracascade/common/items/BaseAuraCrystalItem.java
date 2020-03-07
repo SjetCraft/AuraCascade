@@ -1,13 +1,16 @@
 package com.sjet.auracascade.common.items;
 
 import com.sjet.auracascade.common.api.IAuraColor;
+import com.sjet.auracascade.common.api.IBaseAuraCrystalItem;
 import net.minecraft.item.Item;
 
-public abstract class AuraCrystalItem extends Item {
+import static com.sjet.auracascade.AuraCascade.AURA_IN_ITEM;
+
+public abstract class BaseAuraCrystalItem extends Item implements IBaseAuraCrystalItem {
 
     protected IAuraColor auraColor;
 
-    public AuraCrystalItem(Item.Properties properties) {
+    public BaseAuraCrystalItem(Item.Properties properties) {
         super(properties);
     }
 
@@ -16,6 +19,6 @@ public abstract class AuraCrystalItem extends Item {
     }
 
     public int getAura() {
-        return 1000;
+        return AURA_IN_ITEM;
     }
 }

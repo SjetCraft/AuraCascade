@@ -4,7 +4,7 @@ import com.sjet.auracascade.AuraCascade;
 import com.sjet.auracascade.common.api.IAuraColor;
 import net.minecraft.item.Item;
 
-public class AuraCrystalWhiteItem extends AuraCrystalItem {
+public class AuraCrystalWhiteItem extends BaseAuraCrystalItem {
 
     public AuraCrystalWhiteItem() {
         super(new Item.Properties().group(AuraCascade.MAIN_GROUP));
