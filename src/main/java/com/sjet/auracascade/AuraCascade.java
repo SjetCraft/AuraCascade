@@ -19,6 +19,7 @@ public class AuraCascade {
     public static final ItemGroup MAIN_GROUP = new MainItemGroup();
     public static final int MAX_DISTANCE = 15;
     public static final int AURA_IN_ITEM = 1000;
+    public static final int TICKS_PER_SECOND = 20;
 
     public static IProxy proxy = DistExecutor.runForDist( () -> () -> new ClientProxy(), () -> () -> new ServerProxy() );
 

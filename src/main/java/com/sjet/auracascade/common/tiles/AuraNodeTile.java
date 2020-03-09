@@ -1,10 +1,10 @@
 package com.sjet.auracascade.common.tiles;
 
 import com.sjet.auracascade.AuraCascade;
-import com.sjet.auracascade.common.api.IAuraColor;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.registries.ObjectHolder;
+
+import static com.sjet.auracascade.AuraCascade.TICKS_PER_SECOND;
 
 
 public class AuraNodeTile extends BaseAuraTile {
@@ -17,20 +17,12 @@ public class AuraNodeTile extends BaseAuraTile {
     }
 
     @Override
-    public void onLoad() {
-    }
-
-    @Override
     public void tick() {
-    }
-
-    @Override
-    public void addAura(BlockPos sourcePos, IAuraColor color, int aura) {
-        super.addAura(sourcePos, color, aura);
-
-        //calculate the amount of energy to be generated based on the height
-        int power = (this.pos.getY() - sourcePos.getY()) * aura;
-        auraEnergy += power;
+        if (!world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 0) {
+            findNodes();
+            distributeAura();
+            this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
+        }
     }
 }
 

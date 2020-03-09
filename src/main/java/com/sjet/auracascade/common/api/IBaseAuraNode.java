@@ -26,7 +26,7 @@ public interface IBaseAuraNode {
      * @param target BlockPos of the target block
      * @return false if the target cannot have aura passed through it
      */
-    boolean isBlocked(BlockPos target);
+    boolean canAuraFlow(BlockPos target);
 
     /**
      * @param pos BlockPos of the node to verify if it is an IBaseAuraNode
@@ -47,9 +47,9 @@ public interface IBaseAuraNode {
      *
      * @param sourcePos the source of the aura to be added
      * @param color     the IAuraColor enum of the aura to be added
-     * @param aura      the amount of aura to be added
+     * @param auraInput the amount of aura to be added
      */
-    void addAura(BlockPos sourcePos, IAuraColor color, int aura);
+    void addAura(BlockPos sourcePos, IAuraColor color, int auraInput);
 
     /**
      * To be used when a player adds aura to the node
