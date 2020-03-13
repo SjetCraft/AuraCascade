@@ -16,7 +16,7 @@ public enum IAuraColor {
     private boolean horizontalTransfer;
     private boolean verticalTransfer;
 
-    private IAuraColor(boolean horizontalTransfer, boolean verticalTransfer) {
+    IAuraColor(boolean horizontalTransfer, boolean verticalTransfer) {
         this.horizontalTransfer = horizontalTransfer;
         this.verticalTransfer = verticalTransfer;
     }

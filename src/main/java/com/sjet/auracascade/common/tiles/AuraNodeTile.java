@@ -23,6 +23,9 @@ public class AuraNodeTile extends BaseAuraTile {
             distributeAura();
             this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
         }
+        if (world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 0) {
+            //particles();
+        }
     }
 }
 

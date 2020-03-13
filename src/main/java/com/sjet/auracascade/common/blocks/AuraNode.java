@@ -64,6 +64,10 @@ public class AuraNode extends Block {
         AuraNodeTile node = (AuraNodeTile) worldIn.getTileEntity(pos);
 
         node.findNodes();
+        //only trigger particles on the client
+        if(worldIn.isRemote) {
+            node.connectParticles();
+        }
     }
 
     @SuppressWarnings("deprecation")

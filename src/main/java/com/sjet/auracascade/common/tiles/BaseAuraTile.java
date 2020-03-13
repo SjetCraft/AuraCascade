@@ -2,6 +2,8 @@ package com.sjet.auracascade.common.tiles;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.sjet.auracascade.client.particles.ParticleHelper;
+import com.sjet.auracascade.common.util.Common;
 import com.sjet.auracascade.common.api.IBaseAuraCrystalItem;
 import com.sjet.auracascade.common.api.IBaseAuraNode;
 import com.sjet.auracascade.common.api.IAuraColor;
@@ -49,11 +51,8 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
     };
 
     protected ArrayList<BlockPos> connectedNodesList = new ArrayList<BlockPos>();
+    protected ArrayList<BlockPos> sentNodesList = new ArrayList<BlockPos>();
     public int auraEnergy;
-    //private int totalWeight;
-
-    private int horizontalConnections;
-    private int verticalConnections; //only used for Direction.DOWN
 
     public BaseAuraTile(TileEntityType<?> type) {
         super(type);
@@ -80,6 +79,12 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
         this.markDirty();
     }
 
+    /**
+     * Will not check for target being null
+     *
+     * @param target BlockPos of the target block
+     * @return true if the current node con connect
+     */
     public boolean canAuraFlow(BlockPos target) {
         Block block = world.getBlockState(target).getBlock();
 
@@ -88,13 +93,13 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
                 !(isAuraTile(target) || !block.isSolid(block.getDefaultState()));
     }
 
-    public boolean isAuraTile(BlockPos pos) {
-        return world.getTileEntity(pos) instanceof IBaseAuraNode;
+    public boolean isAuraTile(BlockPos target) {
+        return world.getTileEntity(target) instanceof IBaseAuraNode;
     }
 
-    public void connectNode(BlockPos pos) {
-        if (isAuraTile(pos) && world.getTileEntity(pos) != this) {
-            AuraNodeTile otherNode = (AuraNodeTile) world.getTileEntity(pos);
+    public void connectNode(BlockPos target) {
+        if (isAuraTile(target) && world.getTileEntity(target) != this) {
+            AuraNodeTile otherNode = (AuraNodeTile) world.getTileEntity(target);
 
             //add the found node this this node's connected Nodes list
             this.connectedNodesList.add(otherNode.getPos());
@@ -144,11 +149,10 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
 
     public void distributeAura() {
         //early exit if there are no nodes to distribute Aura & if redstone is blocking the node from distributing
-        if (connectedNodesList.isEmpty() && !world.isRemote && world.getRedstonePowerFromNeighbors(pos) > 0) {
+        if (connectedNodesList.isEmpty() && !world.isRemote && !world.isBlockPowered(this.pos)) {
             return;
         }
 
-        //based on old algorithm
         int totalWeight = 0;
 
         for(BlockPos nodes : connectedNodesList) {
@@ -177,44 +181,13 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
                         if (diff > 25) {
                             int auraToSend = (int) (auraHere * factor);
                             transferAura(target, color, auraToSend);
+                            // add node to the sentNodesList to use for rendering
+                            sentNodesList.add(target);
                         }
                     }
                 }
             }
         }
-
-        /*
-        //new algorithm which does not work as intended
-        //the final aura 'piece' is passed around from node to node and stays in an unbalanced state
-        for (Map.Entry<IAuraColor, Integer> entry : auraMap.entrySet()) {
-            IAuraColor color = entry.getKey();
-            int currentAura = entry.getValue();
-            int validConnections = 0;
-            int auraToTransfer;
-
-            for(BlockPos target : connectedNodesList) {
-                if(canTransfer(target)) {
-                    validConnections++;
-                }
-            }
-
-            //distribute aura between VALID connections
-            if (validConnections > 0 && currentAura > 0) {
-                auraToTransfer =  (int) ((currentAura * DISTRIBUTION_PERCENTAGE) / validConnections) ;
-
-                for(BlockPos target : connectedNodesList) {
-                    if (canTransfer(target)) {
-                        //calculates distance 'penalty'
-                        auraToTransfer = (int) (auraToTransfer * distancePercent(target));
-
-                        if(auraToTransfer < auraMap.get(color) && auraToTransfer != 0) {
-                            //transferAura(target, color, auraToTransfer);
-                        }
-                    }
-                }
-            }
-        }
-        */
 
         this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
         this.markDirty();
@@ -226,6 +199,7 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
             BaseAuraTile targetNode = (BaseAuraTile) world.getTileEntity(target);
             targetNode.addAura(this.pos, color, aura);
             this.removeAura(color, aura);
+            sentNodesList.add(target);
         }
     }
 
@@ -234,32 +208,22 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
     }
 
     /**
-     * formula: sqrt( (x1 + x2)^2 + (y1 + y2)^2 + (z1 + z2)^2 )
-     * @param target
-     * @return the distance in Blocks to the target
-     */
-    public double getDistance(BlockPos target) {
-        double deltaX = this.pos.getX() - target.getX();
-        double deltaY = this.pos.getY() - target.getY();
-        double deltaZ = this.pos.getZ() - target.getZ();
-        return Math.sqrt((deltaX * deltaX) + (deltaY * deltaY) + (deltaZ * deltaZ));
-    }
-
-
-    /**
      * @param target
      * @return
      */
     public double getWeight(BlockPos target) {
-        return Math.pow(10 - getDistance(target), 2);
+        return Math.pow(10 - Common.getDistance(this.pos, target), 2);
     }
 
-    /*
-    // distancePercent is the following formula (400 / (distance + 4)) / 100
-    public double distancePercent(BlockPos target) {
-        return (400 / (getDistance(target) + 4)) / 100;
+    /**
+     * Intended to be used as an indicator to what other nodes this BauseAuraTile is connected to.
+     */
+    @OnlyIn(Dist.CLIENT)
+    public void connectParticles() {
+        for(BlockPos target: connectedNodesList) {
+            ParticleHelper.sendConnectionParticlesToTarget(world, this.pos, target);
+        }
     }
-    */
 
     /**
      * Used to render the amount of Aura on the screen
@@ -299,8 +263,7 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
         String auraJSON;
         auraJSON = tag.getString("auraMap");
 
-        Type auraType = new TypeToken<HashMap<IAuraColor, Integer>>() {
-        }.getType();
+        Type auraType = new TypeToken<HashMap<IAuraColor, Integer>>() {}.getType();
         HashMap<IAuraColor, Integer> auraClonedMap = auraNBT.fromJson(auraJSON, auraType);
         auraMap = auraClonedMap;
 
@@ -309,10 +272,19 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
         String nodeJSON;
         nodeJSON = tag.getString("connectedNodes");
 
-        Type nodeType = new TypeToken<ArrayList<BlockPos>>() {
-        }.getType();
+        Type nodeType = new TypeToken<ArrayList<BlockPos>>() {}.getType();
         ArrayList<BlockPos> nodeClonedList = nodeNBT.fromJson(nodeJSON, nodeType);
         connectedNodesList = nodeClonedList;
+
+        //deserialize connectedNodesList
+        Gson sNodeNBT = new Gson();
+        String sNodeJSON;
+        sNodeJSON = tag.getString("sentNodes");
+
+        Type sNodeType = new TypeToken<ArrayList<BlockPos>>() {}.getType();
+        ArrayList<BlockPos> sNodeClonedList = sNodeNBT.fromJson(sNodeJSON, sNodeType);
+        sentNodesList = sNodeClonedList;
+
     }
 
     @Override
@@ -326,6 +298,12 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
         Gson nodeNBT = new Gson();
         String nodeJSON = nodeNBT.toJson(new ArrayList(connectedNodesList));
         tag.putString("connectedNodes", nodeJSON);
+
+        //serialize connectedNodesList
+        Gson sNodeNBT = new Gson();
+        String sNodeJSON = sNodeNBT.toJson(new ArrayList(sentNodesList));
+        tag.putString("sentNodes", sNodeJSON);
+
 
         tag.putInt("energy", auraEnergy);
 
