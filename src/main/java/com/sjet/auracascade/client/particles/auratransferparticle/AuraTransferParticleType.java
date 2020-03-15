@@ -24,8 +24,8 @@ public class AuraTransferParticleType extends ParticleType<AuraTransferParticleD
 
         @Override
         public Particle makeParticle(AuraTransferParticleData data, World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            AuraTransferParticle particle = new AuraTransferParticle(world, x, y, z, data.targetX, data.targetY, data.targetZ, xSpeed, ySpeed, zSpeed, data.size, data.r, data.g, data.b, data.maxAge);
-
+            AuraTransferParticle particle = new AuraTransferParticle(world, x, y, z, data.targetX, data.targetY, data.targetZ, xSpeed, ySpeed, zSpeed, data.size, data.r, data.g, data.b, data.maxAge, this.spriteSet);
+            particle.selectSpriteRandomly(this.spriteSet);
             return particle;
         }
     }

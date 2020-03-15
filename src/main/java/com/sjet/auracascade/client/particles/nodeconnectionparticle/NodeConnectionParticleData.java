@@ -17,11 +17,7 @@ public class NodeConnectionParticleData implements IParticleData {
     public final double targetY;
     public final double targetZ;
 
-    public static NodeConnectionParticleData size(double targetX, double targetY, double targetZ, float size) {
-        return new NodeConnectionParticleData(targetX, targetY, targetZ, size, 1F);
-    }
-
-    public static NodeConnectionParticleData sizeMaxAge(double targetX, double targetY, double targetZ, float size, float maxAge) {
+    public static NodeConnectionParticleData nodeConnectionParticle(double targetX, double targetY, double targetZ, float size, float maxAge) {
         return new NodeConnectionParticleData(targetX, targetY, targetZ, size, maxAge);
     }
 

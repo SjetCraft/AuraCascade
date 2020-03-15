@@ -16,15 +16,16 @@ public class AuraNodeTile extends BaseAuraTile {
         super(TYPE);
     }
 
+
+
     @Override
     public void tick() {
         if (!world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 0) {
             findNodes();
             distributeAura();
-            this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
         }
-        if (world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 0) {
-            //particles();
+        if (world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 1) {
+            transferAuraParticles();
         }
     }
 }

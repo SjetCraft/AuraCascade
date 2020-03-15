@@ -93,13 +93,20 @@ public class NodeConnectionParticle extends SpriteTexturedParticle {
             this.setExpired();
         }
 
-        double speedAdjust = 7;
+        double speedAdjust = 3;
         double moveX = (targetX - this.posX) / speedAdjust;
         double moveY = (targetY - this.posY) / speedAdjust;
         double moveZ = (targetZ - this.posZ) / speedAdjust;
 
-        //make the particle fade over time
-        particleAlpha -= 0.01;
+        //random movement
+        moveX += 0.02 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
+        moveY += 0.02 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
+        moveZ += 0.02 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
+
+        //randomly age the particle one more tick
+        //used to change the particle sprite
+        age += (rand.nextFloat() > 0.5 ? 1: 0);
+        selectSpriteWithAge(spriteSet);
 
         //Perform the ACTUAL move of the particle.
         this.move(moveX, moveY, moveZ);

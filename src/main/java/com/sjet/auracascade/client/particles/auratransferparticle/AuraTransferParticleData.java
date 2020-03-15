@@ -18,15 +18,7 @@ public class AuraTransferParticleData implements IParticleData {
     public final double targetY;
     public final double targetZ;
 
-    public static AuraTransferParticleData size(double targetX, double targetY, double targetZ, float size) {
-        return new AuraTransferParticleData(targetX, targetY, targetZ, size, 1F, 1F, 1F, 20);
-    }
-
-    public static AuraTransferParticleData sizeMaxAge(double targetX, double targetY, double targetZ, float size, float maxAge) {
-        return new AuraTransferParticleData(targetX, targetY, targetZ, size, 1F, 1F, 1F, maxAge);
-    }
-
-    public static AuraTransferParticleData nodeconnectionparticle(double targetX, double targetY, double targetZ, float size, float r, float g, float b, float maxAge) {
+    public static AuraTransferParticleData auraTransferParticle(double targetX, double targetY, double targetZ, float size, float r, float g, float b, float maxAge) {
         return new AuraTransferParticleData(targetX, targetY, targetZ, size, r, g, b, maxAge);
     }
 

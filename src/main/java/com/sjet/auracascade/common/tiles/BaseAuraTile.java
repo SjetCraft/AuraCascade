@@ -1,19 +1,19 @@
 package com.sjet.auracascade.common.tiles;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.sjet.auracascade.client.particles.ParticleHelper;
 import com.sjet.auracascade.common.util.Common;
 import com.sjet.auracascade.common.api.IBaseAuraCrystalItem;
 import com.sjet.auracascade.common.api.IBaseAuraNode;
 import com.sjet.auracascade.common.api.IAuraColor;
 import com.sjet.auracascade.common.items.BaseAuraCrystalItem;
+import com.sjet.auracascade.common.util.NBTListHelper;
+import com.sjet.auracascade.common.util.NBTMapHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -25,7 +25,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Map;
@@ -34,9 +33,10 @@ import static com.sjet.auracascade.AuraCascade.MAX_DISTANCE;
 
 public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, ITickableTileEntity {
 
-    /**
-     * Using a HashMap instead of EnumMap as Gson doesn't like to serialize/deserialize EnumMap :(
-     */
+    public static final String AURA_MAP = "aura_map";
+    public static final String CONNECTED_LIST = "connected_list";
+    public static final String SENT_AURA = "sent_aura";
+
     HashMap<IAuraColor, Integer> auraMap = new HashMap<IAuraColor, Integer>() {
         {
             put(IAuraColor.WHITE, 0);
@@ -50,8 +50,9 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
         }
     };
 
-    protected ArrayList<BlockPos> connectedNodesList = new ArrayList<BlockPos>();
-    protected ArrayList<BlockPos> sentNodesList = new ArrayList<BlockPos>();
+    protected ArrayList<BlockPos> connectedNodesList = new ArrayList<>();
+    protected HashMap<BlockPos, Integer> sentNodesMap = new HashMap<>();
+
     public int auraEnergy;
 
     public BaseAuraTile(TileEntityType<?> type) {
@@ -59,7 +60,7 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
     }
 
     public void findNodes() {
-        connectedNodesList = new ArrayList<BlockPos>();
+        connectedNodesList = new ArrayList<>();
         //search for connected nodes in each direction
         for (Direction direction : Direction.values()) {
             boolean blocked = false; //allows for early exit of search
@@ -76,12 +77,10 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
                 }
             }
         }
-        this.markDirty();
+        this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
     }
 
     /**
-     * Will not check for target being null
-     *
      * @param target BlockPos of the target block
      * @return true if the current node con connect
      */
@@ -148,6 +147,9 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
     }
 
     public void distributeAura() {
+        //empty sentNodesMap
+        this.sentNodesMap.clear();
+
         //early exit if there are no nodes to distribute Aura & if redstone is blocking the node from distributing
         if (connectedNodesList.isEmpty() && !world.isRemote && !world.isBlockPowered(this.pos)) {
             return;
@@ -181,8 +183,6 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
                         if (diff > 25) {
                             int auraToSend = (int) (auraHere * factor);
                             transferAura(target, color, auraToSend);
-                            // add node to the sentNodesList to use for rendering
-                            sentNodesList.add(target);
                         }
                     }
                 }
@@ -199,7 +199,8 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
             BaseAuraTile targetNode = (BaseAuraTile) world.getTileEntity(target);
             targetNode.addAura(this.pos, color, aura);
             this.removeAura(color, aura);
-            sentNodesList.add(target);
+            // add node to the sentNodesMap to use for rendering
+            sentNodesMap.put(target, aura);
         }
     }
 
@@ -225,6 +226,13 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public void transferAuraParticles() {
+        for(Map.Entry<BlockPos, Integer> target : sentNodesMap.entrySet()) {
+            ParticleHelper.transferAura(this.world, this.pos, target.getKey(), IAuraColor.WHITE, target.getValue());
+        }
+    }
+
     /**
      * Used to render the amount of Aura on the screen
      *
@@ -236,9 +244,6 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
 
         for (Map.Entry<IAuraColor, Integer> entry : auraMap.entrySet()) {
             if (entry.getValue() != 0) {
-                if (output.length() != 0) {
-                    output += "\n";
-                }
                 output += entry.getKey().capitalizedName() + ": " + entry.getValue();
             }
         }
@@ -246,11 +251,11 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
             output = "No Aura";
         }
 
-        int width = mc.fontRenderer.getStringWidth(output) / 2;
-        int x = (mc.getMainWindow().getScaledWidth() / 2) - width;
+        //int width = mc.fontRenderer.getStringWidth(output) / 2;
+        int x = mc.getMainWindow().getScaledWidth() / 2;
         int y = mc.getMainWindow().getScaledHeight() / 2;
 
-        mc.fontRenderer.drawStringWithShadow(output, x, y + 5, 0xFFFFFF);
+        mc.fontRenderer.drawStringWithShadow(output, x + 5, y, 0xFFFFFF);
     }
 
     @Override
@@ -258,52 +263,23 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
         super.read(tag);
         auraEnergy = tag.getInt("energy");
 
-        //deserialize auraMap
-        Gson auraNBT = new Gson();
-        String auraJSON;
-        auraJSON = tag.getString("auraMap");
+        auraMap.clear();
+        this.auraMap = (HashMap<IAuraColor, Integer>) AURA_MAP_NBT.read(tag);
 
-        Type auraType = new TypeToken<HashMap<IAuraColor, Integer>>() {}.getType();
-        HashMap<IAuraColor, Integer> auraClonedMap = auraNBT.fromJson(auraJSON, auraType);
-        auraMap = auraClonedMap;
+        this.connectedNodesList = (ArrayList<BlockPos>) CONNECTED_LIST_NBT.read(tag);
 
-        //deserialize connectedNodesList
-        Gson nodeNBT = new Gson();
-        String nodeJSON;
-        nodeJSON = tag.getString("connectedNodes");
-
-        Type nodeType = new TypeToken<ArrayList<BlockPos>>() {}.getType();
-        ArrayList<BlockPos> nodeClonedList = nodeNBT.fromJson(nodeJSON, nodeType);
-        connectedNodesList = nodeClonedList;
-
-        //deserialize connectedNodesList
-        Gson sNodeNBT = new Gson();
-        String sNodeJSON;
-        sNodeJSON = tag.getString("sentNodes");
-
-        Type sNodeType = new TypeToken<ArrayList<BlockPos>>() {}.getType();
-        ArrayList<BlockPos> sNodeClonedList = sNodeNBT.fromJson(sNodeJSON, sNodeType);
-        sentNodesList = sNodeClonedList;
-
+        sentNodesMap.clear();
+        this.sentNodesMap = (HashMap<BlockPos, Integer>) SENT_AURA_NBT.read(tag);
     }
 
     @Override
     public CompoundNBT write(CompoundNBT tag) {
-        //serialize auraMap
-        Gson auraNBT = new Gson();
-        String auraJSON = auraNBT.toJson(new HashMap(auraMap));
-        tag.putString("auraMap", auraJSON);
 
-        //serialize connectedNodesList
-        Gson nodeNBT = new Gson();
-        String nodeJSON = nodeNBT.toJson(new ArrayList(connectedNodesList));
-        tag.putString("connectedNodes", nodeJSON);
+        AURA_MAP_NBT.write(auraMap, tag);
 
-        //serialize connectedNodesList
-        Gson sNodeNBT = new Gson();
-        String sNodeJSON = sNodeNBT.toJson(new ArrayList(sentNodesList));
-        tag.putString("sentNodes", sNodeJSON);
+        CONNECTED_LIST_NBT.write(connectedNodesList, tag);
 
+        SENT_AURA_NBT.write(sentNodesMap, tag);
 
         tag.putInt("energy", auraEnergy);
 
@@ -312,9 +288,7 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
 
     @Override
     public CompoundNBT getUpdateTag() {
-        CompoundNBT nbt = new CompoundNBT();
-        write(nbt);
-        return nbt;
+        return this.write(new CompoundNBT());
     }
 
     @Override
@@ -327,15 +301,33 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
     public SUpdateTileEntityPacket getUpdatePacket() {
         CompoundNBT nbt = new CompoundNBT();
         write(nbt);
-        return new SUpdateTileEntityPacket(pos, -999, nbt);
+        return new SUpdateTileEntityPacket(pos, 1, nbt);
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
-        super.onDataPacket(net, packet);
-        handleUpdateTag(packet.getNbtCompound());
-
-        BlockState state = world.getBlockState(pos);
-        world.notifyBlockUpdate(pos, state, state, 3);
+        this.read(packet.getNbtCompound());
     }
+
+    private NBTListHelper<BlockPos> CONNECTED_LIST_NBT = new NBTListHelper<BlockPos>(
+            CONNECTED_LIST,
+            (nbt, pos) -> nbt.put("connected_node", NBTUtil.writeBlockPos(pos)),
+            nbt -> NBTUtil.readBlockPos(nbt.getCompound("connected_node"))
+    );
+
+    private NBTMapHelper<IAuraColor, Integer> AURA_MAP_NBT = new NBTMapHelper<IAuraColor, Integer>(
+            AURA_MAP,
+            (nbt, auraColor) -> nbt.putString("aura_color", auraColor.name()),
+            nbt -> IAuraColor.valueOf(nbt.getString("aura_color")),
+            (nbt, auraAmount) -> nbt.putInt("aura_amount_now", (int) auraAmount),
+            nbt -> nbt.getInt("aura_amount_now")
+    );
+
+    private NBTMapHelper<BlockPos, Integer> SENT_AURA_NBT = new NBTMapHelper<BlockPos, Integer>(
+            SENT_AURA,
+            (nbt, pos) -> nbt.put("position", NBTUtil.writeBlockPos(pos)),
+            nbt -> NBTUtil.readBlockPos(nbt.getCompound("position")),
+            (nbt, auraAmount) -> nbt.putInt("aura_amount_sent", (int) auraAmount),
+            nbt -> nbt.getInt("aura_amount_sent")
+    );
 }

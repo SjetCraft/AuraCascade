@@ -18,7 +18,7 @@ public class AuraTransferParticle extends SpriteTexturedParticle {
     private IAnimatedSprite spriteSet;
 
     public AuraTransferParticle(World world, double sourceX, double sourceY, double sourceZ, double targetX, double targetY, double targetZ, double xSpeed, double ySpeed, double zSpeed,
-                                  float size, float red, float green, float blue, float maxAge) {
+                                  float size, float red, float green, float blue, float maxAge, IAnimatedSprite spriteSet) {
         super(world, sourceX, sourceY, sourceZ);
         motionX = xSpeed;
         motionY = ySpeed;
@@ -49,6 +49,7 @@ public class AuraTransferParticle extends SpriteTexturedParticle {
         this.targetZ = targetZ;
         this.canCollide = false;
 
+        this.spriteSet = spriteSet;
         selectSpriteRandomly(spriteSet);
     }
 
@@ -91,13 +92,18 @@ public class AuraTransferParticle extends SpriteTexturedParticle {
             this.setExpired();
         }
 
+        //movement
         double speedAdjust = 4;
         double moveX = (targetX - this.posX) / speedAdjust;
         double moveY = (targetY - this.posY) / speedAdjust;
         double moveZ = (targetZ - this.posZ) / speedAdjust;
 
-        particleAlpha -= 0.01;
-        //selectSpriteWithAge(spriteSet);
+        //random movement
+        moveX += 0.03 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
+        moveY += 0.03 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
+        moveZ += 0.03 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
+
+        //particleAlpha -= 0.01;
 
         //Perform the ACTUAL move of the particle.
         this.move(moveX, moveY, moveZ);
