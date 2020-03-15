@@ -24,9 +24,11 @@ public class AuraTransferParticle extends SpriteTexturedParticle {
         motionY = ySpeed;
         motionZ = zSpeed;
 
-        particleRed = red;
-        particleGreen = green;
-        particleBlue = blue;
+        float offset = (float) (Math.random() * 0.30000001192092896D);
+        red -= offset;
+        blue -= offset;
+        green -= offset;
+
         setColor(red, green, blue);
 
         particleGravity = 0;
@@ -51,6 +53,19 @@ public class AuraTransferParticle extends SpriteTexturedParticle {
 
         this.spriteSet = spriteSet;
         selectSpriteRandomly(spriteSet);
+
+        this.motionX *= 0.10000000149011612D;
+        this.motionY *= 0.10000000149011612D;
+        this.motionZ *= 0.10000000149011612D;
+        this.motionX += motionX * 0.4D;
+        this.motionY += motionY * 0.4D;
+        this.motionZ += motionZ * 0.4D;
+
+        //random movement
+        motionX += 0.008 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
+        motionY += 0.008 * rand.nextFloat() * (rand.nextFloat() > 0.3 ? 1 : -1);
+        motionZ += 0.008 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
+
     }
 
     @Override
@@ -70,6 +85,7 @@ public class AuraTransferParticle extends SpriteTexturedParticle {
     // [VanillaCopy] of super, without drag when onGround is true
     @Override
     public void tick() {
+/*
         //Just in case something goes weird, we remove the particle if its been around too long.
         if (this.age++ >= this.maxAge) {
             this.setExpired();
@@ -107,5 +123,24 @@ public class AuraTransferParticle extends SpriteTexturedParticle {
 
         //Perform the ACTUAL move of the particle.
         this.move(moveX, moveY, moveZ);
+*/
+
+        this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
+
+        if (this.age++ >= this.maxAge) {
+            this.setExpired();
+        } else {
+            this.move(this.motionX, this.motionY, this.motionZ);
+
+            //random movement
+            motionX += 0.002 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
+            motionY += 0.002 * rand.nextFloat() * (rand.nextFloat() > 0.3 ? 1 : -1);
+            motionZ += 0.002 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
+
+            //randomly age the particle
+            this.age += (rand.nextFloat() > 0.5 ? 0 : 1);
+        }
     }
 }

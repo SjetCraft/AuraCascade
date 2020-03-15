@@ -116,7 +116,6 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
             aura = 0;
         }
         auraMap.replace(color, aura);
-        this.markDirty();
     }
 
     public void addAura(BlockPos sourcePos, IAuraColor color, int auraInput) {
@@ -180,8 +179,8 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
                         int auraThere = targetNode.auraMap.get(color);
                         int diff = Math.abs(auraHere - auraThere);
 
-                        if (diff > 25) {
-                            int auraToSend = (int) (auraHere * factor);
+                        int auraToSend = (int) (auraHere * factor);
+                        if (diff > 25 && auraToSend > 0) {
                             transferAura(target, color, auraToSend);
                         }
                     }
@@ -213,7 +212,7 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
      * @return
      */
     public double getWeight(BlockPos target) {
-        return Math.pow(10 - Common.getDistance(this.pos, target), 2);
+        return Math.pow(20 - Common.getDistance(this.pos, target), 2);
     }
 
     /**
