@@ -24,7 +24,7 @@ public class AuraTransferParticle extends SpriteTexturedParticle {
         motionY = ySpeed;
         motionZ = zSpeed;
 
-        float offset = (float) (Math.random() * 0.30000001192092896D);
+        float offset = (float) (Math.random() * 0.3D);
         red -= offset;
         blue -= offset;
         green -= offset;
@@ -54,18 +54,17 @@ public class AuraTransferParticle extends SpriteTexturedParticle {
         this.spriteSet = spriteSet;
         selectSpriteRandomly(spriteSet);
 
-        this.motionX *= 0.10000000149011612D;
-        this.motionY *= 0.10000000149011612D;
-        this.motionZ *= 0.10000000149011612D;
+        this.motionX *= 0.1D;
+        this.motionY *= 0.1D;
+        this.motionZ *= 0.1D;
         this.motionX += motionX * 0.4D;
         this.motionY += motionY * 0.4D;
         this.motionZ += motionZ * 0.4D;
 
         //random movement
-        motionX += 0.008 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
-        motionY += 0.008 * rand.nextFloat() * (rand.nextFloat() > 0.3 ? 1 : -1);
-        motionZ += 0.008 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
-
+        motionX += 0.005 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
+        motionY += 0.005 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
+        motionZ += 0.005 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
     }
 
     @Override
@@ -82,18 +81,8 @@ public class AuraTransferParticle extends SpriteTexturedParticle {
         particleGravity = value;
     }
 
-    // [VanillaCopy] of super, without drag when onGround is true
     @Override
     public void tick() {
-/*
-        //Just in case something goes weird, we remove the particle if its been around too long.
-        if (this.age++ >= this.maxAge) {
-            this.setExpired();
-            return;
-        }
-
-        //prevPos is used in the render. if you don't do this your particle rubber bands (Like lag in an MMO).
-        //This is used because ticks are 20 per second, and FPS is usually 60 or higher.
         this.prevPosX = this.posX;
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
@@ -101,43 +90,20 @@ public class AuraTransferParticle extends SpriteTexturedParticle {
         //Get the current position and target of the particle
         Vec3d particlePosition = new Vec3d(this.posX, this.posY, this.posZ);
         Vec3d targetPosition = new Vec3d(targetX, targetY, targetZ);
-
         //The total distance between the particle and target
         double totalDistance = targetPosition.distanceTo(particlePosition);
-        if (totalDistance < 0.1) {
-            this.setExpired();
-        }
-
-        //movement
-        double speedAdjust = 4;
-        double moveX = (targetX - this.posX) / speedAdjust;
-        double moveY = (targetY - this.posY) / speedAdjust;
-        double moveZ = (targetZ - this.posZ) / speedAdjust;
-
-        //random movement
-        moveX += 0.03 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
-        moveY += 0.03 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
-        moveZ += 0.03 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
-
-        //particleAlpha -= 0.01;
-
-        //Perform the ACTUAL move of the particle.
-        this.move(moveX, moveY, moveZ);
-*/
-
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
 
         if (this.age++ >= this.maxAge) {
+            this.setExpired();
+        } else if (totalDistance < 0.2) {
             this.setExpired();
         } else {
             this.move(this.motionX, this.motionY, this.motionZ);
 
             //random movement
-            motionX += 0.002 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
-            motionY += 0.002 * rand.nextFloat() * (rand.nextFloat() > 0.3 ? 1 : -1);
-            motionZ += 0.002 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
+            motionX += 0.003 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
+            motionY += 0.003 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
+            motionZ += 0.003 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
 
             //randomly age the particle
             this.age += (rand.nextFloat() > 0.5 ? 0 : 1);

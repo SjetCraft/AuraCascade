@@ -7,10 +7,9 @@ package com.sjet.auracascade.client;
 
 import com.sjet.auracascade.AuraCascade;
 import com.sjet.auracascade.common.tiles.AuraNodeTile;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import com.sjet.auracascade.common.tiles.BaseAuraPumpTile;
+import com.sjet.auracascade.common.tiles.BaseAuraTile;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -30,8 +29,6 @@ public final class HUDHandler {
     public static void onDrawScreenPost(RenderGameOverlayEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
         IProfiler profiler = mc.getProfiler();
-        ItemStack main = mc.player.getHeldItemMainhand();
-        ItemStack offhand = mc.player.getHeldItemOffhand();
 
         if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
             profiler.startSection("auracascade-hud");
@@ -40,13 +37,17 @@ public final class HUDHandler {
 
             if(pos != null) {
                 BlockPos bpos = pos.getType() == RayTraceResult.Type.BLOCK ? ((BlockRayTraceResult) pos).getPos() : null;
-                BlockState state = bpos != null ? mc.world.getBlockState(bpos) : null;
-                Block block = state == null ? null : state.getBlock();
+                //BlockState state = bpos != null ? mc.world.getBlockState(bpos) : null;
+                //Block block = state == null ? null : state.getBlock();
                 TileEntity tile = bpos != null ? mc.world.getTileEntity(bpos) : null;
 
-                if(tile instanceof AuraNodeTile) {
+                if(tile instanceof BaseAuraTile) {
                     profiler.startSection("auraNode");
-                    ((AuraNodeTile) tile).renderHUD(mc);
+                    if(tile instanceof AuraNodeTile) {
+                        ((AuraNodeTile) tile).renderHUD(mc);
+                    } else if (tile instanceof BaseAuraPumpTile) {
+                        ((BaseAuraPumpTile) tile).renderHUD(mc);
+                    }
                 }
             }
         }

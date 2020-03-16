@@ -1,11 +1,9 @@
 package com.sjet.auracascade.common.blocks;
 
-import com.sjet.auracascade.AuraCascade;
 import com.sjet.auracascade.common.tiles.AuraNodeTile;
+import com.sjet.auracascade.common.tiles.BaseAuraPumpTile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -18,26 +16,15 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.registries.ObjectHolder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-
-public class AuraNode extends Block {
+public abstract class BaseAuraPump extends Block {
     private static final VoxelShape NODE = makeCuboidShape(4, 4, 4, 12, 12, 12);
 
-    @ObjectHolder(AuraCascade.MODID + ":aura_node")
-    public static final AuraNode BLOCK = null;
-
-    public AuraNode() {
-        super(Properties.create(Material.GLASS)
-                .sound(SoundType.METAL)
-                .hardnessAndResistance(2)
-                .notSolid()
-        );
-
-        setRegistryName(AuraCascade.MODID, "aura_node");
+    public BaseAuraPump(Properties properties) {
+        super(properties);
     }
 
     @Override
@@ -46,9 +33,7 @@ public class AuraNode extends Block {
     }
 
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new AuraNodeTile();
-    }
+    public abstract TileEntity createTileEntity(BlockState state, IBlockReader world);
 
     @SuppressWarnings("deprecation")
     @Nonnull
@@ -56,17 +41,7 @@ public class AuraNode extends Block {
         return NODE;
     }
 
-    @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        AuraNodeTile node = (AuraNodeTile) worldIn.getTileEntity(pos);
-
-        node.findNodes();
-        node.getWorld().notifyBlockUpdate(node.getPos(), node.getWorld().getBlockState(node.getPos()), node.getWorld().getBlockState(node.getPos()), 2);
-        //only trigger particles on the client
-        if(worldIn.isRemote) {
-            node.connectParticles();
-        }
-    }
+    public abstract void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack);
 
     @Override
     public boolean eventReceived(BlockState blockState, World world, BlockPos blockPos, int num1, int num2) {
@@ -76,7 +51,7 @@ public class AuraNode extends Block {
     @SuppressWarnings("deprecation")
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        AuraNodeTile node = (AuraNodeTile) world.getTileEntity(pos);
+        BaseAuraPumpTile node = (BaseAuraPumpTile) world.getTileEntity(pos);
         ItemStack heldItem = player.getHeldItem(handIn);
 
         if (!heldItem.isEmpty()) {

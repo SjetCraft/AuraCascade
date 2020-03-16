@@ -1,12 +1,10 @@
 package com.sjet.auracascade.client.particles;
 
-import com.sjet.auracascade.client.particles.auratransferparticle.AuraTransferParticle;
 import com.sjet.auracascade.client.particles.auratransferparticle.AuraTransferParticleData;
 import com.sjet.auracascade.client.particles.nodeconnectionparticle.NodeConnectionParticleData;
 import com.sjet.auracascade.common.api.IAuraColor;
 import com.sjet.auracascade.common.util.Common;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -57,8 +55,7 @@ public class ParticleHelper {
         }
     }
 
-    public static void transferAura(World world, BlockPos source, BlockPos target, IAuraColor color, int auraAmount) {
-
+    public static void transferAuraParticles(World world, BlockPos source, BlockPos target, IAuraColor color, int auraAmount) {
         Random rand = new Random();
         //delta is the area where the particles will travel through
         double delta = Common.getDistance(source, target) * 6;
@@ -76,17 +73,27 @@ public class ParticleHelper {
         float g = color.getGreen();
         float b = color.getBlue();
 
-        int density = 1;// + (auraAmount / 500);
+        int density = 1 + (auraAmount / 1000);
+        double deltaYspeed = 1.3;
 
         //spawns particles through delta-1 areas
         for (int i = 0; i < delta; i++) {
 
-            float randomSize = 0.05f + (0.085f - 0.13f) * rand.nextFloat();
+            for (int j = 0; j < density; j++) {
+                float randomSize = 0.05f + (0.075f - 0.15f) * rand.nextFloat();
+                int randomAge = 14 + (rand.nextInt(5));
+                //spreads the particle source across the range
+                double range = rand.nextDouble() * (0.02)  * (rand.nextFloat() > 0.5 ? 1 : -1);
 
-            int randomAge = 14 + (rand.nextInt(5));
+                //makes aura 'fall' faster
+                if(deltaY < 0) {
+                    deltaYspeed = 2;
+                }
 
-            AuraTransferParticleData particle = AuraTransferParticleData.auraTransferParticle( 0, 0, 0, randomSize, r, g, b, randomAge);
-            world.addParticle(particle, sourceX, sourceY, sourceZ, deltaX * rand.nextDouble(), deltaY * rand.nextDouble(), deltaZ * rand.nextDouble());
+                AuraTransferParticleData particle = AuraTransferParticleData.auraTransferParticle(target.getX() + 0.5, target.getY() + 0.5, target.getZ() + 0.5, randomSize, r, g, b, randomAge);
+                //addParticle(particle, xPos, yPos, zPos, xSpeed, ySpeed, zSpeed)
+                world.addParticle(particle, sourceX + range, sourceY + range, sourceZ + range, deltaX * rand.nextDouble() * 1.1, deltaY * rand.nextDouble() * deltaYspeed, deltaZ * rand.nextDouble() * 1.1);
+            }
 
             //moves the particle generation by delta distance
             if (deltaX != 0) {
@@ -97,21 +104,5 @@ public class ParticleHelper {
                 sourceZ += deltaZ;
             }
         }
-
-        /*
-        Vec3d velocity = new Vec3d(target.subtract(source));
-        velocity = velocity.normalize();
-        double dist = Math.sqrt(target.distanceSq(source));
-
-        int density = 5;
-        for (int count = 0; count < dist * density; count++) {
-            double i = ((double) count) / density;
-            double xp = source.getX() + (velocity.x * i) + .5;
-            double yp = source.getY() + (velocity.y * i) + .5;
-            double zp = source.getZ() + (velocity.z * i) + .5;
-            AuraTransferParticleData particle = AuraTransferParticleData.auraTransferParticle(target.getX() + .5, target.getY() + .5, target.getZ() + .5, 0.02F, color.getRed(), color.getGreen(), color.getBlue(), 20);
-            world.addParticle(particle, xp, yp, zp, velocity.x * .1, velocity.y * .1, velocity.z * .1);
-        }
-        */
     }
 }

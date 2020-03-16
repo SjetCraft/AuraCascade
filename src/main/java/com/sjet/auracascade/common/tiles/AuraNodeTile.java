@@ -6,25 +6,21 @@ import net.minecraftforge.registries.ObjectHolder;
 
 import static com.sjet.auracascade.AuraCascade.TICKS_PER_SECOND;
 
-
 public class AuraNodeTile extends BaseAuraTile {
 
     @ObjectHolder(AuraCascade.MODID + ":aura_node")
-    public static final TileEntityType<AuraNodeTile> TYPE = null;
+    public static final TileEntityType<AuraNodeTile> TYPE_NODE = null;
 
     public AuraNodeTile() {
-        super(TYPE);
+        super(TYPE_NODE);
     }
-
-
 
     @Override
     public void tick() {
         if (!world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 0) {
             findNodes();
             distributeAura();
-        }
-        if (world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 1) {
+        } else if (world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 1) {
             transferAuraParticles();
         }
     }

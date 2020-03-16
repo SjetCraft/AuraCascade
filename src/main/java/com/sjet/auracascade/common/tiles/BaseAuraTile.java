@@ -37,7 +37,7 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
     public static final String CONNECTED_LIST = "connected_list";
     public static final String SENT_AURA = "sent_aura";
 
-    HashMap<IAuraColor, Integer> auraMap = new HashMap<IAuraColor, Integer>() {
+    protected HashMap<IAuraColor, Integer> auraMap = new HashMap<IAuraColor, Integer>() {
         {
             put(IAuraColor.WHITE, 0);
             put(IAuraColor.YELLOW, 0);
@@ -98,7 +98,7 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
 
     public void connectNode(BlockPos target) {
         if (isAuraTile(target) && world.getTileEntity(target) != this) {
-            AuraNodeTile otherNode = (AuraNodeTile) world.getTileEntity(target);
+            BaseAuraTile otherNode = (BaseAuraTile) world.getTileEntity(target);
 
             //add the found node this this node's connected Nodes list
             this.connectedNodesList.add(otherNode.getPos());
@@ -107,7 +107,7 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
         }
     }
 
-    private void removeAura(IAuraColor color, int auraRemove) {
+    public void removeAura(IAuraColor color, int auraRemove) {
         int aura = auraMap.get(color);
 
         if ((aura - auraRemove) >= 0) {
@@ -130,12 +130,13 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
                     auraEnergy += auraInput;
             }
         }
-        this.markDirty();
+        this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
     }
 
     public boolean playerAddAura(@Nullable PlayerEntity player, ItemStack stack) {
         if (stack.getItem() instanceof IBaseAuraCrystalItem) {
             addAura(this.pos, ((BaseAuraCrystalItem) stack.getItem()).getColor(), ((BaseAuraCrystalItem) stack.getItem()).getAura());
+            this.markDirty();
             //Check to not remove BaseAuraCrystalItem if player is in Creative
             if (!player.abilities.isCreativeMode) {
                 stack.shrink(1);
@@ -150,7 +151,7 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
         this.sentNodesMap.clear();
 
         //early exit if there are no nodes to distribute Aura & if redstone is blocking the node from distributing
-        if (connectedNodesList.isEmpty() && !world.isRemote && !world.isBlockPowered(this.pos)) {
+        if (connectedNodesList.isEmpty() || this.world.isBlockPowered(this.pos)) {
             return;
         }
 
@@ -203,8 +204,21 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
         }
     }
 
+    /**
+     * @param target
+     * @return true if the target node is below or on the same Y level as this current node
+     */
     public boolean canTransfer(BlockPos target) {
-        return pos.getY() > target.getY() || pos.getY() == target.getY();
+        boolean internal = pos.getY() > target.getY() || pos.getY() == target.getY();
+        if (pos.getY() > target.getY()) {
+
+            TileEntity tile = world.getTileEntity(target);
+
+            if (tile instanceof BaseAuraPumpTile) {
+                return false;
+            }
+        }
+        return internal;
     }
 
     /**
@@ -228,7 +242,7 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
     @OnlyIn(Dist.CLIENT)
     public void transferAuraParticles() {
         for(Map.Entry<BlockPos, Integer> target : sentNodesMap.entrySet()) {
-            ParticleHelper.transferAura(this.world, this.pos, target.getKey(), IAuraColor.WHITE, target.getValue());
+            ParticleHelper.transferAuraParticles(this.world, this.pos, target.getKey(), IAuraColor.WHITE, target.getValue());
         }
     }
 
@@ -254,34 +268,28 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
         int x = mc.getMainWindow().getScaledWidth() / 2;
         int y = mc.getMainWindow().getScaledHeight() / 2;
 
-        mc.fontRenderer.drawStringWithShadow(output, x + 5, y, 0xFFFFFF);
+        mc.fontRenderer.drawStringWithShadow(output, x + 10, y, 0xFFFFFF);
     }
 
     @Override
     public void read(CompoundNBT tag) {
         super.read(tag);
-        auraEnergy = tag.getInt("energy");
+        auraEnergy = tag.getInt("auraEnergy");
 
         auraMap.clear();
         this.auraMap = (HashMap<IAuraColor, Integer>) AURA_MAP_NBT.read(tag);
-
+        connectedNodesList.clear();
         this.connectedNodesList = (ArrayList<BlockPos>) CONNECTED_LIST_NBT.read(tag);
-
         sentNodesMap.clear();
         this.sentNodesMap = (HashMap<BlockPos, Integer>) SENT_AURA_NBT.read(tag);
     }
 
     @Override
     public CompoundNBT write(CompoundNBT tag) {
-
         AURA_MAP_NBT.write(auraMap, tag);
-
         CONNECTED_LIST_NBT.write(connectedNodesList, tag);
-
         SENT_AURA_NBT.write(sentNodesMap, tag);
-
-        tag.putInt("energy", auraEnergy);
-
+        tag.putInt("auraEnergy", auraEnergy);
         return super.write(tag);
     }
 
