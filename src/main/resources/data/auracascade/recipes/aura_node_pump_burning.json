@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "ILI",
-    "INI",
+    "I#I",
     "ILI"
   ],
   "key": {
@@ -12,7 +12,7 @@
     "L": {
       "item": "minecraft:lapis_lazuli"
     },
-    "N": {
+    "#": {
       "item": "auracascade:aura_node"
     }
   },

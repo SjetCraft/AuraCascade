@@ -1,10 +1,10 @@
 {
   "parent": "block/block",
   "textures": {
-    "particle": "auracascade:block/node_top",
-    "top": "auracascade:block/node_top",
-    "bottom": "auracascade:block/node_bottom",
-    "side": "auracascade:block/node_side"
+    "particle": "auracascade:block/aura_node_top",
+    "top": "auracascade:block/aura_node_top",
+    "bottom": "auracascade:block/aura_node_bottom",
+    "side": "auracascade:block/aura_node_side"
   },
   "elements": [
     {

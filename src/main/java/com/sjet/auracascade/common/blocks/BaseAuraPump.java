@@ -1,6 +1,5 @@
 package com.sjet.auracascade.common.blocks;
 
-import com.sjet.auracascade.common.tiles.AuraNodeTile;
 import com.sjet.auracascade.common.tiles.BaseAuraPumpTile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

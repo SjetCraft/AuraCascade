@@ -1,9 +1,10 @@
 package com.sjet.auracascade.common.tiles;
 
+import com.sjet.auracascade.client.HUDHandler;
 import com.sjet.auracascade.client.particles.ParticleHelper;
+import com.sjet.auracascade.common.api.IBaseAuraNodeTile;
 import com.sjet.auracascade.common.util.Common;
 import com.sjet.auracascade.common.api.IBaseAuraCrystalItem;
-import com.sjet.auracascade.common.api.IBaseAuraNode;
 import com.sjet.auracascade.common.api.IAuraColor;
 import com.sjet.auracascade.common.items.BaseAuraCrystalItem;
 import com.sjet.auracascade.common.util.NBTListHelper;
@@ -31,7 +32,7 @@ import java.util.Map;
 
 import static com.sjet.auracascade.AuraCascade.MAX_DISTANCE;
 
-public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, ITickableTileEntity {
+public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNodeTile, ITickableTileEntity {
 
     public static final String AURA_MAP = "aura_map";
     public static final String CONNECTED_LIST = "connected_list";
@@ -81,10 +82,7 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
         this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
     }
 
-    /**
-     * @param target BlockPos of the target block
-     * @return true if the current node con connect
-     */
+    @SuppressWarnings("deprecation")
     public boolean canAuraFlow(BlockPos target) {
         Block block = world.getBlockState(target).getBlock();
 
@@ -94,7 +92,7 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
     }
 
     public boolean isAuraTile(BlockPos target) {
-        return world.getTileEntity(target) instanceof IBaseAuraNode;
+        return world.getTileEntity(target) instanceof IBaseAuraNodeTile;
     }
 
     public void connectNode(BlockPos target) {
@@ -130,7 +128,7 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
                 default:
                     int power = (int) (sourcePos.getY() - this.pos.getY()) * auraInput;
                     if (power > 0) {
-                        recievePower(power);
+                        receivePower(power);
                     }
             }
         }
@@ -150,6 +148,9 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
         return false;
     }
 
+    /**
+     * Used to distribute aura from one Aura Node to another
+     */
     public void distributeAura() {
         //empty sentNodesMap
         this.sentNodesMap.clear();
@@ -208,7 +209,7 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
         }
     }
 
-    public void recievePower(int power) {
+    public void receivePower(int power) {
         auraEnergy += power;
     }
 
@@ -247,6 +248,9 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
         }
     }
 
+    /**
+     * Intended to be used as an indicator to when and how much aura is being transferred from this node
+     */
     @OnlyIn(Dist.CLIENT)
     public void transferAuraParticles() {
         for(Map.Entry<BlockPos, String> target : sentNodesMap.entrySet()) {
@@ -256,28 +260,25 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
     }
 
     /**
-     * Used to render the amount of Aura on the screen
+     * Used to render the amount of Aura on the screen when the cursor is on this node
      *
-     * @param mc
+     * @param minecraft
      */
     @OnlyIn(Dist.CLIENT)
-    public void renderHUD(Minecraft mc) {
-        String output = "";
+    public void renderHUD(Minecraft minecraft) {
+        ArrayList<String> list = new ArrayList<>();
 
-        for (Map.Entry<IAuraColor, Integer> entry : auraMap.entrySet()) {
-            if (entry.getValue() != 0) {
-                output += entry.getKey().capitalizedName() + ": " + entry.getValue();
+        for(IAuraColor color : IAuraColor.values()) {
+            int auraAmount = auraMap.get(color);
+            if(auraAmount > 0) {
+                list.add(color.capitalizedName() + ": " + auraAmount);
             }
         }
-        if (output.length() == 0) {
-            output = "No Aura";
+        if (list.size() == 0) {
+            list.add("No Aura");
         }
 
-        //int width = mc.fontRenderer.getStringWidth(output) / 2;
-        int x = mc.getMainWindow().getScaledWidth() / 2;
-        int y = mc.getMainWindow().getScaledHeight() / 2;
-
-        mc.fontRenderer.drawStringWithShadow(output, x + 10, y, 0xFFFFFF);
+        HUDHandler.printAuraOnScreen(minecraft, list);
     }
 
     @Override
@@ -290,7 +291,6 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
         connectedNodesList.clear();
         this.connectedNodesList = (ArrayList<BlockPos>) CONNECTED_LIST_NBT.read(tag);
         sentNodesMap.clear();
-        //this.sentNodesMap = (HashMap<BlockPos, Integer>) SENT_AURA_NBT.read(tag);
         this.sentNodesMap = (HashMap<BlockPos, String>) SENT_AURA_NBT.read(tag);
     }
 

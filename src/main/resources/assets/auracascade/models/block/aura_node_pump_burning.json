@@ -1,10 +1,10 @@
 {
   "parent": "block/block",
   "textures": {
-    "particle": "auracascade:block/node_pump_burning_side",
-    "top": "auracascade:block/node_pump_burning_top",
-    "bottom": "auracascade:block/node_pump_burning_bottom",
-    "side": "auracascade:block/node_pump_burning_side"
+    "particle": "auracascade:block/aura_node_pump_burning_side",
+    "top": "auracascade:block/aura_node_pump_burning_top",
+    "bottom": "auracascade:block/aura_node_pump_burning_bottom",
+    "side": "auracascade:block/aura_node_pump_burning_side"
   },
   "elements": [
     {

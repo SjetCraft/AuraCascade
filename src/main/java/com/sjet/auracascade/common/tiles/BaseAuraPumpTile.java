@@ -1,8 +1,9 @@
 package com.sjet.auracascade.common.tiles;
 
+import com.sjet.auracascade.client.HUDHandler;
 import com.sjet.auracascade.client.particles.ParticleHelper;
 import com.sjet.auracascade.common.api.IAuraColor;
-import com.sjet.auracascade.common.api.IBaseAuraNodePump;
+import com.sjet.auracascade.common.api.IBaseAuraNodePumpTile;
 import com.sjet.auracascade.common.util.Common;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;
@@ -18,7 +19,7 @@ import java.util.Map;
 import static com.sjet.auracascade.AuraCascade.MAX_DISTANCE;
 import static com.sjet.auracascade.AuraCascade.TICKS_PER_SECOND;
 
-public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAuraNodePump {
+public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAuraNodePumpTile {
 
     protected int pumpPower;
     protected int pumpSpeed;
@@ -126,7 +127,7 @@ public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAura
     @OnlyIn(Dist.CLIENT)
     public void transferAuraParticles() {
         for(Map.Entry<BlockPos, String> target : sentNodesMap.entrySet()) {
-            String array[]  = target.getValue().split(";");
+            String[] array = target.getValue().split(";");
             ParticleHelper.transferAuraParticles(this.world, this.pos, target.getKey(), IAuraColor.WHITE, Integer.parseInt(array[1]));
         }
     }
@@ -134,30 +135,14 @@ public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAura
     /**
      * Used to render the amount of Power and Aura on the screen
      *
-     * @param mc
+     * @param minecraft
      */
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderHUD(Minecraft mc) {
-        String output = "";
-
-        for (Map.Entry<IAuraColor, Integer> entry : auraMap.entrySet()) {
-            if (entry.getValue() != 0) {
-                output += entry.getKey().capitalizedName() + ": " + entry.getValue();
-            }
-        }
-        if (output.length() == 0) {
-            output = "No Aura";
-        }
-
-        //int width = mc.fontRenderer.getStringWidth(output) / 2;
-        int x = mc.getMainWindow().getScaledWidth() / 2;
-        int y = mc.getMainWindow().getScaledHeight() / 2;
-        int lineSpacing = 13;
-
-        String powerOutput = "Power: " + pumpPower;
-        mc.fontRenderer.drawStringWithShadow(powerOutput, x + 10, y -= lineSpacing, 0xFFFFFF);
-        mc.fontRenderer.drawStringWithShadow(output, x + 10, y += lineSpacing, 0xFFFFFF);
+    public void renderHUD(Minecraft minecraft) {
+        super.renderHUD(minecraft);
+        String power = "Power: " + pumpPower;
+        HUDHandler.printPowerOnScreen(minecraft, power);
     }
 
     @Override

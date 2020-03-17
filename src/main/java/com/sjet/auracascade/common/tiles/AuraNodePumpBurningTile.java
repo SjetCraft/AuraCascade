@@ -63,7 +63,6 @@ public class AuraNodePumpBurningTile extends BaseAuraPumpTile {
 
                     addFuel(burnTime, 300);
                     itemConsumed = itemEntity.getPositionVector();
-                    System.out.println("item: " + itemEntity.getPositionVector());
                     item.shrink(1);
                     break;
                 }
