@@ -6,7 +6,6 @@ import com.sjet.auracascade.common.api.IBaseAuraNodePump;
 import com.sjet.auracascade.common.util.Common;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -21,9 +20,8 @@ import static com.sjet.auracascade.AuraCascade.TICKS_PER_SECOND;
 
 public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAuraNodePump {
 
-    private BlockPos nodeUp;
-    private int pumpPower;
-    private int pumpSpeed;
+    protected int pumpPower;
+    protected int pumpSpeed;
 
     public BaseAuraPumpTile(TileEntityType<?> type) {
         super(type);
@@ -64,14 +62,14 @@ public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAura
     public void pump() {
         //empty sentNodesMap
         this.sentNodesMap.clear();
-
-        //early exit if there are no nodes to distribute Aura & if redstone is blocking the node from distributing
-        if (connectedNodesList.isEmpty() || this.world.isBlockPowered(this.pos)) {
-            return;
-        }
-
         if (pumpPower > 0) {
             pumpPower--;
+
+            //early exit if there are no nodes to distribute Aura & if redstone is blocking the node from distributing
+            if (connectedNodesList.isEmpty() || this.world.isBlockPowered(this.pos)) {
+                return;
+            }
+
             //iterate over the aura
             for (Map.Entry<IAuraColor, Integer> colorList : auraMap.entrySet()) {
                 IAuraColor color = colorList.getKey();
@@ -127,8 +125,9 @@ public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAura
     @Override
     @OnlyIn(Dist.CLIENT)
     public void transferAuraParticles() {
-        for (Map.Entry<BlockPos, Integer> target : sentNodesMap.entrySet()) {
-            ParticleHelper.transferAuraParticles(this.world, this.pos, target.getKey(), IAuraColor.BLACK, target.getValue());
+        for(Map.Entry<BlockPos, String> target : sentNodesMap.entrySet()) {
+            String array[]  = target.getValue().split(";");
+            ParticleHelper.transferAuraParticles(this.world, this.pos, target.getKey(), IAuraColor.WHITE, Integer.parseInt(array[1]));
         }
     }
 

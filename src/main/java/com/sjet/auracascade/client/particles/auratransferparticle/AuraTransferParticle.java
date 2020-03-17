@@ -24,7 +24,7 @@ public class AuraTransferParticle extends SpriteTexturedParticle {
         motionY = ySpeed;
         motionZ = zSpeed;
 
-        float offset = (float) (Math.random() * 0.3D);
+        float offset = (float) (Math.random() * 0.2D);
         red -= offset;
         blue -= offset;
         green -= offset;

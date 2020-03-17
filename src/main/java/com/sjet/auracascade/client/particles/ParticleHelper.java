@@ -4,7 +4,9 @@ import com.sjet.auracascade.client.particles.auratransferparticle.AuraTransferPa
 import com.sjet.auracascade.client.particles.nodeconnectionparticle.NodeConnectionParticleData;
 import com.sjet.auracascade.common.api.IAuraColor;
 import com.sjet.auracascade.common.util.Common;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -41,7 +43,7 @@ public class ParticleHelper {
 
             int randomAge = 20 + (rand.nextInt(6));
 
-            NodeConnectionParticleData particle = NodeConnectionParticleData.nodeConnectionParticle( 0, 0, 0, randomSize, randomAge);
+            NodeConnectionParticleData particle = NodeConnectionParticleData.nodeConnectionParticle(0, 0, 0, randomSize, randomAge);
             world.addParticle(particle, sourceX, sourceY, sourceZ, deltaX * rand.nextDouble(), deltaY * rand.nextDouble(), deltaZ * rand.nextDouble());
 
             //moves the particle generation by delta distance
@@ -83,10 +85,10 @@ public class ParticleHelper {
                 float randomSize = 0.05f + (0.075f - 0.15f) * rand.nextFloat();
                 int randomAge = 14 + (rand.nextInt(5));
                 //spreads the particle source across the range
-                double range = rand.nextDouble() * (0.02)  * (rand.nextFloat() > 0.5 ? 1 : -1);
+                double range = rand.nextDouble() * (0.02) * (rand.nextFloat() > 0.5 ? 1 : -1);
 
                 //makes aura 'fall' faster
-                if(deltaY < 0) {
+                if (deltaY < 0) {
                     deltaYspeed = 2;
                 }
 
@@ -104,5 +106,18 @@ public class ParticleHelper {
                 sourceZ += deltaZ;
             }
         }
+    }
+
+    public static void pumpTransferParticles(World world, BlockPos source, BlockPos target, IAuraColor color, int auraAmount) {
+
+    }
+
+    public static void itemBurningParticles(World world, Vec3d source) {
+        for (int i = 0; i < 50; i++) {
+            Random rand = new Random();
+            //addParticle(particle, xPos, yPos, zPos, xSpeed, ySpeed, zSpeed)
+            world.addParticle(ParticleTypes.FLAME, source.x, source.y, source.z, (rand.nextDouble() - .5D) / 16, rand.nextDouble() / 16, (rand.nextDouble() - .5) / 16);
+        }
+
     }
 }

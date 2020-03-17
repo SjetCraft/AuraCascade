@@ -51,7 +51,8 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
     };
 
     protected ArrayList<BlockPos> connectedNodesList = new ArrayList<>();
-    protected HashMap<BlockPos, Integer> sentNodesMap = new HashMap<>();
+    //Using a String for the IAuraColor and Integer because Java doesn't have Tuples or Triples and saving custom data structures to NBT is a pain
+    protected HashMap<BlockPos, String> sentNodesMap = new HashMap<>();
 
     public int auraEnergy;
 
@@ -127,7 +128,10 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
         if (color.canTransferVertical() && this.pos.getY() < sourcePos.getY()) {
             switch (color) {
                 default:
-                    auraEnergy += auraInput;
+                    int power = (int) (sourcePos.getY() - this.pos.getY()) * auraInput;
+                    if (power > 0) {
+                        recievePower(power);
+                    }
             }
         }
         this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
@@ -199,9 +203,13 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
             BaseAuraTile targetNode = (BaseAuraTile) world.getTileEntity(target);
             targetNode.addAura(this.pos, color, aura);
             this.removeAura(color, aura);
-            // add node to the sentNodesMap to use for rendering
-            sentNodesMap.put(target, aura);
+            // add node to the sentNodesMap to use for rendering, ";" for split
+            sentNodesMap.put(target, "" + color.name() + ";" + aura);
         }
+    }
+
+    public void recievePower(int power) {
+        auraEnergy += power;
     }
 
     /**
@@ -241,8 +249,9 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
 
     @OnlyIn(Dist.CLIENT)
     public void transferAuraParticles() {
-        for(Map.Entry<BlockPos, Integer> target : sentNodesMap.entrySet()) {
-            ParticleHelper.transferAuraParticles(this.world, this.pos, target.getKey(), IAuraColor.WHITE, target.getValue());
+        for(Map.Entry<BlockPos, String> target : sentNodesMap.entrySet()) {
+            String array[]  = target.getValue().split(";");
+            ParticleHelper.transferAuraParticles(this.world, this.pos, target.getKey(), IAuraColor.valueOf(array[0]), Integer.parseInt(array[1]));
         }
     }
 
@@ -281,7 +290,8 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
         connectedNodesList.clear();
         this.connectedNodesList = (ArrayList<BlockPos>) CONNECTED_LIST_NBT.read(tag);
         sentNodesMap.clear();
-        this.sentNodesMap = (HashMap<BlockPos, Integer>) SENT_AURA_NBT.read(tag);
+        //this.sentNodesMap = (HashMap<BlockPos, Integer>) SENT_AURA_NBT.read(tag);
+        this.sentNodesMap = (HashMap<BlockPos, String>) SENT_AURA_NBT.read(tag);
     }
 
     @Override
@@ -330,11 +340,11 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNode, 
             nbt -> nbt.getInt("aura_amount_now")
     );
 
-    private NBTMapHelper<BlockPos, Integer> SENT_AURA_NBT = new NBTMapHelper<BlockPos, Integer>(
+    private NBTMapHelper<BlockPos, String> SENT_AURA_NBT = new NBTMapHelper<BlockPos, String>(
             SENT_AURA,
             (nbt, pos) -> nbt.put("position", NBTUtil.writeBlockPos(pos)),
             nbt -> NBTUtil.readBlockPos(nbt.getCompound("position")),
-            (nbt, auraAmount) -> nbt.putInt("aura_amount_sent", (int) auraAmount),
-            nbt -> nbt.getInt("aura_amount_sent")
+            (nbt, colorAndAmount) -> nbt.putString("color_and_amount", colorAndAmount),
+            nbt -> nbt.getString("color_and_amount")
     );
 }
