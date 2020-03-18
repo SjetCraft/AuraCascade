@@ -60,12 +60,4 @@ public final class HUDHandler {
             y += lineSpacing;
         }
     }
-
-    public static void printPowerOnScreen(Minecraft minecraft, String power) {
-        int x = minecraft.getMainWindow().getScaledWidth() / 2;
-        int y = minecraft.getMainWindow().getScaledHeight() / 2;
-
-        x -= (10 + (power.length() * 5.5));
-        minecraft.fontRenderer.drawStringWithShadow(power, x, y, 0xFFFFFF);
-    }
 }

@@ -98,19 +98,18 @@ public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAura
     }
 
     /**
-     * Replace method with a stub to not allow the pump to distribute aura
-     */
-    @Override
-    public void distributeAura() {
-    }
-
-    /**
      * @param target
      * @return true if the target node is higher than the current node
      */
     @Override
     public boolean canTransfer(BlockPos target) {
-        return pos.getY() < target.getY();
+        //return pos.getY() < target.getY();
+        return false;
+    }
+
+    @Override
+    public boolean canReceive(BlockPos source) {
+        return source.getY() <= getPos().getY() && super.canReceive(source);
     }
 
     @Override
@@ -140,9 +139,20 @@ public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAura
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderHUD(Minecraft minecraft) {
-        super.renderHUD(minecraft);
-        String power = "Power: " + pumpPower;
-        HUDHandler.printPowerOnScreen(minecraft, power);
+        ArrayList<String> list = new ArrayList<>();
+        list.add("Power: " + pumpPower);
+
+        for (IAuraColor color : IAuraColor.values()) {
+            int auraAmount = auraMap.get(color);
+            if (auraAmount > 0) {
+                list.add(color.capitalizedName() + ": " + auraAmount);
+            }
+        }
+        if (list.size() == 1) {
+            list.add("No Aura");
+        }
+
+        HUDHandler.printAuraOnScreen(minecraft, list);
     }
 
     @Override

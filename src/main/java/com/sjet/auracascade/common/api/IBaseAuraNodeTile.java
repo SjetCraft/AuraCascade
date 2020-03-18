@@ -88,6 +88,12 @@ public interface IBaseAuraNodeTile {
     boolean canTransfer(BlockPos target);
 
     /**
+     * @param source the source which is sending aura
+     * @return whether the IBaseAuraNodeTile can receive aura
+     */
+    boolean canReceive(BlockPos source);
+
+    /**
      * Used for rendering information about the IBaseAuraNodeTile to the screen on mouse-over
      *
      * @param minecraft

@@ -1,6 +1,6 @@
 package com.sjet.auracascade.common.blocks;
 
-import com.sjet.auracascade.common.tiles.BaseAuraPumpTile;
+import com.sjet.auracascade.common.tiles.BaseAuraTile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -19,10 +19,10 @@ import net.minecraft.world.World;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class BaseAuraPump extends Block {
+public abstract class BaseAuraNode extends Block {
     private static final VoxelShape NODE = makeCuboidShape(4, 4, 4, 12, 12, 12);
 
-    public BaseAuraPump(Properties properties) {
+    public BaseAuraNode(Block.Properties properties) {
         super(properties);
     }
 
@@ -40,17 +40,28 @@ public abstract class BaseAuraPump extends Block {
         return NODE;
     }
 
-    public abstract void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack);
-
+    @SuppressWarnings("deprecation")
     @Override
     public boolean eventReceived(BlockState blockState, World world, BlockPos blockPos, int num1, int num2) {
         return true;
     }
 
-    @SuppressWarnings("deprecation")
+    @Override
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        BaseAuraTile node = (BaseAuraTile) worldIn.getTileEntity(pos);
+
+        node.findNodes();
+        node.getWorld().notifyBlockUpdate(node.getPos(), node.getWorld().getBlockState(node.getPos()), node.getWorld().getBlockState(node.getPos()), 2);
+        //only trigger particles on the client
+        if (worldIn.isRemote) {
+            node.connectParticles();
+        }
+    }
+
+        @SuppressWarnings("deprecation")
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        BaseAuraPumpTile node = (BaseAuraPumpTile) world.getTileEntity(pos);
+        BaseAuraTile node = (BaseAuraTile) world.getTileEntity(pos);
         ItemStack heldItem = player.getHeldItem(handIn);
 
         if (!heldItem.isEmpty()) {

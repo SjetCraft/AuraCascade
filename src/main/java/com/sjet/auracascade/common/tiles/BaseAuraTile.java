@@ -123,13 +123,11 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNodeTi
         newAura += auraInput;
         auraMap.replace(color, newAura);
 
-        if (color.canTransferVertical() && this.pos.getY() < sourcePos.getY()) {
-            switch (color) {
-                default:
-                    int power = (int) (sourcePos.getY() - this.pos.getY()) * auraInput;
-                    if (power > 0) {
-                        receivePower(power);
-                    }
+        if (this.pos.getY() < sourcePos.getY()) {
+            int power = (sourcePos.getY() - this.pos.getY()) * auraInput;
+
+            if (power > 0) {
+                receivePower(power);
             }
         }
         this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
@@ -162,8 +160,8 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNodeTi
 
         int totalWeight = 0;
 
-        for(BlockPos nodes : connectedNodesList) {
-            if( canTransfer(nodes) ) {
+        for (BlockPos nodes : connectedNodesList) {
+            if (canTransfer(nodes)) {
                 totalWeight += getWeight(nodes);
             }
         }
@@ -193,9 +191,7 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNodeTi
                 }
             }
         }
-
         this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
-        this.markDirty();
     }
 
     public void transferAura(BlockPos target, IAuraColor color, int aura) {
@@ -218,16 +214,14 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNodeTi
      * @return true if the target node is below or on the same Y level as this current node
      */
     public boolean canTransfer(BlockPos target) {
-        boolean internal = pos.getY() > target.getY() || pos.getY() == target.getY();
-        if (pos.getY() > target.getY()) {
+        boolean isLower = target.getY() < this.pos.getY();
+        boolean isSame = target.getY() == this.pos.getY();
 
-            TileEntity tile = world.getTileEntity(target);
+        return world.getTileEntity(target) instanceof BaseAuraTile && (isSame || isLower) && ((BaseAuraTile) world.getTileEntity(target)).canReceive(this.pos);
+    }
 
-            if (tile instanceof BaseAuraPumpTile) {
-                return false;
-            }
-        }
-        return internal;
+    public boolean canReceive(BlockPos source) {
+        return true;
     }
 
     /**
@@ -243,7 +237,7 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNodeTi
      */
     @OnlyIn(Dist.CLIENT)
     public void connectParticles() {
-        for(BlockPos target: connectedNodesList) {
+        for (BlockPos target : connectedNodesList) {
             ParticleHelper.sendConnectionParticlesToTarget(world, this.pos, target);
         }
     }
@@ -253,8 +247,8 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNodeTi
      */
     @OnlyIn(Dist.CLIENT)
     public void transferAuraParticles() {
-        for(Map.Entry<BlockPos, String> target : sentNodesMap.entrySet()) {
-            String array[]  = target.getValue().split(";");
+        for (Map.Entry<BlockPos, String> target : sentNodesMap.entrySet()) {
+            String array[] = target.getValue().split(";");
             ParticleHelper.transferAuraParticles(this.world, this.pos, target.getKey(), IAuraColor.valueOf(array[0]), Integer.parseInt(array[1]));
         }
     }
@@ -268,9 +262,9 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNodeTi
     public void renderHUD(Minecraft minecraft) {
         ArrayList<String> list = new ArrayList<>();
 
-        for(IAuraColor color : IAuraColor.values()) {
+        for (IAuraColor color : IAuraColor.values()) {
             int auraAmount = auraMap.get(color);
-            if(auraAmount > 0) {
+            if (auraAmount > 0) {
                 list.add(color.capitalizedName() + ": " + auraAmount);
             }
         }

@@ -1,9 +1,11 @@
 package com.sjet.auracascade.setup;
 
 import com.sjet.auracascade.AuraCascade;
+import com.sjet.auracascade.common.blocks.AuraNodeCapacitor;
 import com.sjet.auracascade.common.blocks.AuraNode;
 import com.sjet.auracascade.common.blocks.AuraNodePumpBurning;
 import com.sjet.auracascade.common.blocks.AuraNodePumpCreative;
+import com.sjet.auracascade.common.tiles.AuraNodeCapacitorTile;
 import com.sjet.auracascade.common.tiles.AuraNodePumpBurningTile;
 import com.sjet.auracascade.common.tiles.AuraNodePumpCreativeTile;
 import com.sjet.auracascade.common.tiles.AuraNodeTile;
@@ -25,6 +27,7 @@ public class CommonSetup {
         e.getRegistry().register(new AuraNode());
         e.getRegistry().register(new AuraNodePumpCreative());
         e.getRegistry().register(new AuraNodePumpBurning());
+        e.getRegistry().register(new AuraNodeCapacitor());
     }
 
     @SubscribeEvent
@@ -32,6 +35,7 @@ public class CommonSetup {
         e.getRegistry().register(new BlockItem(AuraNode.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_node"));
         e.getRegistry().register(new BlockItem(AuraNodePumpCreative.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_node_pump_creative"));
         e.getRegistry().register(new BlockItem(AuraNodePumpBurning.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_node_pump_burning"));
+        e.getRegistry().register(new BlockItem(AuraNodeCapacitor.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_node_capacitor"));
 
         e.getRegistry().register(new AuraCrystalWhiteItem());
     }
@@ -41,6 +45,7 @@ public class CommonSetup {
         e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraNodeTile(), AuraNode.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node"));
         e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraNodePumpCreativeTile(), AuraNodePumpCreative.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pump_creative"));
         e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraNodePumpBurningTile(), AuraNodePumpBurning.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pump_burning"));
+        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraNodeCapacitorTile(), AuraNodeCapacitor.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_capacitor"));
     }
 
     public static <T extends IForgeRegistryEntry<T>> void register(IForgeRegistry<T> reg, IForgeRegistryEntry<T> thing, ResourceLocation name) {

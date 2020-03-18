@@ -1,6 +1,10 @@
 package com.sjet.auracascade.common.util;
 
+import com.sjet.auracascade.common.api.IAuraColor;
 import net.minecraft.util.math.BlockPos;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Common {
 
@@ -23,5 +27,13 @@ public class Common {
      */
     public static BlockPos normalize(BlockPos source) {
         return new BlockPos(source.getX() + 0.5D, source.getY() + 0.5D, source.getZ() + 0.5D);
+    }
+
+    public static int getTotalAura(HashMap<IAuraColor, Integer> auraMap) {
+        int output = 0;
+        for (Map.Entry<IAuraColor, Integer> colorList : auraMap.entrySet()) {
+            output += colorList.getValue();
+        }
+        return output;
     }
 }
