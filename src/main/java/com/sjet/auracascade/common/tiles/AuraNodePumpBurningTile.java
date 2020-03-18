@@ -44,26 +44,26 @@ public class AuraNodePumpBurningTile extends BaseAuraPumpTile {
 
     public void findFuelAndAdd() {
         itemConsumed = null;
-        if(pumpPower <= 0) {
+        if(pumpTime <= 0) {
             int range = 3;
             List<ItemEntity> nearbyItems = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(pos.add(-range, -range, -range), pos.add(range, range, range)));
 
             //iterate through the nearby items
             for (ItemEntity itemEntity : nearbyItems) {
-                ItemStack item = itemEntity.getItem();
-                if (itemEntity.isAlive() && item.getBurnTime() != 0) {
+                ItemStack itemStack = itemEntity.getItem();
+                if (itemEntity.isAlive() && itemStack.getBurnTime() != 0) {
 
                     int burnTime;
                     //burnTime is -1 for vanilla
-                    if (item.getBurnTime() < 0) {
-                        burnTime = ForgeHooks.getBurnTime(item);
+                    if (itemStack.getBurnTime() < 0) {
+                        burnTime = ForgeHooks.getBurnTime(itemStack);
                     } else {
-                      burnTime = item.getBurnTime();
+                      burnTime = itemStack.getBurnTime();
                     }
 
                     addFuel(burnTime, 300);
                     itemConsumed = itemEntity.getPositionVector();
-                    item.shrink(1);
+                    itemStack.shrink(1);
                     break;
                 }
             }

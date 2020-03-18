@@ -258,18 +258,20 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNodeTi
      *
      * @param minecraft
      */
+    @Override
     @OnlyIn(Dist.CLIENT)
     public void renderHUD(Minecraft minecraft) {
         ArrayList<String> list = new ArrayList<>();
+        list.add("Aura Stored");
 
         for (IAuraColor color : IAuraColor.values()) {
             int auraAmount = auraMap.get(color);
             if (auraAmount > 0) {
-                list.add(color.capitalizedName() + ": " + auraAmount);
+                list.add("    " + color.capitalizedName() + ": " + auraAmount);
             }
         }
-        if (list.size() == 0) {
-            list.add("No Aura");
+        if (list.size() == 1) {
+            list.set(0, "No Aura");
         }
 
         HUDHandler.printAuraOnScreen(minecraft, list);

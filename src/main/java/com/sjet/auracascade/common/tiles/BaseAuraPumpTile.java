@@ -21,8 +21,8 @@ import static com.sjet.auracascade.AuraCascade.TICKS_PER_SECOND;
 
 public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAuraNodePumpTile {
 
+    protected int pumpTime;
     protected int pumpPower;
-    protected int pumpSpeed;
 
     public BaseAuraPumpTile(TileEntityType<?> type) {
         super(type);
@@ -52,24 +52,24 @@ public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAura
         this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
     }
 
-    public void addFuel(int time, int speed) {
-        if (time * speed > pumpSpeed * pumpPower) {
-            pumpPower = time;
-            pumpSpeed = speed;
+    public void addFuel(int time, int power) {
+        if (time * power > pumpPower * pumpTime) {
+            pumpTime = time;
+            pumpPower = power;
         }
-        this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
     }
 
     public void pump() {
         //empty sentNodesMap
         this.sentNodesMap.clear();
-        if (pumpPower > 0) {
-            pumpPower--;
 
-            //early exit if there are no nodes to distribute Aura & if redstone is blocking the node from distributing
-            if (connectedNodesList.isEmpty() || this.world.isBlockPowered(this.pos)) {
-                return;
-            }
+        //early exit if there are no nodes to distribute Aura & if redstone is blocking the node from distributing
+        if (connectedNodesList.isEmpty() || this.world.isBlockPowered(this.pos)) {
+            return;
+        }
+
+        if (pumpTime > 0) {
+            pumpTime--;
 
             //iterate over the aura
             for (Map.Entry<IAuraColor, Integer> colorList : auraMap.entrySet()) {
@@ -80,7 +80,7 @@ public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAura
                 for (BlockPos target : connectedNodesList) {
 
                     int distance = (int) Common.getDistance(this.pos, target);
-                    int quantity = pumpSpeed / distance;
+                    int quantity = pumpPower / distance;
 
                     //only pump aura that is in the node and if there is an amount to pump
                     if (currentAura > 0 && quantity > 0) {
@@ -93,7 +93,6 @@ public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAura
                     }
                 }
             }
-            this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
         }
     }
 
@@ -103,7 +102,6 @@ public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAura
      */
     @Override
     public boolean canTransfer(BlockPos target) {
-        //return pos.getY() < target.getY();
         return false;
     }
 
@@ -117,6 +115,7 @@ public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAura
         if (!world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 1) {
             findNodes();
             pump();
+            this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
         } else if (world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 2) {
             transferAuraParticles();
         }
@@ -140,17 +139,20 @@ public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAura
     @OnlyIn(Dist.CLIENT)
     public void renderHUD(Minecraft minecraft) {
         ArrayList<String> list = new ArrayList<>();
-        list.add("Power: " + pumpPower);
 
+        list.add("Aura Stored");
         for (IAuraColor color : IAuraColor.values()) {
             int auraAmount = auraMap.get(color);
             if (auraAmount > 0) {
-                list.add(color.capitalizedName() + ": " + auraAmount);
+                list.add("    " + color.capitalizedName() + ": " + auraAmount);
             }
         }
         if (list.size() == 1) {
-            list.add("No Aura");
+            list.set(0, "No Aura");
         }
+
+        list.add("Time left: " + pumpTime + " seconds");
+        list.add("Power: " + pumpPower + " per second");
 
         HUDHandler.printAuraOnScreen(minecraft, list);
     }
@@ -158,15 +160,15 @@ public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAura
     @Override
     public void read(CompoundNBT tag) {
         super.read(tag);
+        pumpTime = tag.getInt("pumpTime");
         pumpPower = tag.getInt("pumpPower");
-        pumpSpeed = tag.getInt("pumpSpeed");
     }
 
     @Override
     public CompoundNBT write(CompoundNBT tag) {
         CompoundNBT nbt = super.write(tag);
+        tag.putInt("pumpTime", pumpTime);
         tag.putInt("pumpPower", pumpPower);
-        tag.putInt("pumpSpeed", pumpSpeed);
         return nbt;
     }
 }
