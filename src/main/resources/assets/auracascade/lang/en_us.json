@@ -1,8 +1,9 @@
 {
   "item.auracascade.aura_crystal_white": "White Aura Crystal",
   "block.auracascade.aura_node": "Aura Node",
+  "block.auracascade.aura_node_pump_burning": "Burning Aura Pump",
+  "block.auracascade.aura_node_pump_light": "Illumination Aura Pump",
   "block.auracascade.aura_node_pump_creative": "Creative Aura Pump",
-  "block.auracascade.aura_node_pump_burning": "Burning Aura Node",
   "block.auracascade.aura_node_capacitor": "Aura Capacitor",
 
   "_comment": "Creative Tabs",

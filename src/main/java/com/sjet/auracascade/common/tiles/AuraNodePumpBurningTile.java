@@ -42,6 +42,7 @@ public class AuraNodePumpBurningTile extends BaseAuraPumpTile {
         }
     }
 
+    @Override
     public void findFuelAndAdd() {
         itemConsumed = null;
         if(pumpTime <= 0) {
@@ -67,7 +68,6 @@ public class AuraNodePumpBurningTile extends BaseAuraPumpTile {
                     break;
                 }
             }
-            this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
         }
     }
 
@@ -91,9 +91,9 @@ public class AuraNodePumpBurningTile extends BaseAuraPumpTile {
     public void read(CompoundNBT tag) {
         super.read(tag);
 
-        double x = tag.getFloat("itemConsumedX");
-        double y = tag.getFloat("itemConsumedY");
-        double z = tag.getFloat("itemConsumedZ");
+        double x = tag.getDouble("itemConsumedX");
+        double y = tag.getDouble("itemConsumedY");
+        double z = tag.getDouble("itemConsumedZ");
         Vec3d read = new Vec3d(x, y, z);
         if (read != new Vec3d(0,0,0)) {
             itemConsumed = read;

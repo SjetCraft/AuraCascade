@@ -121,6 +121,8 @@ public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAura
         }
     }
 
+    public abstract void findFuelAndAdd();
+
     @Override
     @OnlyIn(Dist.CLIENT)
     public void transferAuraParticles() {

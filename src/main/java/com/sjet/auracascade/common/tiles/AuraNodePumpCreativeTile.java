@@ -33,6 +33,9 @@ public class AuraNodePumpCreativeTile extends BaseAuraPumpTile {
     }
 
     @Override
+    public void findFuelAndAdd() {}
+
+    @Override
     public void transferAuraParticles() {
         // Get a random color from the HashMap.
         Object[] colorArray = auraMap.keySet().toArray();
