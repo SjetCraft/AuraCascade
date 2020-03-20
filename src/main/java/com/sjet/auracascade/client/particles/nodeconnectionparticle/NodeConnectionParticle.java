@@ -1,24 +1,17 @@
 package com.sjet.auracascade.client.particles.nodeconnectionparticle;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class NodeConnectionParticle extends SpriteTexturedParticle {
     private double sourceX;
     private double sourceY;
     private double sourceZ;
-    private double targetX;
-    private double targetY;
-    private double targetZ;
     private IAnimatedSprite spriteSet;
 
     public NodeConnectionParticle(World world, double sourceX, double sourceY, double sourceZ,
-                                  double targetX, double targetY, double targetZ,
                                   double xSpeed, double ySpeed, double zSpeed, float size, float maxAge,
                                   IAnimatedSprite spriteSet) {
         super(world, sourceX, sourceY, sourceZ);
@@ -45,9 +38,6 @@ public class NodeConnectionParticle extends SpriteTexturedParticle {
         this.sourceX = sourceX;
         this.sourceY = sourceY;
         this.sourceZ = sourceZ;
-        this.targetX = targetX;
-        this.targetY = targetY;
-        this.targetZ = targetZ;
         this.canCollide = false;
 
         this.spriteSet = spriteSet;
@@ -64,11 +54,6 @@ public class NodeConnectionParticle extends SpriteTexturedParticle {
         motionX += 0.02 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
         motionY += 0.02 * rand.nextFloat() * (rand.nextFloat() > 0.3 ? 1 : -1);
         motionZ += 0.02 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
-    }
-
-    @Override
-    public void renderParticle(IVertexBuilder p_225606_1_, ActiveRenderInfo p_225606_2_, float p_225606_3_) {
-        super.renderParticle(p_225606_1_, p_225606_2_, p_225606_3_);
     }
 
     @Override

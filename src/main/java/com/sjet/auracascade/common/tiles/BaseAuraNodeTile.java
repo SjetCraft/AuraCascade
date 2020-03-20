@@ -32,7 +32,7 @@ import java.util.Map;
 
 import static com.sjet.auracascade.AuraCascade.MAX_DISTANCE;
 
-public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNodeTile, ITickableTileEntity {
+public abstract class BaseAuraNodeTile extends TileEntity implements IBaseAuraNodeTile, ITickableTileEntity {
 
     public static final String AURA_MAP = "aura_map";
     public static final String CONNECTED_LIST = "connected_list";
@@ -57,7 +57,7 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNodeTi
 
     public int auraEnergy;
 
-    public BaseAuraTile(TileEntityType<?> type) {
+    public BaseAuraNodeTile(TileEntityType<?> type) {
         super(type);
     }
 
@@ -97,7 +97,7 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNodeTi
 
     public void connectNode(BlockPos target) {
         if (isAuraTile(target) && world.getTileEntity(target) != this) {
-            BaseAuraTile otherNode = (BaseAuraTile) world.getTileEntity(target);
+            BaseAuraNodeTile otherNode = (BaseAuraNodeTile) world.getTileEntity(target);
 
             //add the found node this this node's connected Nodes list
             this.connectedNodesList.add(otherNode.getPos());
@@ -161,7 +161,7 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNodeTi
         int totalWeight = 0;
 
         for (BlockPos nodes : connectedNodesList) {
-            if (canTransfer(nodes)) {
+            if (canTransfer(nodes, IAuraColor.WHITE)) {
                 totalWeight += getWeight(nodes);
             }
         }
@@ -175,10 +175,10 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNodeTi
             if (colorList.getValue() > 0) {
                 //iterate over each connected node
                 for (BlockPos target : connectedNodesList) {
-                    BaseAuraTile targetNode = (BaseAuraTile) world.getTileEntity(target);
+                    BaseAuraNodeTile targetNode = (BaseAuraNodeTile) world.getTileEntity(target);
                     double factor = getWeight(target) / totalWeight;
 
-                    if (canTransfer(target)) {
+                    if (canTransfer(target, color)) {
                         int auraHere = colorList.getValue();
                         int auraThere = targetNode.auraMap.get(color);
                         int diff = Math.abs(auraHere - auraThere);
@@ -197,7 +197,7 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNodeTi
     public void transferAura(BlockPos target, IAuraColor color, int aura) {
         //only transfer aura if this node has enough to send
         if (aura <= this.auraMap.get(color)) {
-            BaseAuraTile targetNode = (BaseAuraTile) world.getTileEntity(target);
+            BaseAuraNodeTile targetNode = (BaseAuraNodeTile) world.getTileEntity(target);
             targetNode.addAura(this.pos, color, aura);
             this.removeAura(color, aura);
             // add node to the sentNodesMap to use for rendering, ";" for split
@@ -213,14 +213,14 @@ public abstract class BaseAuraTile extends TileEntity implements IBaseAuraNodeTi
      * @param target
      * @return true if the target node is below or on the same Y level as this current node
      */
-    public boolean canTransfer(BlockPos target) {
+    public boolean canTransfer(BlockPos target, IAuraColor color) {
         boolean isLower = target.getY() < this.pos.getY();
         boolean isSame = target.getY() == this.pos.getY();
 
-        return world.getTileEntity(target) instanceof BaseAuraTile && (isSame || isLower) && ((BaseAuraTile) world.getTileEntity(target)).canReceive(this.pos);
+        return world.getTileEntity(target) instanceof BaseAuraNodeTile && (isSame || isLower) && ((BaseAuraNodeTile) world.getTileEntity(target)).canReceive(this.pos, color);
     }
 
-    public boolean canReceive(BlockPos source) {
+    public boolean canReceive(BlockPos source, IAuraColor color) {
         return true;
     }
 

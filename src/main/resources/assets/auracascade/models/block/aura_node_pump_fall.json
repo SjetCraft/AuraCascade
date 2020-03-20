@@ -1,0 +1,24 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "auracascade:block/aura_node_pump_fall_side",
+    "top": "auracascade:block/aura_node_pump_fall_top",
+    "bottom": "auracascade:block/aura_node_pump_fall_bottom",
+    "side": "auracascade:block/aura_node_pump_fall_side"
+  },
+  "elements": [
+    {
+      "name": "aura_node",
+      "from": [ 4, 4, 4 ],
+      "to": [ 12, 12, 12 ],
+      "faces": {
+        "up": { "texture": "#top", "uv": [ 4, 4, 12, 12 ] },
+        "down": { "texture": "#bottom", "uv": [ 4, 4, 12, 12 ] },
+        "north": { "texture": "#side", "uv": [ 4, 4, 12, 12 ] },
+        "south": { "texture": "#side", "uv": [ 4, 4, 12, 12 ] },
+        "west": { "texture": "#side", "uv": [ 4, 4, 12, 12 ] },
+        "east": { "texture": "#side", "uv": [ 4, 4, 12, 12 ] }
+      }
+    }
+  ]
+}

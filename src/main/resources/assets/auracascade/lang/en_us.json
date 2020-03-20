@@ -1,10 +1,17 @@
 {
   "item.auracascade.aura_crystal_white": "White Aura Crystal",
+
+  "_group1": "Aura Nodes",
   "block.auracascade.aura_node": "Aura Node",
+  "block.auracascade.aura_node_capacitor": "Aura Capacitor",
+  "block.auracascade.aura_node_conserve": "Conserving Aura Node",
+
+  "_group2": "Aura Pumps",
   "block.auracascade.aura_node_pump_burning": "Burning Aura Pump",
   "block.auracascade.aura_node_pump_light": "Illumination Aura Pump",
+  "block.auracascade.aura_node_pump_fall": "Momentum Aura Pump",
+  "block.auracascade.aura_node_pump_projectile": "Projectile Aura Pump",
   "block.auracascade.aura_node_pump_creative": "Creative Aura Pump",
-  "block.auracascade.aura_node_capacitor": "Aura Capacitor",
 
   "_comment": "Creative Tabs",
   "itemGroup.auracascade": "Aura Cascade"

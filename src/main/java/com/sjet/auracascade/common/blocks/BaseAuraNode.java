@@ -3,7 +3,7 @@ package com.sjet.auracascade.common.blocks;
 import com.sjet.auracascade.client.particles.ParticleHelper;
 import com.sjet.auracascade.common.api.IBaseAuraCrystalItem;
 import com.sjet.auracascade.common.api.IBaseAuraNodeTile;
-import com.sjet.auracascade.common.tiles.BaseAuraTile;
+import com.sjet.auracascade.common.tiles.BaseAuraNodeTile;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -17,12 +17,10 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,7 +54,7 @@ public abstract class BaseAuraNode extends Block {
 
     @Override
     public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        BaseAuraTile node = (BaseAuraTile) worldIn.getTileEntity(pos);
+        BaseAuraNodeTile node = (BaseAuraNodeTile) worldIn.getTileEntity(pos);
 
         node.findNodes();
         node.getWorld().notifyBlockUpdate(node.getPos(), node.getWorld().getBlockState(node.getPos()), node.getWorld().getBlockState(node.getPos()), 2);
@@ -69,7 +67,7 @@ public abstract class BaseAuraNode extends Block {
     @SuppressWarnings("deprecation")
     @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        BaseAuraTile node = (BaseAuraTile) world.getTileEntity(pos);
+        BaseAuraNodeTile node = (BaseAuraNodeTile) world.getTileEntity(pos);
         ItemStack heldItem = player.getHeldItem(handIn);
 
         if (!heldItem.isEmpty()) {

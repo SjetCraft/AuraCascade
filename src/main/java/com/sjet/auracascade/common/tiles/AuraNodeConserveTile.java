@@ -1,18 +1,20 @@
 package com.sjet.auracascade.common.tiles;
 
 import com.sjet.auracascade.AuraCascade;
+import com.sjet.auracascade.common.api.IAuraColor;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.registries.ObjectHolder;
 
 import static com.sjet.auracascade.AuraCascade.TICKS_PER_SECOND;
 
-public class AuraNodeTile extends BaseAuraNodeTile {
+public class AuraNodeConserveTile extends BaseAuraNodeTile {
 
-    @ObjectHolder(AuraCascade.MODID + ":aura_node")
-    public static final TileEntityType<AuraNodeTile> TYPE_NODE = null;
+    @ObjectHolder(AuraCascade.MODID + ":aura_node_conserve")
+    public static final TileEntityType<AuraNodeConserveTile> TYPE_CONSERVE = null;
 
-    public AuraNodeTile() {
-        super(TYPE_NODE);
+    public AuraNodeConserveTile() {
+        super(TYPE_CONSERVE);
     }
 
     @Override
@@ -24,5 +26,9 @@ public class AuraNodeTile extends BaseAuraNodeTile {
             transferAuraParticles();
         }
     }
-}
 
+    @Override
+    public boolean canTransfer(BlockPos target, IAuraColor color) {
+        return super.canTransfer(target, color) && target.getY() == this.pos.getY();
+    }
+}

@@ -1,10 +1,13 @@
 package com.sjet.auracascade;
 
+import com.sjet.auracascade.client.particles.ModParticles;
 import com.sjet.auracascade.setup.*;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -28,8 +31,13 @@ public class AuraCascade {
     public AuraCascade() {
         CommonSetup commonSetup = new CommonSetup();
 
-        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Block.class, commonSetup::onRegisterBlocks);
-        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(TileEntityType.class, commonSetup::onRegisterTiles);
-        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Item.class, commonSetup::onRegisterItems);
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        bus.addGenericListener(Block.class, commonSetup::onRegisterBlocks);
+        bus.addGenericListener(TileEntityType.class, commonSetup::onRegisterTiles);
+        bus.addGenericListener(Item.class, commonSetup::onRegisterItems);
+
+        MinecraftForge.EVENT_BUS.addListener(EventHandler::onLivingFallEvent);
+        MinecraftForge.EVENT_BUS.addListener(EventHandler::onProjectileImpact);
     }
 }

@@ -1,9 +1,10 @@
-package com.sjet.auracascade.common.tiles;
+package com.sjet.auracascade.common.tiles.pump;
 
 import com.sjet.auracascade.client.HUDHandler;
 import com.sjet.auracascade.client.particles.ParticleHelper;
 import com.sjet.auracascade.common.api.IAuraColor;
 import com.sjet.auracascade.common.api.IBaseAuraNodePumpTile;
+import com.sjet.auracascade.common.tiles.BaseAuraNodeTile;
 import com.sjet.auracascade.common.util.Common;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;
@@ -19,12 +20,12 @@ import java.util.Map;
 import static com.sjet.auracascade.AuraCascade.MAX_DISTANCE;
 import static com.sjet.auracascade.AuraCascade.TICKS_PER_SECOND;
 
-public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAuraNodePumpTile {
+public abstract class BaseAuraNodePumpTile extends BaseAuraNodeTile implements IBaseAuraNodePumpTile {
 
     protected int pumpTime;
     protected int pumpPower;
 
-    public BaseAuraPumpTile(TileEntityType<?> type) {
+    public BaseAuraNodePumpTile(TileEntityType<?> type) {
         super(type);
     }
 
@@ -49,7 +50,6 @@ public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAura
                 blocked = true; //aura can no longer pass through this block as it is a terminating node
             }
         }
-        this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
     }
 
     public void addFuel(int time, int power) {
@@ -101,13 +101,13 @@ public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAura
      * @return true if the target node is higher than the current node
      */
     @Override
-    public boolean canTransfer(BlockPos target) {
+    public boolean canTransfer(BlockPos target, IAuraColor color) {
         return false;
     }
 
     @Override
-    public boolean canReceive(BlockPos source) {
-        return source.getY() <= getPos().getY() && super.canReceive(source);
+    public boolean canReceive(BlockPos source, IAuraColor color) {
+        return source.getY() <= getPos().getY() && super.canReceive(source, color);
     }
 
     @Override
@@ -153,9 +153,12 @@ public abstract class BaseAuraPumpTile extends BaseAuraTile implements IBaseAura
             list.set(0, "No Aura");
         }
 
-        list.add("Time left: " + pumpTime + " seconds");
-        list.add("Power: " + pumpPower + " per second");
-
+        if (pumpTime > 0) {
+            list.add("Time left: " + pumpTime + " seconds");
+            list.add("Power: " + pumpPower + " per second");
+        } else {
+            list.add("No Power");
+        }
         HUDHandler.printAuraOnScreen(minecraft, list);
     }
 

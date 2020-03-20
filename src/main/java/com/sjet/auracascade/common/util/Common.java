@@ -36,4 +36,8 @@ public class Common {
         }
         return output;
     }
+
+    public static Iterable<BlockPos> inRange(BlockPos source, int range) {
+        return BlockPos.getAllInBoxMutable(source.add(-range, -range, -range), source.add(range, range, range));
+    }
 }

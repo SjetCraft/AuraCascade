@@ -1,4 +1,4 @@
-package com.sjet.auracascade.common.tiles;
+package com.sjet.auracascade.common.tiles.pump;
 
 import com.sjet.auracascade.AuraCascade;
 import com.sjet.auracascade.client.HUDHandler;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
 
-public class AuraNodePumpCreativeTile extends BaseAuraPumpTile {
+public class AuraNodePumpCreativeTile extends BaseAuraNodePumpTile {
 
     @ObjectHolder(AuraCascade.MODID + ":aura_node_pump_creative")
     public static final TileEntityType<AuraNodePumpCreativeTile> TYPE_PUMP_CREATIVE = null;

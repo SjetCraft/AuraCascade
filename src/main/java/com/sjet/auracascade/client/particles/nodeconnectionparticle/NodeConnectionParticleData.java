@@ -13,18 +13,12 @@ import java.util.Locale;
 public class NodeConnectionParticleData implements IParticleData {
     public final float size;
     public final float maxAge;
-    public final double targetX;
-    public final double targetY;
-    public final double targetZ;
 
-    public static NodeConnectionParticleData nodeConnectionParticle(double targetX, double targetY, double targetZ, float size, float maxAge) {
-        return new NodeConnectionParticleData(targetX, targetY, targetZ, size, maxAge);
+    public static NodeConnectionParticleData nodeConnectionParticle(float size, float maxAge) {
+        return new NodeConnectionParticleData(size, maxAge);
     }
 
-    private NodeConnectionParticleData(double targetX, double targetY, double targetZ, float size, float maxAge) {
-        this.targetX = targetX;
-        this.targetY = targetY;
-        this.targetZ = targetZ;
+    private NodeConnectionParticleData(float size, float maxAge) {
         this.size = size;
         this.maxAge = maxAge;
     }
@@ -37,9 +31,6 @@ public class NodeConnectionParticleData implements IParticleData {
 
     @Override
     public void write(PacketBuffer buf) {
-        buf.writeDouble(targetX);
-        buf.writeDouble(targetY);
-        buf.writeDouble(targetZ);
         buf.writeFloat(size);
         buf.writeFloat(maxAge);
     }
@@ -56,22 +47,16 @@ public class NodeConnectionParticleData implements IParticleData {
         @Override
         public NodeConnectionParticleData deserialize(@Nonnull ParticleType<NodeConnectionParticleData> type, @Nonnull StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
-            double targetX = reader.readDouble();
-            reader.expect(' ');
-            double targetY = reader.readDouble();
-            reader.expect(' ');
-            double targetZ = reader.readDouble();
-            reader.expect(' ');
             float size = reader.readFloat();
             reader.expect(' ');
             float maxAge = reader.readFloat();
 
-            return new NodeConnectionParticleData(targetX, targetY, targetZ, size, maxAge);
+            return new NodeConnectionParticleData(size, maxAge);
         }
 
         @Override
         public NodeConnectionParticleData read(@Nonnull ParticleType<NodeConnectionParticleData> type, PacketBuffer buf) {
-            return new NodeConnectionParticleData(buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readFloat(), buf.readFloat());
+            return new NodeConnectionParticleData(buf.readFloat(), buf.readFloat());
         }
     };
 }

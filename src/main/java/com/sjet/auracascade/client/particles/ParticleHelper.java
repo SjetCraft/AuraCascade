@@ -43,7 +43,7 @@ public class ParticleHelper {
 
             int randomAge = 20 + (rand.nextInt(6));
 
-            NodeConnectionParticleData particle = NodeConnectionParticleData.nodeConnectionParticle(0, 0, 0, randomSize, randomAge);
+            NodeConnectionParticleData particle = NodeConnectionParticleData.nodeConnectionParticle(randomSize, randomAge);
             world.addParticle(particle, sourceX, sourceY, sourceZ, deltaX * rand.nextDouble(), deltaY * rand.nextDouble(), deltaZ * rand.nextDouble());
 
             //moves the particle generation by delta distance

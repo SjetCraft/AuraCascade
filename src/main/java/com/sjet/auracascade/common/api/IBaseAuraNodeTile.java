@@ -83,15 +83,17 @@ public interface IBaseAuraNodeTile {
 
     /**
      * @param target
+     * @param color
      * @return
      */
-    boolean canTransfer(BlockPos target);
+    boolean canTransfer(BlockPos target, IAuraColor color);
 
     /**
      * @param source the source which is sending aura
-     * @return whether the IBaseAuraNodeTile can receive aura
+     * @param color the aura color
+     * @return whether the IBaseAuraNodeTile can receive the aura
      */
-    boolean canReceive(BlockPos source);
+    boolean canReceive(BlockPos source, IAuraColor color);
 
     /**
      * Used for rendering information about the IBaseAuraNodeTile to the screen on mouse-over

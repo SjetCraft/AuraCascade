@@ -20,7 +20,7 @@ import java.util.Map;
 import static com.sjet.auracascade.AuraCascade.MAX_DISTANCE;
 import static com.sjet.auracascade.AuraCascade.TICKS_PER_SECOND;
 
-public class AuraNodeCapacitorTile extends BaseAuraTile {
+public class AuraNodeCapacitorTile extends BaseAuraNodeTile {
 
     @ObjectHolder(AuraCascade.MODID + ":aura_node_capacitor")
     public static final TileEntityType<AuraNodeCapacitorTile> TYPE_CAPACITOR = null;
@@ -111,14 +111,14 @@ public class AuraNodeCapacitorTile extends BaseAuraTile {
     }
 
     @Override
-    public boolean canTransfer(BlockPos target) {
+    public boolean canTransfer(BlockPos target, IAuraColor color) {
         int totalStorage = Common.getTotalAura(auraMap);
-        return totalStorage >= storageValues[storageValueIndex] && super.canTransfer(target);
+        return totalStorage >= storageValues[storageValueIndex] && super.canTransfer(target, color);
     }
 
     @Override
-    public boolean canReceive(BlockPos source) {
-        return super.canReceive(source) && ticksDisabled == 0;
+    public boolean canReceive(BlockPos source, IAuraColor color) {
+        return super.canReceive(source, color) && ticksDisabled == 0;
     }
 
     @Override

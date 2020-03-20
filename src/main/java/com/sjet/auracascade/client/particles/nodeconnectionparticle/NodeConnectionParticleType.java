@@ -22,7 +22,7 @@ public class NodeConnectionParticleType extends ParticleType<NodeConnectionParti
 
         @Override
         public Particle makeParticle(NodeConnectionParticleData data, World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            NodeConnectionParticle particle = new NodeConnectionParticle(world, x, y, z, data.targetX, data.targetY, data.targetZ, xSpeed, ySpeed, zSpeed, data.size, data.maxAge, spriteSet);
+            NodeConnectionParticle particle = new NodeConnectionParticle(world, x, y, z, xSpeed, ySpeed, zSpeed, data.size, data.maxAge, spriteSet);
             particle.selectSpriteRandomly(this.spriteSet);
             return particle;
         }

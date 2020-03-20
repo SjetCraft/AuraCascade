@@ -1,4 +1,4 @@
-package com.sjet.auracascade.common.tiles;
+package com.sjet.auracascade.common.tiles.pump;
 
 import com.sjet.auracascade.AuraCascade;
 import com.sjet.auracascade.client.particles.ParticleHelper;
@@ -20,7 +20,7 @@ import java.util.Map;
 
 import static com.sjet.auracascade.AuraCascade.TICKS_PER_SECOND;
 
-public class AuraNodePumpBurningTile extends BaseAuraPumpTile {
+public class AuraNodePumpBurningTile extends BaseAuraNodePumpTile {
 
     @ObjectHolder(AuraCascade.MODID + ":aura_node_pump_burning")
     public static final TileEntityType<AuraNodePumpBurningTile> TYPE_PUMP_BURNING = null;

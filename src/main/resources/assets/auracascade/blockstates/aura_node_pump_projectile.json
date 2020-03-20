@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "auracascade:block/aura_node_pump_projectile" }
+  }
+}
