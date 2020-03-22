@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WWW",
+    "WBW",
+    "WWW"
+  ],
+  "key": {
+    "W": {
+      "item": "auracascade:aura_crystal_white"
+    },
+    "B": {
+      "tag": "forge:dyes/blue"
+    }
+  },
+  "result": {
+    "item": "auracascade:aura_crystal_blue",
+    "count": 8
+  }
+}

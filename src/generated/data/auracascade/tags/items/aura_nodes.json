@@ -1,0 +1,16 @@
+{
+    "replace": false,
+    "values": [
+      "auracascade:aura_node",
+      "auracascade:aura_node_pump_burning",
+      "auracascade:aura_node_pump_light",
+      "auracascade:aura_node_pump_light",
+      "auracascade:aura_node_pump_fall",
+      "auracascade:aura_node_pump_projectile",
+      "auracascade:aura_node_pump_creative",
+      "auracascade:aura_node_capacitor",
+      "auracascade:aura_node_conserve",
+      "auracascade:aura_node_manipulator_orange",
+      "auracascade:aura_node_manipulator_black"
+    ]
+  }

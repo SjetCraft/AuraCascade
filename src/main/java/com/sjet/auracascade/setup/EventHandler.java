@@ -14,7 +14,7 @@ public class EventHandler {
     public static void onLivingFallEvent(LivingFallEvent event) {
         BlockPos entityPosition = new BlockPos(event.getEntity());
 
-        for (BlockPos searchPump : Common.inRange(entityPosition, 3)) {
+        for (BlockPos searchPump : Common.getBlocksInRange(entityPosition, 3)) {
             if (event.getEntity().world.getTileEntity(searchPump) instanceof AuraNodePumpFallTile) {
                 ((AuraNodePumpFallTile) event.getEntity().world.getTileEntity(searchPump)).onFall(event);
                 break; //stop looking if a pump is found

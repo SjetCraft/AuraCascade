@@ -1,10 +1,8 @@
 package com.sjet.auracascade.client.particles.auratransferparticle;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -24,10 +22,18 @@ public class AuraTransferParticle extends SpriteTexturedParticle {
         motionY = ySpeed;
         motionZ = zSpeed;
 
-        float offset = (float) (Math.random() * 0.2D);
-        red -= offset;
-        blue -= offset;
-        green -= offset;
+        float randomColorOffset = (float) (Math.random() * 0.2D);
+        //allows for more variation if the aura being transferred is white
+        if (red == 1 && green == 1 && blue == 1) {
+            red -= randomColorOffset;
+            blue -= randomColorOffset;
+            green -= randomColorOffset;
+        } else {
+            //don't allow the randomColorOffset to make the offset negative
+            red = red-randomColorOffset > 0 ? red-randomColorOffset : red;
+            blue = blue-randomColorOffset > 0 ? blue-randomColorOffset : blue;
+            green = green-randomColorOffset > 0 ? green-randomColorOffset : green;
+        }
 
         setColor(red, green, blue);
 
@@ -65,11 +71,6 @@ public class AuraTransferParticle extends SpriteTexturedParticle {
         motionX += 0.005 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
         motionY += 0.005 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
         motionZ += 0.005 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
-    }
-
-    @Override
-    public void renderParticle(IVertexBuilder p_225606_1_, ActiveRenderInfo p_225606_2_, float p_225606_3_) {
-        super.renderParticle(p_225606_1_, p_225606_2_, p_225606_3_);
     }
 
     @Override

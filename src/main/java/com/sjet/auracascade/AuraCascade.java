@@ -1,6 +1,5 @@
 package com.sjet.auracascade;
 
-import com.sjet.auracascade.client.particles.ModParticles;
 import com.sjet.auracascade.setup.*;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;

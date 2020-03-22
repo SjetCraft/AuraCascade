@@ -1,6 +1,6 @@
 package com.sjet.auracascade.client.particles.auratransferparticle;
 
-import com.sjet.auracascade.client.particles.ModParticles;
+import com.sjet.auracascade.client.particles.ParticleRegistry;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.network.PacketBuffer;
@@ -36,7 +36,7 @@ public class AuraTransferParticleData implements IParticleData {
     @Nonnull
     @Override
     public ParticleType<AuraTransferParticleData> getType() {
-        return ModParticles.AURA_TRANSFER;
+        return ParticleRegistry.AURA_TRANSFER;
     }
 
     @Override

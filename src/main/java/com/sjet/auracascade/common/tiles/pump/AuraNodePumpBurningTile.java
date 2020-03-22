@@ -3,6 +3,7 @@ package com.sjet.auracascade.common.tiles.pump;
 import com.sjet.auracascade.AuraCascade;
 import com.sjet.auracascade.client.particles.ParticleHelper;
 import com.sjet.auracascade.common.api.IAuraColor;
+import com.sjet.auracascade.common.util.Common;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -35,8 +36,13 @@ public class AuraNodePumpBurningTile extends BaseAuraNodePumpTile {
     @Override
     public void tick() {
         super.tick();
+        //reset despawn timer every 120 seconds
+        if (world.getGameTime() % TICKS_PER_SECOND * 120 == 0) {
+            Common.keepItemsAlive(this, 3);
+        }
         if (!world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 0) {
             findFuelAndAdd();
+            this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
         } else if (world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 2) {
             burnParticles();
         }
@@ -55,17 +61,19 @@ public class AuraNodePumpBurningTile extends BaseAuraNodePumpTile {
                 if (itemEntity.isAlive() && itemStack.getBurnTime() != 0) {
 
                     int burnTime;
-                    //burnTime is -1 for vanilla
+                    //burnTime is -1 for vanilla items
                     if (itemStack.getBurnTime() < 0) {
                         burnTime = ForgeHooks.getBurnTime(itemStack);
                     } else {
                       burnTime = itemStack.getBurnTime();
                     }
 
-                    addFuel(burnTime, 300);
-                    itemConsumed = itemEntity.getPositionVector();
-                    itemStack.shrink(1);
-                    break;
+                    if (burnTime != 0) {
+                        addFuel(burnTime / 5, 300);
+                        itemConsumed = itemEntity.getPositionVector();
+                        itemStack.shrink(1);
+                        break;
+                    }
                 }
             }
         }
@@ -76,7 +84,7 @@ public class AuraNodePumpBurningTile extends BaseAuraNodePumpTile {
     public void transferAuraParticles() {
         for(Map.Entry<BlockPos, String> target : sentNodesMap.entrySet()) {
             String array[]  = target.getValue().split(";");
-            ParticleHelper.transferAuraParticles(this.world, this.pos, target.getKey(), IAuraColor.RED, Integer.parseInt(array[1]));
+            ParticleHelper.pumpTransferParticles(this.world, this.pos, target.getKey(), IAuraColor.RED, Integer.parseInt(array[1]));
         }
     }
 

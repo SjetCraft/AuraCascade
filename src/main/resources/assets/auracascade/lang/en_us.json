@@ -1,16 +1,26 @@
 {
-  "item.auracascade.aura_crystal_white": "White Aura Crystal",
+  "item.auracascade.aura_crystal_white": "Aura Crystal: White",
+  "item.auracascade.aura_crystal_yellow": "Aura Crystal: Yellow",
+  "item.auracascade.aura_crystal_orange": "Aura Crystal: Orange",
+  "item.auracascade.aura_crystal_red": "Aura Crystal: Red",
+  "item.auracascade.aura_crystal_green": "Aura Crystal: Green",
+  "item.auracascade.aura_crystal_blue": "Aura Crystal: Blue",
+  "item.auracascade.aura_crystal_violet": "Aura Crystal: Violet",
+  "item.auracascade.aura_crystal_black": "Aura Crystal: Black",
 
   "_group1": "Aura Nodes",
   "block.auracascade.aura_node": "Aura Node",
   "block.auracascade.aura_node_capacitor": "Aura Capacitor",
   "block.auracascade.aura_node_conserve": "Conserving Aura Node",
-
+  "block.auracascade.aura_node_manipulator_black": "Aura Manipulator: Black", 
+  "block.auracascade.aura_node_manipulator_orange": "Aura Manipulator: Orange", 
+  
   "_group2": "Aura Pumps",
   "block.auracascade.aura_node_pump_burning": "Burning Aura Pump",
+  "block.auracascade.aura_node_pump_redstone": "Redstone Aura Pump",
   "block.auracascade.aura_node_pump_light": "Illumination Aura Pump",
-  "block.auracascade.aura_node_pump_fall": "Momentum Aura Pump",
   "block.auracascade.aura_node_pump_projectile": "Projectile Aura Pump",
+  "block.auracascade.aura_node_pump_fall": "Momentum Aura Pump",
   "block.auracascade.aura_node_pump_creative": "Creative Aura Pump",
 
   "_comment": "Creative Tabs",

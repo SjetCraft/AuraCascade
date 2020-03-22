@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import static com.sjet.auracascade.AuraCascade.MAX_DISTANCE;
+import static com.sjet.auracascade.AuraCascade.TICKS_PER_SECOND;
 
 public abstract class BaseAuraNodeTile extends TileEntity implements IBaseAuraNodeTile, ITickableTileEntity {
 
@@ -55,13 +56,14 @@ public abstract class BaseAuraNodeTile extends TileEntity implements IBaseAuraNo
     //Using a String for the IAuraColor and Integer because Java doesn't have Tuples or Triples and saving custom data structures to NBT is a pain
     protected HashMap<BlockPos, String> sentNodesMap = new HashMap<>();
 
-    public int auraEnergy;
+    public int auraPower;
 
     public BaseAuraNodeTile(TileEntityType<?> type) {
         super(type);
     }
 
     public void findNodes() {
+        //clear connectedNodesList
         connectedNodesList = new ArrayList<>();
         //search for connected nodes in each direction
         for (Direction direction : Direction.values()) {
@@ -79,7 +81,21 @@ public abstract class BaseAuraNodeTile extends TileEntity implements IBaseAuraNo
                 }
             }
         }
-        this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
+    }
+
+    @Override
+    public void tick() {
+        if (!world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 0) {
+            findNodes();
+            updateAura();
+            //only distribute aura if the block is not powered by redstone
+            if (!this.world.isBlockPowered(pos)) {
+                distributeAura();
+            }
+            this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
+        } else if (world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 1) {
+            transferAuraParticles();
+        }
     }
 
     @SuppressWarnings("deprecation")
@@ -124,13 +140,12 @@ public abstract class BaseAuraNodeTile extends TileEntity implements IBaseAuraNo
         auraMap.replace(color, newAura);
 
         if (this.pos.getY() < sourcePos.getY()) {
-            int power = (sourcePos.getY() - this.pos.getY()) * auraInput;
+            int power = (int) ((sourcePos.getY() - this.pos.getY()) * auraInput * color.getRelativeMass(world));
 
             if (power > 0) {
                 receivePower(power);
             }
         }
-        this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
     }
 
     public boolean playerAddAura(@Nullable PlayerEntity player, ItemStack stack) {
@@ -153,13 +168,13 @@ public abstract class BaseAuraNodeTile extends TileEntity implements IBaseAuraNo
         //empty sentNodesMap
         this.sentNodesMap.clear();
 
-        //early exit if there are no nodes to distribute Aura & if redstone is blocking the node from distributing
-        if (connectedNodesList.isEmpty() || this.world.isBlockPowered(this.pos)) {
+        //early exit if there are no nodes to distribute Aura
+        if (connectedNodesList.isEmpty()) {
             return;
         }
 
         int totalWeight = 0;
-
+        //adds up the total weight for distribution
         for (BlockPos nodes : connectedNodesList) {
             if (canTransfer(nodes, IAuraColor.WHITE)) {
                 totalWeight += getWeight(nodes);
@@ -172,14 +187,15 @@ public abstract class BaseAuraNodeTile extends TileEntity implements IBaseAuraNo
         //iterate over the aura
         for (Map.Entry<IAuraColor, Integer> colorList : auraMap.entrySet()) {
             IAuraColor color = colorList.getKey();
-            if (colorList.getValue() > 0) {
+            int auraHere = colorList.getValue();
+            //only calculate the distribution if there is is aura to send
+            if (auraHere > 0) {
                 //iterate over each connected node
                 for (BlockPos target : connectedNodesList) {
                     BaseAuraNodeTile targetNode = (BaseAuraNodeTile) world.getTileEntity(target);
                     double factor = getWeight(target) / totalWeight;
 
                     if (canTransfer(target, color)) {
-                        int auraHere = colorList.getValue();
                         int auraThere = targetNode.auraMap.get(color);
                         int diff = Math.abs(auraHere - auraThere);
 
@@ -191,34 +207,67 @@ public abstract class BaseAuraNodeTile extends TileEntity implements IBaseAuraNo
                 }
             }
         }
-        this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
+    }
+
+    public void updateAura() {
+        //empty sentNodesMap used for rendering
+        this.sentNodesMap.clear();
+
+        for (Map.Entry<IAuraColor, Integer> colorList : auraMap.entrySet()) {
+            IAuraColor color = colorList.getKey();
+            int auraHere = colorList.getValue();
+
+            if (auraHere > 0) {
+                switch (color) {
+                    case VIOLET:
+                        //Achieve growth along logarithmic curve
+                        int delta = auraHere <= 25 ? -auraHere : 5 * (Math.max(10, (int) Math.floor(((double) 1 / auraHere) * 2500)));
+                        //resets the aura if it hits the cap
+                        if (auraHere > 2600) {
+                            auraHere = 0;
+                        }
+                        auraMap.replace(color, auraHere + delta);
+                        break;
+                    case YELLOW:
+                        auraMap.replace(color, (int) (auraHere * 0.8));
+                        break;
+                }
+            }
+        }
     }
 
     public void transferAura(BlockPos target, IAuraColor color, int aura) {
         //only transfer aura if this node has enough to send
-        if (aura <= this.auraMap.get(color)) {
+        if (aura <= this.auraMap.get(color) && aura != 0) {
             BaseAuraNodeTile targetNode = (BaseAuraNodeTile) world.getTileEntity(target);
             targetNode.addAura(this.pos, color, aura);
             this.removeAura(color, aura);
-            // add node to the sentNodesMap to use for rendering, ";" for split
+            // add node to the sentNodesMap to use for rendering the transfer particles, ";" for split
             sentNodesMap.put(target, "" + color.name() + ";" + aura);
         }
     }
 
     public void receivePower(int power) {
-        auraEnergy += power;
+        auraPower += power;
     }
 
     /**
      * @param target
-     * @return true if the target node is below or on the same Y level as this current node
+     * @return true if the target node is below or on the same Y level as this current node & the current block is not being powered by redstone & the aura can transfer in that direction
      */
     public boolean canTransfer(BlockPos target, IAuraColor color) {
-        boolean isLower = target.getY() < this.pos.getY();
-        boolean isSame = target.getY() == this.pos.getY();
+        //check if the aura can transfer in the direction
+        if (    (color.getHorizontalTransfer() && Common.isHorizontal(this.pos, target)) ||
+                (color.getVerticalTransfer() && Common.isVertical(this.pos, target)) ) {
+            boolean isLower = target.getY() < this.pos.getY();
+            boolean isSame = target.getY() == this.pos.getY();
 
-        return world.getTileEntity(target) instanceof BaseAuraNodeTile && (isSame || isLower) && ((BaseAuraNodeTile) world.getTileEntity(target)).canReceive(this.pos, color);
+            return world.getTileEntity(target) instanceof BaseAuraNodeTile && (isSame || isLower)  && ((BaseAuraNodeTile) world.getTileEntity(target)).canReceive(this.pos, color);
+        }
+
+        return false;
     }
+
 
     public boolean canReceive(BlockPos source, IAuraColor color) {
         return true;
@@ -249,7 +298,7 @@ public abstract class BaseAuraNodeTile extends TileEntity implements IBaseAuraNo
     public void transferAuraParticles() {
         for (Map.Entry<BlockPos, String> target : sentNodesMap.entrySet()) {
             String array[] = target.getValue().split(";");
-            ParticleHelper.transferAuraParticles(this.world, this.pos, target.getKey(), IAuraColor.valueOf(array[0]), Integer.parseInt(array[1]));
+             ParticleHelper.transferAuraParticles(this.world, this.pos, target.getKey(), IAuraColor.valueOf(array[0]), Integer.parseInt(array[1]));
         }
     }
 
@@ -273,14 +322,17 @@ public abstract class BaseAuraNodeTile extends TileEntity implements IBaseAuraNo
         if (list.size() == 1) {
             list.set(0, "No Aura");
         }
-
+        /*
+        if (auraPower > 0) {
+            list.add("Power: " + auraPower);
+        }*/
         HUDHandler.printAuraOnScreen(minecraft, list);
     }
 
     @Override
     public void read(CompoundNBT tag) {
         super.read(tag);
-        auraEnergy = tag.getInt("auraEnergy");
+        auraPower = tag.getInt("auraPower");
 
         auraMap.clear();
         this.auraMap = (HashMap<IAuraColor, Integer>) AURA_MAP_NBT.read(tag);
@@ -295,7 +347,7 @@ public abstract class BaseAuraNodeTile extends TileEntity implements IBaseAuraNo
         AURA_MAP_NBT.write(auraMap, tag);
         CONNECTED_LIST_NBT.write(connectedNodesList, tag);
         SENT_AURA_NBT.write(sentNodesMap, tag);
-        tag.putInt("auraEnergy", auraEnergy);
+        tag.putInt("auraPower", auraPower);
         return super.write(tag);
     }
 

@@ -1,0 +1,13 @@
+{
+    "replace": false,
+    "values": [
+      "#forge:aura_crystal/aura_crystal_white",
+      "#forge:aura_crystal/aura_crystal_yellow",
+      "#forge:aura_crystal/aura_crystal_orange",
+      "#forge:aura_crystal/aura_crystal_red",
+      "#forge:aura_crystal/aura_crystal_green",
+      "#forge:aura_crystal/aura_crystal_blue",
+      "#forge:aura_crystal/aura_crystal_violet",
+      "#forge:aura_crystal/aura_crystal_black"
+    ]
+  }

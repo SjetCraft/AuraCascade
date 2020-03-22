@@ -2,8 +2,11 @@ package com.sjet.auracascade.client.particles;
 
 import com.sjet.auracascade.client.particles.auratransferparticle.AuraTransferParticleData;
 import com.sjet.auracascade.client.particles.nodeconnectionparticle.NodeConnectionParticleData;
+import com.sjet.auracascade.client.particles.pumptransferparticle.PumpTransferParticle;
+import com.sjet.auracascade.client.particles.pumptransferparticle.PumpTransferParticleData;
 import com.sjet.auracascade.common.api.IAuraColor;
 import com.sjet.auracascade.common.util.Common;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -75,7 +78,7 @@ public class ParticleHelper {
         float g = color.getGreen();
         float b = color.getBlue();
 
-        int density = 1 + (auraAmount / 1000);
+        int density = 1 + (auraAmount / 10000);
         double deltaYspeed = 1.3;
 
         //spawns particles through delta-1 areas
@@ -109,7 +112,43 @@ public class ParticleHelper {
     }
 
     public static void pumpTransferParticles(World world, BlockPos source, BlockPos target, IAuraColor color, int auraAmount) {
+        Random rand = new Random();
+        //delta is the area where the particles will travel through
+        double delta = Common.getDistance(source, target) * 6;
+        //the deltaX,Y,Z is the control to extract the direction
+        double deltaX = (target.getX() - source.getX()) / delta;
+        double deltaY = (target.getY() - source.getY()) / delta;
+        double deltaZ = (target.getZ() - source.getZ()) / delta;
+        //0.5 is the center of the block
+        double sourceX = source.getX() + 0.5;
+        double sourceY = source.getY() + 0.5;
+        double sourceZ = source.getZ() + 0.5;
 
+        //Aura Color
+        float r = color.getRed();
+        float g = color.getGreen();
+        float b = color.getBlue();
+
+        //spawns particles through delta-1 areas
+        for (int i = 0; i < delta; i++) {
+            float randomSize = 0.1f + (0.075f - 0.15f) * rand.nextFloat();
+            int randomAge = 14 + (rand.nextInt(5));
+            //spreads the particle source across the range
+            double range = rand.nextDouble() * (0.02) * (rand.nextFloat() > 0.5 ? 1 : -1);
+
+            PumpTransferParticleData particle = PumpTransferParticleData.pumpTransferParticle(target.getX() + 0.5, target.getY() + 0.5, target.getZ() + 0.5, randomSize, r, g, b, randomAge);
+            //addParticle(particle, xPos, yPos, zPos, xSpeed, ySpeed, zSpeed)
+            world.addParticle(particle, sourceX + range, sourceY + range - 0.2, sourceZ + range, deltaX * rand.nextDouble() * 1.1, deltaY * rand.nextDouble() * 2.5, deltaZ * rand.nextDouble() * 1.1);
+
+            //moves the particle generation by delta distance
+            if (deltaX != 0) {
+                sourceX += deltaX;
+            } else if (deltaY != 0) {
+                sourceY += deltaY;
+            } else if (deltaZ != 0) {
+                sourceZ += deltaZ;
+            }
+        }
     }
 
     public static void itemBurningParticles(World world, Vec3d source) {
@@ -121,9 +160,10 @@ public class ParticleHelper {
     }
 
     public static void burstParticles(World world, BlockPos source) {
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 30; i++) {
             Random rand = new Random();
-            world.addParticle(ParticleTypes.POOF, source.getX() + 0.5, source.getY() + 0.5, source.getZ() + 0.5, (rand.nextDouble() - .5) / 4, rand.nextDouble() / 4, (rand.nextDouble() - .5) / 4);
+            //addParticle(particle, xPos, yPos, zPos, xSpeed, ySpeed, zSpeed)
+            world.addParticle(ParticleTypes.POOF, source.getX() + 0.5, source.getY() + 0.5, source.getZ() + 0.5, (rand.nextDouble() - .5) / 4, (rand.nextDouble() - .5) / 4, (rand.nextDouble() - .5) / 4);
         }
     }
 }

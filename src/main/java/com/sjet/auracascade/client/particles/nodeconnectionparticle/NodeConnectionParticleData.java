@@ -1,6 +1,6 @@
 package com.sjet.auracascade.client.particles.nodeconnectionparticle;
 
-import com.sjet.auracascade.client.particles.ModParticles;
+import com.sjet.auracascade.client.particles.ParticleRegistry;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.network.PacketBuffer;
@@ -26,7 +26,7 @@ public class NodeConnectionParticleData implements IParticleData {
     @Nonnull
     @Override
     public ParticleType<NodeConnectionParticleData> getType() {
-        return ModParticles.NODE_CONNECT;
+        return ParticleRegistry.NODE_CONNECT;
     }
 
     @Override

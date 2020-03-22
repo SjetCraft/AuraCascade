@@ -20,7 +20,7 @@ public class AuraNodePumpLightTile extends BaseAuraNodePumpTile {
 
 
     @ObjectHolder(AuraCascade.MODID + ":aura_node_pump_light")
-    public static final TileEntityType<AuraNodePumpCreativeTile> TYPE_PUMP_LIGHT = null;
+    public static final TileEntityType<AuraNodePumpLightTile> TYPE_PUMP_LIGHT = null;
 
     public AuraNodePumpLightTile() {
         super(TYPE_PUMP_LIGHT);
@@ -28,8 +28,7 @@ public class AuraNodePumpLightTile extends BaseAuraNodePumpTile {
 
     @Override
     public void tick() {
-        //only look for new sources once a minute
-        if (!world.isRemote && world.getGameTime() % TICKS_PER_SECOND * 60 == 0) {
+        if (!world.isRemote && pumpTime <= 0) {
             findFuelAndAdd();
         }
         super.tick();
@@ -37,30 +36,28 @@ public class AuraNodePumpLightTile extends BaseAuraNodePumpTile {
 
     @Override
     public void findFuelAndAdd() {
-        if (pumpTime <= 0) {
-            for (Direction facing : Direction.values()) {
-                BlockPos blockPos = getPos().offset(facing);
-                if (consumeLightSource(blockPos, Blocks.TORCH)) {
-                    addFuel(30, 750);
-                    break;
-                } else if (consumeLightSource(blockPos, Blocks.GLOWSTONE)) {
-                    addFuel(180, 750);
-                    break;
-                } else if (consumeLightSource(blockPos, Blocks.SEA_LANTERN)) {
-                    addFuel(220, 750);
-                    break;
-                } else if (consumeLightSource(blockPos, Blocks.LANTERN)) {
-                    addFuel(100, 750);
-                    break;
-                } else if (consumeLightSource(blockPos, Blocks.REDSTONE_LAMP)) {
-                    addFuel(150, 750);
-                    break;
-                }
+        for (Direction facing : Direction.values()) {
+            BlockPos blockPos = getPos().offset(facing);
+            if (consumeBlock(blockPos, Blocks.TORCH)) {
+                addFuel(30, 750);
+                break;
+            } else if (consumeBlock(blockPos, Blocks.GLOWSTONE)) {
+                addFuel(180, 750);
+                break;
+            } else if (consumeBlock(blockPos, Blocks.SEA_LANTERN)) {
+                addFuel(220, 750);
+                break;
+            } else if (consumeBlock(blockPos, Blocks.LANTERN)) {
+                addFuel(100, 750);
+                break;
+            } else if (consumeBlock(blockPos, Blocks.REDSTONE_LAMP)) {
+                addFuel(150, 750);
+                break;
             }
         }
     }
 
-    public boolean consumeLightSource(BlockPos blockPos, Block block) {
+    public boolean consumeBlock(BlockPos blockPos, Block block) {
         if (world.getBlockState(blockPos).getBlock() == block) {
             world.removeBlock(blockPos, false);
             //plays the block breaking sound and particles on the client
@@ -75,7 +72,7 @@ public class AuraNodePumpLightTile extends BaseAuraNodePumpTile {
     public void transferAuraParticles() {
         for (Map.Entry<BlockPos, String> target : sentNodesMap.entrySet()) {
             String array[] = target.getValue().split(";");
-            ParticleHelper.transferAuraParticles(this.world, this.pos, target.getKey(), IAuraColor.YELLOW, Integer.parseInt(array[1]));
+            ParticleHelper.pumpTransferParticles(this.world, this.pos, target.getKey(), IAuraColor.YELLOW, Integer.parseInt(array[1]));
         }
     }
 }

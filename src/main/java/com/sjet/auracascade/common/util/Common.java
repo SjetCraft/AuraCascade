@@ -1,9 +1,16 @@
 package com.sjet.auracascade.common.util;
 
 import com.sjet.auracascade.common.api.IAuraColor;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Common {
@@ -29,6 +36,20 @@ public class Common {
         return new BlockPos(source.getX() + 0.5D, source.getY() + 0.5D, source.getZ() + 0.5D);
     }
 
+    public static boolean isHorizontal(BlockPos source, BlockPos target) {
+        if  (target.getY() == source.getY()) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isVertical(BlockPos source, BlockPos target) {
+        if  (target.getY() != source.getY()) {
+            return true;
+        }
+        return false;
+    }
+
     public static int getTotalAura(HashMap<IAuraColor, Integer> auraMap) {
         int output = 0;
         for (Map.Entry<IAuraColor, Integer> colorList : auraMap.entrySet()) {
@@ -37,7 +58,16 @@ public class Common {
         return output;
     }
 
-    public static Iterable<BlockPos> inRange(BlockPos source, int range) {
+    public static Iterable<BlockPos> getBlocksInRange(BlockPos source, int range) {
         return BlockPos.getAllInBoxMutable(source.add(-range, -range, -range), source.add(range, range, range));
+    }
+
+    public static void keepItemsAlive(TileEntity tileEntity, int range) {
+        List<ItemEntity> nearbyItems = tileEntity.getWorld().getEntitiesWithinAABB(ItemEntity.class,
+                new AxisAlignedBB(  tileEntity.getPos().getX() - range, tileEntity.getPos().getY() - range, tileEntity.getPos().getZ() - range,
+                                    tileEntity.getPos().getX() + range, tileEntity.getPos().getY() + range, tileEntity.getPos().getZ() + range));
+        for (ItemEntity itemEntity : nearbyItems) {
+            itemEntity.setNoDespawn();
+        }
     }
 }

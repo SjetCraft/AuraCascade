@@ -74,7 +74,9 @@ public class AuraNodeCapacitorTile extends BaseAuraNodeTile {
 
             //iterate over each connected node - There should only be one node
             for (BlockPos target : connectedNodesList) {
-                transferAura(target, color, currentAura);
+                if (color.getVerticalTransfer()) {
+                    transferAura(target, color, currentAura);
+                }
             }
         }
     }
@@ -87,6 +89,7 @@ public class AuraNodeCapacitorTile extends BaseAuraNodeTile {
             }
             if (world.getGameTime() % TICKS_PER_SECOND == 1) {
                 findNodes();
+                updateAura();
 
                 //splitting this into a sub 'if' to prevent the total Aura from being calculated every tick
                 int totalAura = Common.getTotalAura(auraMap);

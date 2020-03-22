@@ -82,8 +82,12 @@ public abstract class BaseAuraNodePumpTile extends BaseAuraNodeTile implements I
                     int distance = (int) Common.getDistance(this.pos, target);
                     int quantity = pumpPower / distance;
 
-                    //only pump aura that is in the node and if there is an amount to pump
-                    if (currentAura > 0 && quantity > 0) {
+                    //test to check for a divide by zero case
+                    float boost = color.getAscentBoost(world);
+                    quantity = boost == 0 ? 0 : (int) ((double) quantity / boost);
+
+                    //only pump aura that is in the node and if there is an amount to pump and the aura can move vertically
+                    if (currentAura > 0 && quantity > 0 && color.getVerticalTransfer()) {
 
                         //if the current aura is less than the amount that is going to be pumped pump the available amount of aura
                         if (currentAura < quantity) {
@@ -96,10 +100,6 @@ public abstract class BaseAuraNodePumpTile extends BaseAuraNodeTile implements I
         }
     }
 
-    /**
-     * @param target
-     * @return true if the target node is higher than the current node
-     */
     @Override
     public boolean canTransfer(BlockPos target, IAuraColor color) {
         return false;
@@ -114,6 +114,7 @@ public abstract class BaseAuraNodePumpTile extends BaseAuraNodeTile implements I
     public void tick() {
         if (!world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 1) {
             findNodes();
+            updateAura();
             pump();
             this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
         } else if (world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 2) {
@@ -128,7 +129,7 @@ public abstract class BaseAuraNodePumpTile extends BaseAuraNodeTile implements I
     public void transferAuraParticles() {
         for(Map.Entry<BlockPos, String> target : sentNodesMap.entrySet()) {
             String[] array = target.getValue().split(";");
-            ParticleHelper.transferAuraParticles(this.world, this.pos, target.getKey(), IAuraColor.WHITE, Integer.parseInt(array[1]));
+            ParticleHelper.pumpTransferParticles(this.world, this.pos, target.getKey(), IAuraColor.WHITE, Integer.parseInt(array[1]));
         }
     }
 

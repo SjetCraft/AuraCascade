@@ -43,7 +43,7 @@ public class AuraNodePumpCreativeTile extends BaseAuraNodePumpTile {
 
         for(Map.Entry<BlockPos, String> target : sentNodesMap.entrySet()) {
             String array[]  = target.getValue().split(";");
-            ParticleHelper.transferAuraParticles(this.world, this.pos, target.getKey(), randomColor, Integer.parseInt(array[1]));
+            ParticleHelper.pumpTransferParticles(this.world, this.pos, target.getKey(), randomColor, Integer.parseInt(array[1]));
         }
     }
 

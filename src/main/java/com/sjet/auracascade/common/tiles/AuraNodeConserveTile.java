@@ -21,7 +21,9 @@ public class AuraNodeConserveTile extends BaseAuraNodeTile {
     public void tick() {
         if (!world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 0) {
             findNodes();
+            updateAura();
             distributeAura();
+            this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
         } else if (world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 1) {
             transferAuraParticles();
         }
