@@ -1,20 +1,21 @@
 package com.sjet.auracascade.setup;
 
 import com.sjet.auracascade.AuraCascade;
-import com.sjet.auracascade.common.blocks.*;
+import com.sjet.auracascade.common.blocks.consumer.*;
+import com.sjet.auracascade.common.blocks.node.*;
 import com.sjet.auracascade.common.blocks.pump.*;
-import com.sjet.auracascade.common.items.*;
-import com.sjet.auracascade.common.tiles.*;
+import com.sjet.auracascade.common.items.crystals.*;
+import com.sjet.auracascade.common.items.ingots.*;
+import com.sjet.auracascade.common.items.gems.*;
+import com.sjet.auracascade.common.tiles.consumer.*;
+import com.sjet.auracascade.common.tiles.node.*;
 import com.sjet.auracascade.common.tiles.pump.*;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public class CommonSetup {
 
@@ -31,6 +32,8 @@ public class CommonSetup {
         e.getRegistry().register(new AuraNodePumpProjectile());
         e.getRegistry().register(new AuraNodePumpFall());
         e.getRegistry().register(new AuraNodePumpCreative());
+        //Consumers
+        e.getRegistry().register(new AuraColorer());
     }
 
     @SubscribeEvent
@@ -47,6 +50,10 @@ public class CommonSetup {
         e.getRegistry().register(new BlockItem(AuraNodePumpFall.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_node_pump_fall"));
         e.getRegistry().register(new BlockItem(AuraNodePumpCreative.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_node_pump_creative"));
 
+        //Consumers
+        e.getRegistry().register(new BlockItem(AuraColorer.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_colorer"));
+
+        //Aura Crystals
         e.getRegistry().register(new AuraCrystalWhiteItem());
         e.getRegistry().register(new AuraCrystalYellowItem());
         e.getRegistry().register(new AuraCrystalOrangeItem());
@@ -55,6 +62,24 @@ public class CommonSetup {
         e.getRegistry().register(new AuraCrystalBlueItem());
         e.getRegistry().register(new AuraCrystalVioletItem());
         e.getRegistry().register(new AuraCrystalBlackItem());
+        //Ingots
+        e.getRegistry().register(new AuraIngotWhiteItem());
+        e.getRegistry().register(new AuraIngotYellowItem());
+        e.getRegistry().register(new AuraIngotOrangeItem());
+        e.getRegistry().register(new AuraIngotRedItem());
+        e.getRegistry().register(new AuraIngotGreenItem());
+        e.getRegistry().register(new AuraIngotBlueItem());
+        e.getRegistry().register(new AuraIngotVioletItem());
+        e.getRegistry().register(new AuraIngotBlackItem());
+        //Gems
+        e.getRegistry().register(new AuraGemWhiteItem());
+        e.getRegistry().register(new AuraGemYellowItem());
+        e.getRegistry().register(new AuraGemOrangeItem());
+        e.getRegistry().register(new AuraGemRedItem());
+        e.getRegistry().register(new AuraGemGreenItem());
+        e.getRegistry().register(new AuraGemBlueItem());
+        e.getRegistry().register(new AuraGemVioletItem());
+        e.getRegistry().register(new AuraGemBlackItem());
     }
 
     @SubscribeEvent
@@ -70,8 +95,9 @@ public class CommonSetup {
         e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraNodePumpProjectileTile(), AuraNodePumpProjectile.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pump_projectile"));
         e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraNodePumpFallTile(), AuraNodePumpFall.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pump_fall"));
         e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraNodePumpCreativeTile(), AuraNodePumpCreative.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pump_creative"));
+
+        //Consumers
+        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraColorerTile(), AuraColorer.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_colorer"));
     }
-
-
 }
 

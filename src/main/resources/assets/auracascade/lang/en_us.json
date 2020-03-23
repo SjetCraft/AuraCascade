@@ -1,4 +1,5 @@
 {
+  "_item1": "Aura Crystals",
   "item.auracascade.aura_crystal_white": "Aura Crystal: White",
   "item.auracascade.aura_crystal_yellow": "Aura Crystal: Yellow",
   "item.auracascade.aura_crystal_orange": "Aura Crystal: Orange",
@@ -8,20 +9,44 @@
   "item.auracascade.aura_crystal_violet": "Aura Crystal: Violet",
   "item.auracascade.aura_crystal_black": "Aura Crystal: Black",
 
-  "_group1": "Aura Nodes",
+  "_item2": "Aura Ingots",
+  "item.auracascade.aura_ingot_white": "Arcane White Ingot",
+  "item.auracascade.aura_ingot_yellow": "Arcane Yellow Ingot",
+  "item.auracascade.aura_ingot_orange": "Arcane Orange Ingot",
+  "item.auracascade.aura_ingot_red": "Arcane Red Ingot",
+  "item.auracascade.aura_ingot_green": "Arcane Green Ingot",
+  "item.auracascade.aura_ingot_blue": "Arcane Blue Ingot",
+  "item.auracascade.aura_ingot_violet": "Arcane Violet Ingot",
+  "item.auracascade.aura_ingot_black": "Arcane Black Ingot",
+
+  "_item3": "Aura Gems",
+  "item.auracascade.aura_gem_white": "Arcane White Gem",
+  "item.auracascade.aura_gem_yellow": "Arcane Yellow Gem",
+  "item.auracascade.aura_gem_orange": "Arcane Orange Gem",
+  "item.auracascade.aura_gem_red": "Arcane Red Gem",
+  "item.auracascade.aura_gem_green": "Arcane Green Gem",
+  "item.auracascade.aura_gem_blue": "Arcane Blue Gem",
+  "item.auracascade.aura_gem_violet": "Arcane Violet Gem",
+  "item.auracascade.aura_gem_black": "Arcane Black Gem",
+
+  "_blocks1": "Aura Nodes",
   "block.auracascade.aura_node": "Aura Node",
   "block.auracascade.aura_node_capacitor": "Aura Capacitor",
   "block.auracascade.aura_node_conserve": "Conserving Aura Node",
   "block.auracascade.aura_node_manipulator_black": "Aura Manipulator: Black", 
   "block.auracascade.aura_node_manipulator_orange": "Aura Manipulator: Orange", 
   
-  "_group2": "Aura Pumps",
+  "_blocks2": "Aura Pumps",
   "block.auracascade.aura_node_pump_burning": "Burning Aura Pump",
   "block.auracascade.aura_node_pump_redstone": "Redstone Aura Pump",
   "block.auracascade.aura_node_pump_light": "Illumination Aura Pump",
   "block.auracascade.aura_node_pump_projectile": "Projectile Aura Pump",
   "block.auracascade.aura_node_pump_fall": "Momentum Aura Pump",
   "block.auracascade.aura_node_pump_creative": "Creative Aura Pump",
+
+  "_blocks3": "Consumers",
+  "block.auracascade.aura_colorer": "Cascading Colorer",
+
 
   "_comment": "Creative Tabs",
   "itemGroup.auracascade": "Aura Cascade"

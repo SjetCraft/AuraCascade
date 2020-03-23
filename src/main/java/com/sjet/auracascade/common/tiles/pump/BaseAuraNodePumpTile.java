@@ -1,10 +1,10 @@
 package com.sjet.auracascade.common.tiles.pump;
 
-import com.sjet.auracascade.client.HUDHandler;
+import com.sjet.auracascade.client.HUDHelper;
 import com.sjet.auracascade.client.particles.ParticleHelper;
 import com.sjet.auracascade.common.api.IAuraColor;
 import com.sjet.auracascade.common.api.IBaseAuraNodePumpTile;
-import com.sjet.auracascade.common.tiles.BaseAuraNodeTile;
+import com.sjet.auracascade.common.tiles.node.BaseAuraNodeTile;
 import com.sjet.auracascade.common.util.Common;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;
@@ -160,7 +160,7 @@ public abstract class BaseAuraNodePumpTile extends BaseAuraNodeTile implements I
         } else {
             list.add("No Power");
         }
-        HUDHandler.printAuraOnScreen(minecraft, list);
+        HUDHelper.printTextOnScreen(minecraft, list);
     }
 
     @Override

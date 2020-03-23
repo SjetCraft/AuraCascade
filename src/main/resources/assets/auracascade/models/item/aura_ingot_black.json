@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "auracascade:item/aura_ingot_black"
+  }
+}

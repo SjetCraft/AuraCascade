@@ -6,6 +6,7 @@
 package com.sjet.auracascade.client;
 
 import com.sjet.auracascade.AuraCascade;
+import com.sjet.auracascade.common.api.IBaseAuraConsumerTile;
 import com.sjet.auracascade.common.api.IBaseAuraNodeTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
@@ -26,38 +27,23 @@ public final class HUDHandler {
 
     @SubscribeEvent
     public static void onDrawScreenPost(RenderGameOverlayEvent.Post event) {
-        Minecraft mc = Minecraft.getInstance();
+        Minecraft minecraft = Minecraft.getInstance();
 
         if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
 
-            RayTraceResult pos = mc.objectMouseOver;
+            RayTraceResult pos = minecraft.objectMouseOver;
 
             if(pos != null) {
                 BlockPos bpos = pos.getType() == RayTraceResult.Type.BLOCK ? ((BlockRayTraceResult) pos).getPos() : null;
-                TileEntity tile = bpos != null ? mc.world.getTileEntity(bpos) : null;
+                TileEntity tile = bpos != null ? minecraft.world.getTileEntity(bpos) : null;
 
                 //if the moused-over TileEntity implements IBaseAuraNodeTile
                 if(tile instanceof IBaseAuraNodeTile) {
-                    ((IBaseAuraNodeTile) tile).renderHUD(mc);
+                    ((IBaseAuraNodeTile) tile).renderHUD(minecraft);
+                } else if (tile instanceof IBaseAuraConsumerTile) {
+                    ((IBaseAuraConsumerTile) tile).renderHUD(minecraft);
                 }
             }
-        }
-    }
-
-    public static void printAuraOnScreen(Minecraft minecraft, ArrayList<String> list) {
-        int x = minecraft.getMainWindow().getScaledWidth() / 2;
-        int y = minecraft.getMainWindow().getScaledHeight() / 2;
-        int lineSpacing = 13;
-
-        //centers the text vertically
-        if(list.size() > 1) {
-           y -= (list.size() * lineSpacing) / 2;
-        }
-
-        //prints the list to the screen
-        for(String print: list){
-            minecraft.fontRenderer.drawStringWithShadow(print, x + 13, y, 0xFFFFFF);
-            y += lineSpacing;
         }
     }
 }

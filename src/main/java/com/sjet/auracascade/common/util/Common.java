@@ -63,11 +63,14 @@ public class Common {
     }
 
     public static void keepItemsAlive(TileEntity tileEntity, int range) {
-        List<ItemEntity> nearbyItems = tileEntity.getWorld().getEntitiesWithinAABB(ItemEntity.class,
-                new AxisAlignedBB(  tileEntity.getPos().getX() - range, tileEntity.getPos().getY() - range, tileEntity.getPos().getZ() - range,
-                                    tileEntity.getPos().getX() + range, tileEntity.getPos().getY() + range, tileEntity.getPos().getZ() + range));
+        List<ItemEntity> nearbyItems = tileEntity.getWorld().getEntitiesWithinAABB(ItemEntity.class, getAABB(tileEntity.getPos(), range));
         for (ItemEntity itemEntity : nearbyItems) {
             itemEntity.setNoDespawn();
         }
+    }
+
+    public static AxisAlignedBB getAABB(BlockPos blockPos, int range) {
+        return new AxisAlignedBB(  blockPos.getX() - range, blockPos.getY() - range, blockPos.getZ() - range,
+                blockPos.getX() + range, blockPos.getY() + range, blockPos.getZ() + range);
     }
 }

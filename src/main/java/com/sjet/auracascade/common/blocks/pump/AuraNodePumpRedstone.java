@@ -1,7 +1,7 @@
 package com.sjet.auracascade.common.blocks.pump;
 
 import com.sjet.auracascade.AuraCascade;
-import com.sjet.auracascade.common.blocks.BaseAuraNode;
+import com.sjet.auracascade.common.blocks.node.BaseAuraNode;
 import com.sjet.auracascade.common.tiles.pump.AuraNodePumpRedstoneTile;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;

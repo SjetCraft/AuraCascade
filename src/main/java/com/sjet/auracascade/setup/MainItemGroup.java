@@ -1,7 +1,7 @@
 package com.sjet.auracascade.setup;
 
 import com.sjet.auracascade.AuraCascade;
-import com.sjet.auracascade.common.blocks.AuraNode;
+import com.sjet.auracascade.common.blocks.node.AuraNode;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 

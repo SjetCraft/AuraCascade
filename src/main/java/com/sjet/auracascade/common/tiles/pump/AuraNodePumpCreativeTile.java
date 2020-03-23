@@ -1,7 +1,7 @@
 package com.sjet.auracascade.common.tiles.pump;
 
 import com.sjet.auracascade.AuraCascade;
-import com.sjet.auracascade.client.HUDHandler;
+import com.sjet.auracascade.client.HUDHelper;
 import com.sjet.auracascade.client.particles.ParticleHelper;
 import com.sjet.auracascade.common.api.IAuraColor;
 import net.minecraft.client.Minecraft;
@@ -71,6 +71,6 @@ public class AuraNodePumpCreativeTile extends BaseAuraNodePumpTile {
         list.add("Time left: infinite seconds");
         list.add("Power: " + pumpPower + " per second");
 
-        HUDHandler.printAuraOnScreen(minecraft, list);
+        HUDHelper.printTextOnScreen(minecraft, list);
     }
 }
