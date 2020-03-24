@@ -48,6 +48,9 @@
   "block.auracascade.aura_colorer": "Cascading Colorer",
   "block.auracascade.aura_grower": "Cascading Grower",
   "block.auracascade.aura_brewer": "Cascading Brewer",
+  "block.auracascade.aura_fisher": "Cascading Fisher",
+  "block.auracascade.aura_looter": "Cascading Looter",
+  "block.auracascade.aura_mob_spawner": "Cascading Spawner",
 
 
   "_comment": "Creative Tabs",

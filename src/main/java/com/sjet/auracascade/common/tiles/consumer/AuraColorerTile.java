@@ -40,10 +40,4 @@ public class AuraColorerTile extends BaseAuraConsumerTile {
             sheep.setFleeceColor(DyeColor.byId(new Random().nextInt(16)));
         }
     }
-
-    @Override
-    public boolean validItemsNearby() {
-        List<SheepEntity> nearbySheep = world.getEntitiesWithinAABB(SheepEntity.class, Common.getAABB(this.pos, 2));
-        return nearbySheep.size() > 0;
-    }
 }

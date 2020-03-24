@@ -138,7 +138,7 @@ public class ParticleHelper {
 
             PumpTransferParticleData particle = PumpTransferParticleData.pumpTransferParticle(target.getX() + 0.5, target.getY() + 0.5, target.getZ() + 0.5, randomSize, r, g, b, randomAge);
             //addParticle(particle, xPos, yPos, zPos, xSpeed, ySpeed, zSpeed)
-            world.addParticle(particle, sourceX + range, sourceY + range - 0.2, sourceZ + range, deltaX * rand.nextDouble() * 1.1, deltaY * rand.nextDouble() * 2.5, deltaZ * rand.nextDouble() * 1.1);
+            world.addParticle(particle, sourceX + range, sourceY + range, sourceZ + range, deltaX * rand.nextDouble() * 1.1, deltaY * rand.nextDouble() * 2.5, deltaZ * rand.nextDouble() * 1.1);
 
             //moves the particle generation by delta distance
             if (deltaX != 0) {

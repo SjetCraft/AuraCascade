@@ -82,18 +82,6 @@ public class AuraBrewerTile extends BaseAuraConsumerTile {
         }
     }
 
-    @Override
-    public boolean validItemsNearby() {
-        List<ItemEntity> nearbyItems = world.getEntitiesWithinAABB(ItemEntity.class, Common.getAABB(this.pos, RANGE));
-        for (ItemEntity itemEntity : nearbyItems) {
-            ItemStack itemStack = itemEntity.getItem();
-            if (itemStack.getItem() == Items.POTION && PotionUtils.getPotionFromItem(itemStack) == Potions.WATER) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public ItemStack getBrewResult(ItemStack stack) {
         Potion potion = Registry.POTION.getRandom(new Random());
         ItemStack newStack = new ItemStack(stack.getItem());

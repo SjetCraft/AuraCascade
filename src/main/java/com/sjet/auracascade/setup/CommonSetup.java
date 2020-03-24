@@ -21,11 +21,13 @@ public class CommonSetup {
 
     @SubscribeEvent
     public void onRegisterBlocks(RegistryEvent.Register<Block> e) {
+        //Nodes
         e.getRegistry().register(new AuraNode());
         e.getRegistry().register(new AuraNodeCapacitor());
         e.getRegistry().register(new AuraNodeConserve());
         e.getRegistry().register(new AuraNodeManipulatorOrange());
         e.getRegistry().register(new AuraNodeManipulatorBlack());
+        //Pumps
         e.getRegistry().register(new AuraNodePumpBurning());
         e.getRegistry().register(new AuraNodePumpRedstone());
         e.getRegistry().register(new AuraNodePumpLight());
@@ -36,6 +38,9 @@ public class CommonSetup {
         e.getRegistry().register(new AuraColorer());
         e.getRegistry().register(new AuraGrower());
         e.getRegistry().register(new AuraBrewer());
+        e.getRegistry().register(new AuraFisher());
+        e.getRegistry().register(new AuraLooter());
+        e.getRegistry().register(new AuraMobSpawner());
     }
 
     @SubscribeEvent
@@ -56,6 +61,9 @@ public class CommonSetup {
         e.getRegistry().register(new BlockItem(AuraColorer.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_colorer"));
         e.getRegistry().register(new BlockItem(AuraGrower.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_grower"));
         e.getRegistry().register(new BlockItem(AuraBrewer.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_brewer"));
+        e.getRegistry().register(new BlockItem(AuraFisher.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_fisher"));
+        e.getRegistry().register(new BlockItem(AuraLooter.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_looter"));
+        e.getRegistry().register(new BlockItem(AuraMobSpawner.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_mob_spawner"));
 
         //Aura Crystals
         e.getRegistry().register(new AuraCrystalWhiteItem());
@@ -104,6 +112,9 @@ public class CommonSetup {
         e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraColorerTile(), AuraColorer.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_colorer"));
         e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraGrowerTile(), AuraGrower.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_grower"));
         e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraBrewerTile(), AuraBrewer.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_brewer"));
+        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraFisherTile(), AuraFisher.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_fisher"));
+        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraLooterTile(), AuraLooter.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_looter"));
+        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraMobSpawnerTile(), AuraMobSpawner.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_mob_spawner"));
     }
 }
 

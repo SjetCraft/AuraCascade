@@ -10,8 +10,6 @@ public interface IBaseAuraConsumerTile {
 
     public void onUsePower();
 
-    public boolean validItemsNearby();
-
     /**
      * Used for rendering information about the IBaseAuraNodeTile to the screen on mouse-over
      *

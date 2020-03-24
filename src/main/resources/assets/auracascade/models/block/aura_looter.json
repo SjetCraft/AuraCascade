@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "auracascade:block/aura_looter_side",
+    "down": "auracascade:block/aura_looter_top",
+    "up": "auracascade:block/aura_looter_top",
+    "east": "auracascade:block/aura_looter_side",
+    "west": "auracascade:block/aura_looter_side",
+    "north": "auracascade:block/aura_looter_side",
+    "south": "auracascade:block/aura_looter_side"
+  }
+}

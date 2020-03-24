@@ -54,9 +54,4 @@ public class AuraGrowerTile extends BaseAuraConsumerTile {
             }
         }
     }
-
-    @Override
-    public boolean validItemsNearby() {
-        return false;
-    }
 }

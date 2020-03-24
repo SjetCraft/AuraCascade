@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "auracascade:block/aura_mob_spawner"
+  }
+}
