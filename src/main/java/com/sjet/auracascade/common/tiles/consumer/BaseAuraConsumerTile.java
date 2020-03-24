@@ -5,8 +5,10 @@ import com.sjet.auracascade.client.particles.ParticleHelper;
 import com.sjet.auracascade.common.api.IAuraColor;
 import com.sjet.auracascade.common.api.IBaseAuraConsumerTile;
 import com.sjet.auracascade.common.tiles.node.AuraNodeTile;
+import com.sjet.auracascade.common.util.NBTListHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -20,6 +22,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
+import static com.sjet.auracascade.AuraCascade.TICKS_PER_SECOND;
+
 public abstract class BaseAuraConsumerTile extends TileEntity implements IBaseAuraConsumerTile, ITickableTileEntity {
 
     public int storedPower;
@@ -27,6 +31,7 @@ public abstract class BaseAuraConsumerTile extends TileEntity implements IBaseAu
     public int progress;
 
     protected ArrayList<BlockPos> connectedNodesList = new ArrayList<>();
+    public static final String CONNECTED_LIST = "connected_list";
 
     public BaseAuraConsumerTile(TileEntityType<?> type) {
         super(type);
@@ -74,10 +79,23 @@ public abstract class BaseAuraConsumerTile extends TileEntity implements IBaseAu
         }
     }
 
+
+    @Override
+    public void tick() {
+        if (!world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 1) {
+            getPowerfromAdjacentNodes();
+            process();
+
+            this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
+        } else if (world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 2) {
+            transferPowerParticles();
+        }
+    }
+
     @OnlyIn(Dist.CLIENT)
     public void transferPowerParticles() {
-        for (BlockPos target : connectedNodesList) {
-            ParticleHelper.pumpTransferParticles(this.world, this.pos, target, IAuraColor.WHITE, lastPower);
+        for (BlockPos nodePos : connectedNodesList) {
+            ParticleHelper.pumpTransferParticles(this.world, nodePos, this.pos, IAuraColor.WHITE, lastPower);
         }
     }
 
@@ -104,6 +122,9 @@ public abstract class BaseAuraConsumerTile extends TileEntity implements IBaseAu
         storedPower = nbt.getInt("storedPower");
         lastPower = nbt.getInt("lastPower");
         progress = nbt.getInt("progress");
+
+        connectedNodesList.clear();
+        this.connectedNodesList = (ArrayList<BlockPos>) CONNECTED_LIST_NBT.read(nbt);
     }
 
     @Override
@@ -111,6 +132,8 @@ public abstract class BaseAuraConsumerTile extends TileEntity implements IBaseAu
         nbt.putInt("storedPower", storedPower);
         nbt.putInt("lastPower",lastPower);
         nbt.putInt("progress", progress);
+
+        CONNECTED_LIST_NBT.write(connectedNodesList, nbt);
 
         return super.write(nbt);
     }
@@ -137,4 +160,10 @@ public abstract class BaseAuraConsumerTile extends TileEntity implements IBaseAu
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
         this.read(packet.getNbtCompound());
     }
+
+    private NBTListHelper<BlockPos> CONNECTED_LIST_NBT = new NBTListHelper<BlockPos>(
+            CONNECTED_LIST,
+            (nbt, pos) -> nbt.put("connected_node", NBTUtil.writeBlockPos(pos)),
+            nbt -> NBTUtil.readBlockPos(nbt.getCompound("connected_node"))
+    );
 }

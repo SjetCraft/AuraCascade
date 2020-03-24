@@ -8,7 +8,7 @@
   },
   "elements": [
     {
-      "name": "aura_node",
+      "name": "aura_node_pump_light",
       "from": [ 4, 4, 4 ],
       "to": [ 12, 12, 12 ],
       "faces": {

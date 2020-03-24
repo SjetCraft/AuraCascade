@@ -46,16 +46,4 @@ public class AuraColorerTile extends BaseAuraConsumerTile {
         List<SheepEntity> nearbySheep = world.getEntitiesWithinAABB(SheepEntity.class, Common.getAABB(this.pos, 2));
         return nearbySheep.size() > 0;
     }
-
-    @Override
-    public void tick() {
-        if (!world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 1) {
-            getPowerfromAdjacentNodes();
-            process();
-
-            this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
-        } else if (world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 2) {
-            transferPowerParticles();
-        }
-    }
 }
