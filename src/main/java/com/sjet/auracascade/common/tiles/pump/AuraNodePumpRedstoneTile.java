@@ -24,6 +24,8 @@ public class AuraNodePumpRedstoneTile extends BaseAuraNodePumpTile {
     @ObjectHolder(AuraCascade.MODID + ":aura_node_pump_redstone")
     public static final TileEntityType<AuraNodePumpCreativeTile> TYPE_PUMP_LIGHT = null;
 
+    private static final int POWER = 1500;
+
     public AuraNodePumpRedstoneTile() {
         super(TYPE_PUMP_LIGHT);
     }
@@ -49,7 +51,7 @@ public class AuraNodePumpRedstoneTile extends BaseAuraNodePumpTile {
                     for (int i = 0; i <= MAX_DISTANCE; i++) {
                         //only consume redstone wire blocks
                         if (consumeBlock(blockPos, Blocks.REDSTONE_WIRE)) {
-                            addFuel((int) (10 * Math.pow(1.4, i)), 1500);
+                            addFuel((int) (10 * Math.pow(1.4, i)), POWER);
                             blockPos = blockPos.offset(facing, 1);
                         } else {
                             break;

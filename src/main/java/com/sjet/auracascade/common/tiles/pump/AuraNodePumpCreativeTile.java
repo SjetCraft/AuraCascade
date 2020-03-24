@@ -20,6 +20,8 @@ public class AuraNodePumpCreativeTile extends BaseAuraNodePumpTile {
     @ObjectHolder(AuraCascade.MODID + ":aura_node_pump_creative")
     public static final TileEntityType<AuraNodePumpCreativeTile> TYPE_PUMP_CREATIVE = null;
 
+    private static final int POWER = 100000;
+
     public AuraNodePumpCreativeTile() {
         super(TYPE_PUMP_CREATIVE);
     }
@@ -28,7 +30,7 @@ public class AuraNodePumpCreativeTile extends BaseAuraNodePumpTile {
     public void tick() {
         super.tick();
         if(!world.isRemote) {
-            addFuel(2, 100000);
+            addFuel(2, POWER);
         }
     }
 

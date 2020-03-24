@@ -155,7 +155,7 @@ public class ParticleHelper {
         for (int i = 0; i < 50; i++) {
             Random rand = new Random();
             //addParticle(particle, xPos, yPos, zPos, xSpeed, ySpeed, zSpeed)
-            world.addParticle(ParticleTypes.FLAME, source.x, source.y, source.z, (rand.nextDouble() - .5D) / 16, rand.nextDouble() / 16, (rand.nextDouble() - .5) / 16);
+            world.addParticle(ParticleTypes.FLAME, source.x, source.y, source.z, (rand.nextDouble() - .5) / 16, rand.nextDouble() / 16, (rand.nextDouble() - .5) / 16);
         }
     }
 
@@ -164,6 +164,14 @@ public class ParticleHelper {
             Random rand = new Random();
             //addParticle(particle, xPos, yPos, zPos, xSpeed, ySpeed, zSpeed)
             world.addParticle(ParticleTypes.POOF, source.getX() + 0.5, source.getY() + 0.5, source.getZ() + 0.5, (rand.nextDouble() - .5) / 4, (rand.nextDouble() - .5) / 4, (rand.nextDouble() - .5) / 4);
+        }
+    }
+
+    public static void itemCreateParticles(World world, Vec3d source) {
+        for (int i = 0; i < 30; i++) {
+            Random rand = new Random();
+            //addParticle(particle, xPos, yPos, zPos, xSpeed, ySpeed, zSpeed)
+            world.addParticle(ParticleTypes.WITCH, source.x, source.y, source.z, (rand.nextDouble() - .5) / 16, rand.nextDouble() / 16, (rand.nextDouble() - .5) / 16);
         }
     }
 }

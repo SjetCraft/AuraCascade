@@ -63,7 +63,7 @@ public abstract class BaseAuraConsumerTile extends TileEntity implements IBaseAu
         }
     }
 
-    public void process() {
+    public void processPower() {
         int nextBoostCost = getPowerPerProgress();
         while (true) {
             if (progress > getMaxProgress()) {
@@ -84,8 +84,7 @@ public abstract class BaseAuraConsumerTile extends TileEntity implements IBaseAu
     public void tick() {
         if (!world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 1) {
             getPowerfromAdjacentNodes();
-            process();
-
+            processPower();
             this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
         } else if (world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 2) {
             transferPowerParticles();

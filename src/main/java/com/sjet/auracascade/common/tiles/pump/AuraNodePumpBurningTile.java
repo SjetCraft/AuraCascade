@@ -27,6 +27,8 @@ public class AuraNodePumpBurningTile extends BaseAuraNodePumpTile {
     public static final TileEntityType<AuraNodePumpBurningTile> TYPE_PUMP_BURNING = null;
 
     private Vec3d itemConsumed = null;
+    private static final int RANGE = 3;
+    private static final int POWER = 300;
 
     public AuraNodePumpBurningTile() {
         super(TYPE_PUMP_BURNING);
@@ -37,8 +39,8 @@ public class AuraNodePumpBurningTile extends BaseAuraNodePumpTile {
     public void tick() {
         super.tick();
         //reset despawn timer every 120 seconds
-        if (world.getGameTime() % TICKS_PER_SECOND * 120 == 0) {
-            Common.keepItemsAlive(this, 3);
+        if (!world.isRemote && world.getGameTime() % TICKS_PER_SECOND * 120 == 0) {
+            Common.keepItemsAlive(this, RANGE);
         }
         if (!world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 0) {
             findFuelAndAdd();
@@ -50,10 +52,8 @@ public class AuraNodePumpBurningTile extends BaseAuraNodePumpTile {
 
     @Override
     public void findFuelAndAdd() {
-        itemConsumed = null;
         if(pumpTime <= 0) {
-            int range = 3;
-            List<ItemEntity> nearbyItems = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(pos.add(-range, -range, -range), pos.add(range, range, range)));
+            List<ItemEntity> nearbyItems = world.getEntitiesWithinAABB(ItemEntity.class, Common.getAABB(this.pos, RANGE));
 
             //iterate through the nearby items
             for (ItemEntity itemEntity : nearbyItems) {
@@ -69,7 +69,7 @@ public class AuraNodePumpBurningTile extends BaseAuraNodePumpTile {
                     }
 
                     if (burnTime != 0) {
-                        addFuel(burnTime / 5, 300);
+                        addFuel(burnTime / 5, POWER);
                         itemConsumed = itemEntity.getPositionVector();
                         itemStack.shrink(1);
                         break;

@@ -35,6 +35,7 @@ public class CommonSetup {
         //Consumers
         e.getRegistry().register(new AuraColorer());
         e.getRegistry().register(new AuraGrower());
+        e.getRegistry().register(new AuraBrewer());
     }
 
     @SubscribeEvent
@@ -54,6 +55,7 @@ public class CommonSetup {
         //Consumers
         e.getRegistry().register(new BlockItem(AuraColorer.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_colorer"));
         e.getRegistry().register(new BlockItem(AuraGrower.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_grower"));
+        e.getRegistry().register(new BlockItem(AuraBrewer.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_brewer"));
 
         //Aura Crystals
         e.getRegistry().register(new AuraCrystalWhiteItem());
@@ -101,6 +103,7 @@ public class CommonSetup {
         //Consumers
         e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraColorerTile(), AuraColorer.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_colorer"));
         e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraGrowerTile(), AuraGrower.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_grower"));
+        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraBrewerTile(), AuraBrewer.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_brewer"));
     }
 }
 

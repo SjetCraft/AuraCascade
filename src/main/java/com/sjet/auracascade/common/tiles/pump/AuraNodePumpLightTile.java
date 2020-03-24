@@ -18,9 +18,10 @@ import static com.sjet.auracascade.AuraCascade.TICKS_PER_SECOND;
 
 public class AuraNodePumpLightTile extends BaseAuraNodePumpTile {
 
-
     @ObjectHolder(AuraCascade.MODID + ":aura_node_pump_light")
     public static final TileEntityType<AuraNodePumpLightTile> TYPE_PUMP_LIGHT = null;
+
+    private static final int POWER = 750;
 
     public AuraNodePumpLightTile() {
         super(TYPE_PUMP_LIGHT);
@@ -39,19 +40,19 @@ public class AuraNodePumpLightTile extends BaseAuraNodePumpTile {
         for (Direction facing : Direction.values()) {
             BlockPos blockPos = getPos().offset(facing);
             if (consumeBlock(blockPos, Blocks.TORCH)) {
-                addFuel(30, 750);
+                addFuel(30, POWER);
                 break;
             } else if (consumeBlock(blockPos, Blocks.GLOWSTONE)) {
-                addFuel(180, 750);
+                addFuel(180, POWER);
                 break;
             } else if (consumeBlock(blockPos, Blocks.SEA_LANTERN)) {
-                addFuel(220, 750);
+                addFuel(220, POWER);
                 break;
             } else if (consumeBlock(blockPos, Blocks.LANTERN)) {
-                addFuel(100, 750);
+                addFuel(100, POWER);
                 break;
             } else if (consumeBlock(blockPos, Blocks.REDSTONE_LAMP)) {
-                addFuel(150, 750);
+                addFuel(150, POWER);
                 break;
             }
         }
