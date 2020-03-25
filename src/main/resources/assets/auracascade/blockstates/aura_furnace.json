@@ -1,0 +1,8 @@
+{
+  "variants": {
+      "facing=north": { "model": "auracascade:block/aura_furnace" },
+      "facing=south": { "model": "auracascade:block/aura_furnace", "y": 180 },
+      "facing=west":  { "model": "auracascade:block/aura_furnace", "y": 270 },
+      "facing=east":  { "model": "auracascade:block/aura_furnace", "y": 90 }
+  }
+}

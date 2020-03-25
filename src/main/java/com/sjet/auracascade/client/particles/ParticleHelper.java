@@ -152,10 +152,10 @@ public class ParticleHelper {
     }
 
     public static void itemBurningParticles(World world, Vec3d source) {
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 30; i++) {
             Random rand = new Random();
             //addParticle(particle, xPos, yPos, zPos, xSpeed, ySpeed, zSpeed)
-            world.addParticle(ParticleTypes.FLAME, source.x, source.y, source.z, (rand.nextDouble() - .5) / 16, rand.nextDouble() / 16, (rand.nextDouble() - .5) / 16);
+            world.addParticle(ParticleTypes.FLAME, source.x, source.y + .2, source.z, (rand.nextDouble() - .5) / 16, (rand.nextDouble() - .5) / 16, (rand.nextDouble() - .5) / 16);
         }
     }
 

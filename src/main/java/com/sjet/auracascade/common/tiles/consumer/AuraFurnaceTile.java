@@ -4,85 +4,77 @@ import com.sjet.auracascade.AuraCascade;
 import com.sjet.auracascade.client.particles.ParticleHelper;
 import com.sjet.auracascade.common.util.Common;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.item.crafting.BlastingRecipe;
+import net.minecraft.item.crafting.FurnaceRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.Registry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.List;
-import java.util.Random;
+import java.util.Optional;
 
 import static com.sjet.auracascade.AuraCascade.TICKS_PER_SECOND;
 
-public class AuraBrewerTile extends BaseAuraConsumerTile {
+public class AuraFurnaceTile extends BaseAuraConsumerTile {
 
-    @ObjectHolder(AuraCascade.MODID + ":aura_brewer")
-    public static final TileEntityType<AuraBrewerTile> AURA_BREWER = null;
+    @ObjectHolder(AuraCascade.MODID + ":aura_furnace")
+    public static final TileEntityType<AuraFurnaceTile> AURA_FURNACE = null;
 
     private Vec3d itemConsumed = null;
     private static final int RANGE = 3;
 
-    public AuraBrewerTile() {
-        super(AURA_BREWER);
+    public AuraFurnaceTile() {
+        super(AURA_FURNACE);
     }
 
     @Override
     public int getMaxProgress() {
-        return 25;
+        return 10;
     }
 
     @Override
     public int getPowerPerProgress() {
-        return 500;
+        return 190;
     }
 
     @Override
     public void onUsePower() {
-        itemConsumed = null;
-        //get all items nearby the brewer
-        List<ItemEntity> nearbyItems = world.getEntitiesWithinAABB(ItemEntity.class, Common.getAABB(this.pos, RANGE));
+        List<ItemEntity> itemEntities = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(pos).grow(3.0));
 
-        //iterate over all nearby items
-        for (ItemEntity itemEntity : nearbyItems) {
-            ItemStack itemStack = itemEntity.getItem();
+        for (ItemEntity itemEntity : itemEntities) {
+            //get the smelting/blasting recipes for the existing item
+            Optional<FurnaceRecipe> optionalSmeltingRecipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(itemEntity.getItem()), world);
+            Optional<BlastingRecipe> optionalBlastingRecipe = world.getRecipeManager().getRecipe(IRecipeType.BLASTING, new Inventory(itemEntity.getItem()), world);
 
-            //check if the item is a watter bottle
-            if (itemStack.getItem() == Items.POTION && PotionUtils.getPotionFromItem(itemStack) == Potions.WATER) {
+            //if there is a smelting/blasting recipe for the item
+            if (optionalSmeltingRecipe.isPresent() || optionalBlastingRecipe.isPresent()) {
+                ItemStack result = optionalSmeltingRecipe
+                        .map(smeltingRecipe -> optionalSmeltingRecipe.get().getRecipeOutput().copy())
+                        .orElseGet(() -> optionalBlastingRecipe.get().getRecipeOutput().copy());
+                //result.setCount(result.getCount() * itemEntity.getItem().getCount());
 
-                //create a new random potion item
-                ItemStack newItemStack = getBrewResult(itemStack);
-
-                //spawn the new potion item in the world
-                ItemEntity newItemEntity = new ItemEntity(world, itemEntity.getPosX(), itemEntity.getPosY(), itemEntity.getPosZ(), newItemStack);
-                newItemEntity.lifespan = itemEntity.lifespan;
+                //spawn the new item item in the world
+                ItemEntity newItemEntity = new ItemEntity(world, itemEntity.getPosX(), itemEntity.getPosY(), itemEntity.getPosZ(), result);
                 newItemEntity.setMotion(itemEntity.getMotion());
                 world.addEntity(newItemEntity);
 
                 //save the position for rendering particles on the client
                 itemConsumed = itemEntity.getPositionVector();
 
-                //remove the existing potion
+                //decriment the stack count
                 itemEntity.getItem().shrink(1);
 
-                //only convert one water bottle to a potion
+                //only smelt one item per operation
                 break;
             }
         }
-    }
-
-    public ItemStack getBrewResult(ItemStack stack) {
-        Potion potion = Registry.POTION.getRandom(new Random());
-        ItemStack newStack = new ItemStack(stack.getItem());
-        PotionUtils.addPotionToItemStack(newStack, potion);
-        return newStack;
     }
 
     @Override
@@ -91,19 +83,19 @@ public class AuraBrewerTile extends BaseAuraConsumerTile {
         if (!world.isRemote && world.getGameTime() % TICKS_PER_SECOND * 120 == 0) {
             Common.keepItemsAlive(this, RANGE);
         }
+        //clear the Vec3d position for rendering
         if (!world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 0) {
-            //clear Vec3d position for rendering
             itemConsumed = null;
         }
         else if (world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 2) {
-            brewItemParticles();
+            burnParticles();
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void brewItemParticles() {
-        if (itemConsumed != null) {
-            ParticleHelper.itemCreateParticles(this.world, itemConsumed);
+    public void burnParticles() {
+        if(itemConsumed != null) {
+            ParticleHelper.itemBurningParticles(this.world, itemConsumed);
         }
     }
 
