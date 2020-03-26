@@ -1,0 +1,32 @@
+{
+  "type": "auracascade:cascading_processing",
+  "ingredients": [
+    {
+      "item": "auracascade:aura_gem_white"
+    },
+    {
+      "item": "auracascade:aura_gem_yellow"
+    },
+    {
+      "item": "auracascade:aura_gem_orange"
+    },
+    {
+      "item": "auracascade:aura_gem_red"
+    },
+    {
+      "item": "auracascade:aura_gem_green"
+    },
+    {
+      "item": "auracascade:aura_gem_blue"
+    },
+    {
+      "item": "auracascade:aura_gem_violet"
+    },
+    {
+      "item": "auracascade:aura_gem_black"
+    }
+  ],
+  "output": {
+    "item": "auracascade:arcane_prism"
+  }
+}

@@ -2,9 +2,8 @@ package com.sjet.auracascade.common.util;
 
 import com.sjet.auracascade.common.api.IAuraColor;
 import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.state.DirectionProperty;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -63,14 +62,21 @@ public class Common {
     }
 
     public static void keepItemsAlive(TileEntity tileEntity, int range) {
-        List<ItemEntity> nearbyItems = tileEntity.getWorld().getEntitiesWithinAABB(ItemEntity.class, getAABB(tileEntity.getPos(), range));
+        List<ItemEntity> nearbyItems = tileEntity.getWorld().getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(tileEntity.getPos()).grow(range));
         for (ItemEntity itemEntity : nearbyItems) {
             itemEntity.setNoDespawn();
         }
     }
 
-    public static AxisAlignedBB getAABB(BlockPos blockPos, int range) {
-        return new AxisAlignedBB(  blockPos.getX() - range, blockPos.getY() - range, blockPos.getZ() - range,
-                blockPos.getX() + range, blockPos.getY() + range, blockPos.getZ() + range);
+    public static CompoundNBT writeVec3D(Vec3d vec3d) {
+        CompoundNBT nbt = new CompoundNBT();
+        nbt.putDouble("X", vec3d.x);
+        nbt.putDouble("Y", vec3d.y);
+        nbt.putDouble("Z", vec3d.z);
+        return nbt;
+    }
+
+    public static Vec3d readVec3D(CompoundNBT nbt) {
+        return new Vec3d(nbt.getDouble("X"), nbt.getDouble("Y"), nbt.getDouble("Z"));
     }
 }

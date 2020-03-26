@@ -29,6 +29,9 @@
   "item.auracascade.aura_gem_violet": "Arcane Violet Gem",
   "item.auracascade.aura_gem_black": "Arcane Black Gem",
 
+  "_item4": "Misc",
+  "item.auracascade.arcane_prism":"Arcane Prism",
+
   "_blocks1": "Aura Nodes",
   "block.auracascade.aura_node": "Aura Node",
   "block.auracascade.aura_node_capacitor": "Aura Capacitor",
@@ -52,6 +55,7 @@
   "block.auracascade.aura_looter": "Cascading Looter",
   "block.auracascade.aura_mob_spawner": "Cascading Spawner",
   "block.auracascade.aura_furnace": "Cascading Smelter",
+  "block.auracascade.aura_cascading_processor": "Cascading Processor",
 
 
   "_comment": "Creative Tabs",

@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "auracascade:block/aura_cascading_processor" }
+  }
+}

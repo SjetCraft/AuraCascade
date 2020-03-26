@@ -54,7 +54,7 @@ public class AuraNodePumpBurningTile extends BaseAuraNodePumpTile {
     public void findFuelAndAdd() {
         itemConsumed = null;
         if(pumpTime <= 0) {
-            List<ItemEntity> nearbyItems = world.getEntitiesWithinAABB(ItemEntity.class, Common.getAABB(this.pos, RANGE));
+            List<ItemEntity> nearbyItems = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(this.pos).grow(RANGE));
 
             //iterate through the nearby items
             for (ItemEntity itemEntity : nearbyItems) {

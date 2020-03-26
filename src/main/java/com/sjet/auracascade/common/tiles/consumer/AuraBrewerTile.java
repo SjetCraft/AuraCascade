@@ -11,6 +11,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraftforge.api.distmarker.Dist;
@@ -48,7 +49,7 @@ public class AuraBrewerTile extends BaseAuraConsumerTile {
     public void onUsePower() {
         itemConsumed = null;
         //get all items nearby the brewer
-        List<ItemEntity> nearbyItems = world.getEntitiesWithinAABB(ItemEntity.class, Common.getAABB(this.pos, RANGE));
+        List<ItemEntity> nearbyItems = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(this.pos).grow(RANGE));
 
         //iterate over all nearby items
         for (ItemEntity itemEntity : nearbyItems) {

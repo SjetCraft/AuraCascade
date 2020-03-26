@@ -1,0 +1,14 @@
+{
+  "type": "auracascade:cascading_processing",
+  "ingredients": [
+    {
+      "item": "minecraft:blue_wool"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    }
+  ],
+  "output": {
+    "item": "auracascade:aura_ingot_blue"
+  }
+}

@@ -72,7 +72,7 @@ public class AuraFurnaceTile extends BaseAuraConsumerTile {
                 itemEntity.getItem().shrink(1);
 
                 //only smelt one item per operation
-                break;
+                return;
             }
         }
     }

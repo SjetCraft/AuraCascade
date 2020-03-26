@@ -1,10 +1,12 @@
 package com.sjet.auracascade;
 
+import com.sjet.auracascade.common.crafting.ModRecipes;
 import com.sjet.auracascade.setup.*;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -38,5 +40,11 @@ public class AuraCascade {
 
         MinecraftForge.EVENT_BUS.addListener(EventHandler::onLivingFallEvent);
         MinecraftForge.EVENT_BUS.addListener(EventHandler::onProjectileImpact);
+
+        ModRecipes.RegistrationHandler.registerRecipeTypes();
+    }
+
+    public static ResourceLocation getId(String path) {
+        return new ResourceLocation(MODID, path);
     }
 }

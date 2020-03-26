@@ -4,6 +4,7 @@ import com.sjet.auracascade.AuraCascade;
 import com.sjet.auracascade.common.util.Common;
 import net.minecraft.entity.*;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.registries.ObjectHolder;
@@ -15,6 +16,8 @@ public class AuraMobSpawnerTile extends BaseAuraConsumerTile {
 
     @ObjectHolder(AuraCascade.MODID + ":aura_mob_spawner")
     public static final TileEntityType<AuraMobSpawnerTile> AURA_MOB_SPAWNER = null;
+
+    private static final int RANGE = 1;
 
     public AuraMobSpawnerTile() {
         super(AURA_MOB_SPAWNER);
@@ -38,8 +41,8 @@ public class AuraMobSpawnerTile extends BaseAuraConsumerTile {
         EntityType spawnEntity;
         BlockPos spawnBase = new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
 
-        //only spawn new mobs if there is not a mob on top of the spawner
-        List<Entity> entityList = world.getEntitiesWithinAABB(Entity.class, Common.getAABB(spawnBase, 1));
+        //only spawn new mobs if there is not a mob on top of the spawner or right next to it
+        List<Entity> entityList = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(this.pos).grow(RANGE));
         for (Entity entity : entityList) {
             if (entity instanceof MobEntity) {
                 return;
