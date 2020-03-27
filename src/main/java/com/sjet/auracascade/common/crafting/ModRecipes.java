@@ -15,7 +15,7 @@ import net.minecraftforge.registries.ObjectHolder;
 public final class ModRecipes {
     private ModRecipes() {}
 
-    @ObjectHolder(AuraCascade.MODID + "cascading_processing")
+    @ObjectHolder("cascading_processing")
     public static IRecipeSerializer CASCADING_PROCESSING_SERIALIZER;
 
     public static IRecipeType<CascadingProcessingRecipe> CASCADING_PROCESSING_TYPE;
@@ -28,12 +28,12 @@ public final class ModRecipes {
             final IForgeRegistry<IRecipeSerializer<?>> registry = event.getRegistry();
 
             registry.registerAll(
-                    new CascadingProcessingRecipeSerializer().setRegistryName(AuraCascade.MODID, "cascading_processing")
+                    new CascadingProcessingRecipeSerializer().setRegistryName("cascading_processing")
             );
         }
 
         public static void registerRecipeTypes() {
-            CASCADING_PROCESSING_TYPE = Registry.register(Registry.RECIPE_TYPE, new ResourceLocation(AuraCascade.MODID, "cascading_processing"), new IRecipeType<CascadingProcessingRecipe>() {
+            CASCADING_PROCESSING_TYPE = Registry.register(Registry.RECIPE_TYPE, new ResourceLocation( "cascading_processing"), new IRecipeType<CascadingProcessingRecipe>() {
                 public String toString() {
                     return "cascading_processing";
                 }
