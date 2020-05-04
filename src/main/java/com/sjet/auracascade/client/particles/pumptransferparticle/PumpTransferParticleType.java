@@ -24,7 +24,7 @@ public class PumpTransferParticleType extends ParticleType<PumpTransferParticleD
 
         @Override
         public Particle makeParticle(PumpTransferParticleData data, World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            PumpTransferParticle particle = new PumpTransferParticle(world, x, y, z, data.targetX, data.targetY, data.targetZ, xSpeed, ySpeed, zSpeed, data.size, data.r, data.g, data.b, data.maxAge, this.spriteSet);
+            PumpTransferParticle particle = new PumpTransferParticle(world, x, y, z, data.targetX, data.targetY, data.targetZ, xSpeed, ySpeed, zSpeed, data.size, data.maxAge, this.spriteSet);
             particle.selectSpriteRandomly(this.spriteSet);
             return particle;
         }

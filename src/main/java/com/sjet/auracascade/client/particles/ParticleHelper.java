@@ -111,10 +111,10 @@ public class ParticleHelper {
         }
     }
 
-    public static void pumpTransferParticles(World world, BlockPos source, BlockPos target, IAuraColor color, int auraAmount) {
+    public static void pumpTransferParticles(World world, BlockPos source, BlockPos target) {
         Random rand = new Random();
         //delta is the area where the particles will travel through
-        double delta = Common.getDistance(source, target) * 6;
+        double delta = Common.getDistance(source, target) * 3;
         //the deltaX,Y,Z is the control to extract the direction
         double deltaX = (target.getX() - source.getX()) / delta;
         double deltaY = (target.getY() - source.getY()) / delta;
@@ -124,21 +124,19 @@ public class ParticleHelper {
         double sourceY = source.getY() + 0.5;
         double sourceZ = source.getZ() + 0.5;
 
-        //Aura Color
-        float r = color.getRed();
-        float g = color.getGreen();
-        float b = color.getBlue();
-
         //spawns particles through delta-1 areas
         for (int i = 0; i < delta; i++) {
-            float randomSize = 0.1f + (0.075f - 0.15f) * rand.nextFloat();
-            int randomAge = 14 + (rand.nextInt(5));
-            //spreads the particle source across the range
-            double range = rand.nextDouble() * (0.02) * (rand.nextFloat() > 0.5 ? 1 : -1);
+            float randomSize = 0.15f + (0.075f - 0.05f) * rand.nextFloat();
+            int randomAge = 10 + (rand.nextInt(6));
 
-            PumpTransferParticleData particle = PumpTransferParticleData.pumpTransferParticle(target.getX() + 0.5, target.getY() + 0.5, target.getZ() + 0.5, randomSize, r, g, b, randomAge);
+            PumpTransferParticleData particle = PumpTransferParticleData.pumpTransferParticle(target.getX() + 0.5, target.getY() + 0.5, target.getZ() + 0.5, randomSize, randomAge);
             //addParticle(particle, xPos, yPos, zPos, xSpeed, ySpeed, zSpeed)
-            world.addParticle(particle, sourceX + range, sourceY + range, sourceZ + range, deltaX * rand.nextDouble() * 1.1, deltaY * rand.nextDouble() * 2.5, deltaZ * rand.nextDouble() * 1.1);
+            world.addParticle(particle, sourceX, sourceY, sourceZ, deltaX * 2.5, deltaY * 2.5, deltaZ * 2.5);
+
+            if (source.getX() != sourceX || source.getY() != sourceY || source.getZ() != sourceZ) {
+                //addParticle(particle, xPos, yPos, zPos, xSpeed, ySpeed, zSpeed)
+                world.addParticle(particle, source.getX() + 0.5, source.getY() + 0.5, source.getZ() + 0.5, deltaX * 2.5, deltaY * 2.5, deltaZ * 2.5);
+            }
 
             //moves the particle generation by delta distance
             if (deltaX != 0) {

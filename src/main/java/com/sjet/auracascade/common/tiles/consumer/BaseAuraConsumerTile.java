@@ -93,7 +93,7 @@ public abstract class BaseAuraConsumerTile extends TileEntity implements IBaseAu
     @OnlyIn(Dist.CLIENT)
     public void transferPowerParticles() {
         for (BlockPos nodePos : connectedNodesList) {
-            ParticleHelper.pumpTransferParticles(this.world, nodePos, this.pos, IAuraColor.WHITE, lastPower);
+            ParticleHelper.pumpTransferParticles(this.world, nodePos, this.pos);
         }
     }
 

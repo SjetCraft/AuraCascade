@@ -16,21 +16,15 @@ public class PumpTransferParticle extends SpriteTexturedParticle {
     private IAnimatedSprite spriteSet;
 
     public PumpTransferParticle(World world, double sourceX, double sourceY, double sourceZ, double targetX, double targetY, double targetZ, double xSpeed, double ySpeed, double zSpeed,
-                                float size, float red, float green, float blue, float maxAge, IAnimatedSprite spriteSet) {
+                                float size, float maxAge, IAnimatedSprite spriteSet) {
         super(world, sourceX, sourceY, sourceZ);
-        motionX = xSpeed;
-        motionY = ySpeed;
-        motionZ = zSpeed;
+        motionX = xSpeed * 0.14;
+        motionY = ySpeed * 0.14;
+        motionZ = zSpeed * 0.14;
 
-        float randomColorOffset = (float) (Math.random() * 0.15D);
-        red -= randomColorOffset;
-        blue -= randomColorOffset;
-        green -= randomColorOffset;
-
-        setColor(red, green, blue);
+        setColor(0.3F, 0.8F, 1F);
 
         particleGravity = 0;
-        this.setGravity(0f);
 
         this.maxAge = Math.round(maxAge);
 
@@ -50,27 +44,11 @@ public class PumpTransferParticle extends SpriteTexturedParticle {
         this.canCollide = false;
 
         this.spriteSet = spriteSet;
-
-        this.motionX *= 0.1D;
-        this.motionY *= 0.1D;
-        this.motionZ *= 0.1D;
-        this.motionX += motionX * 0.4D;
-        this.motionY += motionY * 0.4D;
-        this.motionZ += motionZ * 0.4D;
-
-        //random movement
-        motionX += 0.005 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
-        motionY += 0.003 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
-        motionZ += 0.005 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
     }
 
     @Override
     public IParticleRenderType getRenderType() {
         return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
-    }
-
-    public void setGravity(float value) {
-        particleGravity = value;
     }
 
     @Override
@@ -91,11 +69,6 @@ public class PumpTransferParticle extends SpriteTexturedParticle {
             this.setExpired();
         } else {
             this.move(this.motionX, this.motionY, this.motionZ);
-
-            //random movement
-            motionX += 0.003 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
-            motionY += 0.001 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
-            motionZ += 0.003 * rand.nextFloat() * (rand.nextFloat() > 0.5 ? 1 : -1);
 
             //randomly age the particle
             this.age += (rand.nextFloat() > 0.5 ? 0 : 1);

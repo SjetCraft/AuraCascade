@@ -12,24 +12,20 @@ import java.util.Locale;
 
 public class PumpTransferParticleData implements IParticleData {
     public final float size;
-    public final float r, g, b;
     public final float maxAge;
     public final double targetX;
     public final double targetY;
     public final double targetZ;
 
-    public static PumpTransferParticleData pumpTransferParticle(double targetX, double targetY, double targetZ, float size, float r, float g, float b, float maxAge) {
-        return new PumpTransferParticleData(targetX, targetY, targetZ, size, r, g, b, maxAge);
+    public static PumpTransferParticleData pumpTransferParticle(double targetX, double targetY, double targetZ, float size, float maxAge) {
+        return new PumpTransferParticleData(targetX, targetY, targetZ, size, maxAge);
     }
 
-    private PumpTransferParticleData(double targetX, double targetY, double targetZ, float size, float r, float g, float b, float maxAge) {
+    private PumpTransferParticleData(double targetX, double targetY, double targetZ, float size, float maxAge) {
         this.targetX = targetX;
         this.targetY = targetY;
         this.targetZ = targetZ;
         this.size = size;
-        this.r = r;
-        this.g = g;
-        this.b = b;
         this.maxAge = maxAge;
     }
 
@@ -45,17 +41,14 @@ public class PumpTransferParticleData implements IParticleData {
         buf.writeDouble(targetY);
         buf.writeDouble(targetZ);
         buf.writeFloat(size);
-        buf.writeFloat(r);
-        buf.writeFloat(g);
-        buf.writeFloat(b);
         buf.writeFloat(maxAge);
     }
 
     @Nonnull
     @Override
     public String getParameters() {
-        return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %.2f",
-                this.getType().getRegistryName(), this.size, this.r, this.g, this.b, this.maxAge);
+        return String.format(Locale.ROOT, "%s %.2f %.2f",
+                this.getType().getRegistryName(), this.size, this.maxAge);
     }
 
     public static final IDeserializer<PumpTransferParticleData> DESERIALIZER = new IDeserializer<PumpTransferParticleData>() {
@@ -71,20 +64,15 @@ public class PumpTransferParticleData implements IParticleData {
             reader.expect(' ');
             float size = reader.readFloat();
             reader.expect(' ');
-            float r = reader.readFloat();
-            reader.expect(' ');
-            float g = reader.readFloat();
-            reader.expect(' ');
-            float b = reader.readFloat();
             reader.expect(' ');
             float maxAge = reader.readFloat();
 
-            return new PumpTransferParticleData(targetX, targetY, targetZ, size, r, g, b, maxAge);
+            return new PumpTransferParticleData(targetX, targetY, targetZ, size, maxAge);
         }
 
         @Override
         public PumpTransferParticleData read(@Nonnull ParticleType<PumpTransferParticleData> type, PacketBuffer buf) {
-            return new PumpTransferParticleData(buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat());
+            return new PumpTransferParticleData(buf.readDouble(), buf.readDouble(), buf.readDouble(),buf.readFloat(), buf.readFloat());
         }
     };
 }

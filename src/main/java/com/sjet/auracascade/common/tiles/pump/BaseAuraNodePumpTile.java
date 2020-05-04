@@ -128,8 +128,7 @@ public abstract class BaseAuraNodePumpTile extends BaseAuraNodeTile implements I
     @OnlyIn(Dist.CLIENT)
     public void transferAuraParticles() {
         for(Map.Entry<BlockPos, String> target : sentNodesMap.entrySet()) {
-            String[] array = target.getValue().split(";");
-            ParticleHelper.pumpTransferParticles(this.world, this.pos, target.getKey(), IAuraColor.WHITE, Integer.parseInt(array[1]));
+            ParticleHelper.pumpTransferParticles(this.world, this.pos, target.getKey());
         }
     }
 

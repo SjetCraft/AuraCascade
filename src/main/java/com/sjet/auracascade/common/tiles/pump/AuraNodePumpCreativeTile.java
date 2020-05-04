@@ -37,18 +37,6 @@ public class AuraNodePumpCreativeTile extends BaseAuraNodePumpTile {
     @Override
     public void findFuelAndAdd() {}
 
-    @Override
-    public void transferAuraParticles() {
-        // Get a random color from the HashMap.
-        Object[] colorArray = auraMap.keySet().toArray();
-        IAuraColor randomColor = (IAuraColor) colorArray[new Random().nextInt(colorArray.length)];
-
-        for(Map.Entry<BlockPos, String> target : sentNodesMap.entrySet()) {
-            String array[]  = target.getValue().split(";");
-            ParticleHelper.pumpTransferParticles(this.world, this.pos, target.getKey(), randomColor, Integer.parseInt(array[1]));
-        }
-    }
-
     /**
      * Used to render the amount of Power and Aura on the screen
      *

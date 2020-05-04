@@ -67,13 +67,4 @@ public class AuraNodePumpLightTile extends BaseAuraNodePumpTile {
         }
         return false;
     }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void transferAuraParticles() {
-        for (Map.Entry<BlockPos, String> target : sentNodesMap.entrySet()) {
-            String array[] = target.getValue().split(";");
-            ParticleHelper.pumpTransferParticles(this.world, this.pos, target.getKey(), IAuraColor.YELLOW, Integer.parseInt(array[1]));
-        }
-    }
 }
