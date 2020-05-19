@@ -8,6 +8,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,5 +79,32 @@ public class Common {
 
     public static Vec3d readVec3D(CompoundNBT nbt) {
         return new Vec3d(nbt.getDouble("X"), nbt.getDouble("Y"), nbt.getDouble("Z"));
+    }
+
+    //Author - Miraan Tabrez
+    public static <T> List<List<T>> getCombinations(int k, List<T> list) {
+        List<List<T>> combinations = new ArrayList<List<T>>();
+        if (k == 0) {
+            combinations.add(new ArrayList<T>());
+            return combinations;
+        }
+        for (int i = 0; i < list.size(); i++) {
+            T element = list.get(i);
+            List<T> rest = getSublist(list, i+1);
+            for (List<T> previous : getCombinations(k-1, rest)) {
+                previous.add(element);
+                combinations.add(previous);
+            }
+        }
+        return combinations;
+    }
+
+    //Author - Miraan Tabrez
+    public static <T> List<T> getSublist(List<T> list, int i) {
+        List<T> sublist = new ArrayList<T>();
+        for (int j = i; j < list.size(); j++) {
+            sublist.add(list.get(j));
+        }
+        return sublist;
     }
 }

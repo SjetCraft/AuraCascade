@@ -30,6 +30,7 @@ public class AuraCascadingProcessorTile extends BaseAuraConsumerTile {
 
     protected ArrayList<Vec3d> itemsConsumedList = new ArrayList<>();
     private static final int RANGE = 3;
+    private static final int MAX_RECIPE_SIZE = 8;
     private static final String CONSUMED_LIST = "items_consumed";
 
     public AuraCascadingProcessorTile() {
@@ -54,149 +55,88 @@ public class AuraCascadingProcessorTile extends BaseAuraConsumerTile {
         //get the list of ItemEntities around this TE
         List<ItemEntity> itemEntities = world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(pos).grow(RANGE));
 
+        //used to break out of loop
+        boolean validRecipe = false;
+
         //only check recipes if there are itemEntites around the processor
         if (!itemEntities.isEmpty()) {
-            //if there are no one item recipes found with the ingredients
-            if (!oneItemRecipe(itemEntities)) {
-                //if there are no two item recipes found with the ingredients
-                if (itemEntities.size() >= 2 && !twoItemRecipe(itemEntities)) {
-                    //if there are enough items to calculate eight item recipes
-                    if (itemEntities.size() >= 8 && eightItemRecipe(itemEntities)) {
+            List< List<ItemEntity> > combinations;
 
+            //iterate for each recipe size
+            for (int i = MAX_RECIPE_SIZE; i > 0 && !validRecipe; i--) {
+
+                //if there are not enough items for 'i' recipe size don't do anything
+                if(itemEntities.size() < i) {
+                    continue;
+                }
+
+                //get all possible combinations
+                combinations = Common.getCombinations(i, itemEntities);
+
+                //for each possible combination
+                for (int j = 0; j < combinations.size(); j++) {
+                    List<ItemEntity> list = combinations.get(j);
+
+                    //if the current combination is a valid recipe
+                    if(isValidRecipe(list)) {
+                        processRecipe(list);
+                        validRecipe = true;
+                        break;
                     }
                 }
             }
         }
     }
 
-    private boolean oneItemRecipe(List<ItemEntity> itemEntities) {
-        Inventory inventory;
+    /**
+     * @param itemEntities the list of item entities to test for a valid recipe
+     * @return true if the input list is a valid recipe
+     */
+    private boolean isValidRecipe(List<ItemEntity> itemEntities) {
+        //instantiates the Inventory for the recipe
+        Inventory inventory = new Inventory(itemEntities.size());
 
-        //check each item for a recipe
-        for (int i = 0; i < itemEntities.size(); i++) {
-            inventory = new Inventory(itemEntities.get(i).getItem());
-
-            Optional<CascadingProcessingRecipe> optionalCascadingRecipe = world.getRecipeManager().getRecipe(ModRecipes.CASCADING_PROCESSING_TYPE, inventory, world);
-
-            if (optionalCascadingRecipe.isPresent()) {
-                //get the result of the crafting operation
-                ItemStack result = optionalCascadingRecipe.get().getRecipeOutput().copy();
-
-                //spawn the new item item in the world
-                ItemEntity newItemEntity = new ItemEntity(world, pos.getX(), pos.getY() + 1, pos.getZ(), result);
-                world.addEntity(newItemEntity);
-
-                //save the position for rendering particles on the client
-                itemsConsumedList.add(itemEntities.get(i).getPositionVector());
-
-                //consume the crafting item
-                itemEntities.get(i).getItem().shrink(1);
-
-                //only process one recipe per operation
-                return true;
-            }
+        //populates the Inventory with the input items
+        for (ItemEntity itemEntity : itemEntities) {
+            inventory.addItem(itemEntity.getItem());
         }
-        //if no recipes were matched
-        return false;
+        System.out.println(inventory);
+        //creates the recipe
+        Optional<CascadingProcessingRecipe> optionalCascadingRecipe = world.getRecipeManager().getRecipe(ModRecipes.CASCADING_PROCESSING_TYPE, inventory, world);
+
+        return optionalCascadingRecipe.isPresent();
     }
 
-    private boolean twoItemRecipe(List<ItemEntity> itemEntities) {
-        Inventory inventory;
+    /**
+     * Assumes that the input list is a valid recipe. No exception handling if the recipe is not valid.
+     * Consumes the items in the world and spawns in the recipe result.
+     *
+     * @param itemEntities the list of item entities that make a valid recipe
+     */
+    private void processRecipe(List<ItemEntity> itemEntities) {
+        //instantiates the Inventory for the recipe
+        Inventory inventory = new Inventory(itemEntities.size());
 
-        //iterate over all combinations of the list
-        for (int i = 0; i < itemEntities.size(); i++) {
-            //don't check the same itemstacks or combinations that have already been checked
-            for (int j = i + 1; j < itemEntities.size(); j++) {
-                inventory = new Inventory(itemEntities.get(i).getItem(), itemEntities.get(j).getItem());
+        //populates the Inventory with the input items
+        for (ItemEntity itemEntity : itemEntities) {
+            inventory.addItem(itemEntity.getItem());
 
-                Optional<CascadingProcessingRecipe> optionalCascadingRecipe = world.getRecipeManager().getRecipe(ModRecipes.CASCADING_PROCESSING_TYPE, inventory, world);
+            //save the position for rendering particles on the client
+            itemsConsumedList.add(itemEntity.getPositionVector());
 
-                //if the inventory items are a match for a CascadingRecipe
-                if (optionalCascadingRecipe.isPresent()) {
-                    //get the result of the crafting operation
-                    ItemStack result = optionalCascadingRecipe.get().getRecipeOutput().copy();
-
-                    //spawn the new item item in the world
-                    ItemEntity newItemEntity = new ItemEntity(world, pos.getX(), pos.getY() + 1, pos.getZ(), result);
-                    world.addEntity(newItemEntity);
-
-                    //save the position for rendering particles on the client
-                    itemsConsumedList.add(itemEntities.get(i).getPositionVector());
-                    itemsConsumedList.add(itemEntities.get(j).getPositionVector());
-
-                    //consume the crafting items
-                    itemEntities.get(i).getItem().shrink(1);
-                    itemEntities.get(j).getItem().shrink(1);
-
-                    //only process one recipe per operation
-                    return true;
-                }
-            }
+            //consume the crafting item
+            itemEntity.getItem().shrink(1);
         }
-        //if no recipes were matched
-        return false;
-    }
 
-    private boolean eightItemRecipe(List<ItemEntity> itemEntities) {
-        Inventory inventory;
-        int listMax = itemEntities.size();
+        //creates the recipe
+        Optional<CascadingProcessingRecipe> optionalCascadingRecipe = world.getRecipeManager().getRecipe(ModRecipes.CASCADING_PROCESSING_TYPE, inventory, world);
 
-        //not proud of this but it works
-        for (int a = 0; a < listMax; a++) {
-            for (int b = a + 1; b < listMax; b++) {
-                for (int c = b + 1; c < listMax; c++) {
-                    for (int d = c + 1; d < listMax; d++) {
-                        for (int e = d + 1; e < listMax; e++) {
-                            for (int f = e + 1; f < listMax; f++) {
-                                for (int g = f + 1; g < listMax; g++) {
-                                    for (int h = f + 1; h < listMax; h++) {
-                                        inventory = new Inventory(  itemEntities.get(a).getItem(), itemEntities.get(b).getItem(), itemEntities.get(c).getItem(), itemEntities.get(d).getItem(),
-                                                                    itemEntities.get(e).getItem(), itemEntities.get(f).getItem(), itemEntities.get(g).getItem(), itemEntities.get(h).getItem());
+        //get the result of the crafting operation
+        ItemStack result = optionalCascadingRecipe.get().getRecipeOutput().copy();
 
-                                        Optional<CascadingProcessingRecipe> optionalCascadingRecipe = world.getRecipeManager().getRecipe(ModRecipes.CASCADING_PROCESSING_TYPE, inventory, world);
-
-                                        //if the inventory items are a match for a CascadingRecipe
-                                        if (optionalCascadingRecipe.isPresent()) {
-                                            //get the result of the crafting operation
-                                            ItemStack result = optionalCascadingRecipe.get().getRecipeOutput().copy();
-
-                                            //spawn the new item item in the world
-                                            ItemEntity newItemEntity = new ItemEntity(world, pos.getX(), pos.getY() + 1, pos.getZ(), result);
-                                            world.addEntity(newItemEntity);
-
-                                            //save the position for rendering particles on the client
-                                            itemsConsumedList.add(itemEntities.get(a).getPositionVector());
-                                            itemsConsumedList.add(itemEntities.get(b).getPositionVector());
-                                            itemsConsumedList.add(itemEntities.get(c).getPositionVector());
-                                            itemsConsumedList.add(itemEntities.get(d).getPositionVector());
-                                            itemsConsumedList.add(itemEntities.get(e).getPositionVector());
-                                            itemsConsumedList.add(itemEntities.get(f).getPositionVector());
-                                            itemsConsumedList.add(itemEntities.get(g).getPositionVector());
-                                            itemsConsumedList.add(itemEntities.get(h).getPositionVector());
-
-                                            //consume the crafting items
-                                            itemEntities.get(a).getItem().shrink(1);
-                                            itemEntities.get(b).getItem().shrink(1);
-                                            itemEntities.get(c).getItem().shrink(1);
-                                            itemEntities.get(d).getItem().shrink(1);
-                                            itemEntities.get(e).getItem().shrink(1);
-                                            itemEntities.get(f).getItem().shrink(1);
-                                            itemEntities.get(g).getItem().shrink(1);
-                                            itemEntities.get(h).getItem().shrink(1);
-
-                                            //only process one recipe per operation
-                                            return true;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        //if no recipes were matched
-        return false;
+        //spawn the new item item in the world
+        ItemEntity newItemEntity = new ItemEntity(world, pos.getX(), pos.getY() + 1, pos.getZ(), result);
+        world.addEntity(newItemEntity);
     }
 
     @Override
