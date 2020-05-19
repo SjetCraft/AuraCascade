@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "Y",
+    "#",
+    "G"
+  ],
+  "key": {
+    "Y": {
+      "item": "auracascade:aura_ingot_yellow"
+    },
+    "G": {
+      "item": "auracascade:aura_ingot_green"
+    },
+    "#": {
+      "item": "auracascade:aura_node"
+    }
+  },
+  "result": {
+    "item": "auracascade:aura_node_capacitor",
+    "count": 1
+  }
+}

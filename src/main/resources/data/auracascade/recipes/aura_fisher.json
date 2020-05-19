@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RRR",
+    "BBB"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:fishing_rod"
+    },
+    "B": {
+      "item": "auracascade:aura_ingot_blue"
+    }
+  },
+  "result": {
+    "item": "auracascade:aura_fisher",
+    "count": 1
+  }
+}

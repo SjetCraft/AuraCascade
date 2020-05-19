@@ -229,6 +229,7 @@ public abstract class BaseAuraNodeTile extends TileEntity implements IBaseAuraNo
                         auraMap.replace(color, auraHere + delta);
                         break;
                     case YELLOW:
+                        //diminish yellow aura
                         auraMap.replace(color, (int) (auraHere * 0.8));
                         break;
                 }

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#F#",
+    "FGF",
+    "#F#"
+  ],
+  "key": {
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "#": {
+      "item": "auracascade:aura_crystal_white"
+    },
+    "G": {
+      "item": "minecraft:grindstone"
+    }
+  },
+  "result": {
+    "item": "auracascade:aura_cascading_processor",
+    "count": 1
+  }
+}

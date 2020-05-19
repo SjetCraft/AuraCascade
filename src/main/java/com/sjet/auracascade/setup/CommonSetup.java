@@ -44,6 +44,7 @@ public class CommonSetup {
         e.getRegistry().register(new AuraMobSpawner());
         e.getRegistry().register(new AuraFurnace());
         e.getRegistry().register(new AuraCascadingProcessor());
+        e.getRegistry().register(new AuraPrismaticProcessor());
     }
 
     @SubscribeEvent
@@ -69,6 +70,7 @@ public class CommonSetup {
         e.getRegistry().register(new BlockItem(AuraMobSpawner.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_mob_spawner"));
         e.getRegistry().register(new BlockItem(AuraFurnace.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_furnace"));
         e.getRegistry().register(new BlockItem(AuraCascadingProcessor.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_cascading_processor"));
+        e.getRegistry().register(new BlockItem(AuraPrismaticProcessor.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_prismatic_processor"));
 
         //Aura Crystals
         e.getRegistry().register(new AuraCrystalWhiteItem());
@@ -124,6 +126,7 @@ public class CommonSetup {
         e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraMobSpawnerTile(), AuraMobSpawner.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_mob_spawner"));
         e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraFurnaceTile(), AuraFurnace.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_furnace"));
         e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraCascadingProcessorTile(), AuraCascadingProcessor.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_cascading_processor"));
+        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraPrismaticProcessorTile(), AuraPrismaticProcessor.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_prismatic_processor"));
     }
 }
 

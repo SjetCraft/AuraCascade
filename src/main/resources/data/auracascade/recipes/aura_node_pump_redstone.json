@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BBB",
+    "R#R",
+    "R R"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:redstone_block"
+    },
+    "R": {
+      "item": "auracascade:aura_ingot_red"
+    },
+    "#": {
+      "item": "auracascade:aura_node"
+    }
+  },
+  "result": {
+    "item": "auracascade:aura_node_pump_redstone",
+    "count": 1
+  }
+}

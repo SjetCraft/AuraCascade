@@ -1,0 +1,11 @@
+{
+  "type": "auracascade:cascading_processing",
+  "ingredients": [
+    {
+      "item": "minecraft:orange_wool"
+    }
+  ],
+  "output": {
+    "item": "minecraft:orange_dye"
+  }
+}

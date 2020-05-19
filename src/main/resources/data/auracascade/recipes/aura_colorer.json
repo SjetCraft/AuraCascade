@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WWW",
+    "W#W",
+    "WWW"
+  ],
+  "key": {
+    "W": {
+      "tag": "minecraft:wool"
+    },
+    "#": {
+      "item": "minecraft:shears"
+    }
+  },
+  "result": {
+    "item": "auracascade:aura_colorer",
+    "count": 1
+  }
+}

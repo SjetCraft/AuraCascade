@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG",
+    "Y#Y",
+    "Y Y"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glowstone"
+    },
+    "Y": {
+      "item": "auracascade:aura_ingot_yellow"
+    },
+    "#": {
+      "item": "auracascade:aura_node"
+    }
+  },
+  "result": {
+    "item": "auracascade:aura_node_pump_light",
+    "count": 1
+  }
+}

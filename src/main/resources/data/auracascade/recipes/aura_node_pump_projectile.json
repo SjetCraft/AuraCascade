@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "V#V"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:arrow"
+    },
+    "V": {
+      "item": "auracascade:aura_ingot_violet"
+    },
+    "#": {
+      "item": "auracascade:aura_node"
+    }
+  },
+  "result": {
+    "item": "auracascade:aura_node_pump_projectile",
+    "count": 1
+  }
+}

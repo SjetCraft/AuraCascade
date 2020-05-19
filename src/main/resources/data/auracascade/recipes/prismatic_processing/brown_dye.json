@@ -1,0 +1,11 @@
+{
+  "type": "auracascade:cascading_processing",
+  "ingredients": [
+    {
+      "item": "minecraft:brown_wool"
+    }
+  ],
+  "output": {
+    "item": "minecraft:brown_dye"
+  }
+}

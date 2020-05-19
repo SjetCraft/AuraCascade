@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "B",
+    "#",
+    "B"
+  ],
+  "key": {
+    "B": {
+      "item": "auracascade:aura_ingot_blue"
+    },
+    "#": {
+      "item": "auracascade:aura_node"
+    }
+  },
+  "result": {
+    "item": "auracascade:aura_node_conserve",
+    "count": 1
+  }
+}

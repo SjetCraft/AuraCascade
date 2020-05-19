@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "UUU",
+    "B#B"
+  ],
+  "key": {
+    "U": {
+      "item": "minecraft:water_bucket"
+    },
+    "B": {
+      "item": "auracascade:aura_ingot_blue"
+    },
+    "#": {
+      "item": "auracascade:aura_node"
+    }
+  },
+  "result": {
+    "item": "auracascade:aura_node_pump_fall",
+    "count": 1
+  }
+}

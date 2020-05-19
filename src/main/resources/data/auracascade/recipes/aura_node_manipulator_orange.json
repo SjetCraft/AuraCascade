@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "O",
+    "#",
+    "O"
+  ],
+  "key": {
+    "O": {
+      "item": "auracascade:aura_ingot_orange"
+    },
+    "#": {
+      "item": "auracascade:aura_node"
+    }
+  },
+  "result": {
+    "item": "auracascade:aura_node_manipulator_orange",
+    "count": 1
+  }
+}

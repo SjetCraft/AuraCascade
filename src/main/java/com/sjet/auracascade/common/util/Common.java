@@ -81,7 +81,9 @@ public class Common {
         return new Vec3d(nbt.getDouble("X"), nbt.getDouble("Y"), nbt.getDouble("Z"));
     }
 
-    //Author - Miraan Tabrez
+    /**
+     * @author Miraan Tabrez
+     */
     public static <T> List<List<T>> getCombinations(int k, List<T> list) {
         List<List<T>> combinations = new ArrayList<List<T>>();
         if (k == 0) {
@@ -99,7 +101,9 @@ public class Common {
         return combinations;
     }
 
-    //Author - Miraan Tabrez
+    /**
+     * @author Miraan Tabrez
+     */
     public static <T> List<T> getSublist(List<T> list, int i) {
         List<T> sublist = new ArrayList<T>();
         for (int j = i; j < list.size(); j++) {

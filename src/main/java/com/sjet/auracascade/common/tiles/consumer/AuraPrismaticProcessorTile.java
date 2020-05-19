@@ -1,55 +1,36 @@
 package com.sjet.auracascade.common.tiles.consumer;
 
 import com.sjet.auracascade.AuraCascade;
-import com.sjet.auracascade.client.particles.ParticleHelper;
-import com.sjet.auracascade.common.crafting.CascadingProcessingRecipe;
 import com.sjet.auracascade.common.crafting.ModRecipes;
+import com.sjet.auracascade.common.crafting.PrismaticProcessingRecipe;
 import com.sjet.auracascade.common.util.Common;
-import com.sjet.auracascade.common.util.NBTListHelper;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ObjectHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.sjet.auracascade.AuraCascade.TICKS_PER_SECOND;
+public class AuraPrismaticProcessorTile extends AuraCascadingProcessorTile {
 
-public class AuraCascadingProcessorTile extends BaseAuraConsumerTile {
+    @ObjectHolder(AuraCascade.MODID + ":aura_prismatic_processor")
+    public static final TileEntityType<AuraCascadingProcessorTile> AURA_PRISMATIC_PROCESSOR = null;
 
-    @ObjectHolder(AuraCascade.MODID + ":aura_cascading_processor")
-    public static final TileEntityType<AuraCascadingProcessorTile> AURA_CASCADING_PROCESSOR = null;
-
-    protected ArrayList<Vec3d> itemsConsumedList = new ArrayList<>();
-    protected static final int RANGE = 3;
-    protected static final int MAX_RECIPE_SIZE = 8;
-    private static final String CONSUMED_LIST = "items_consumed";
-
-    public AuraCascadingProcessorTile() {
-        super(AURA_CASCADING_PROCESSOR);
-    }
-
-    //used for AuraPrismaticProcessorTile
-    public AuraCascadingProcessorTile(TileEntityType<?> type) {
-        super(type);
+    public AuraPrismaticProcessorTile() {
+        super(AURA_PRISMATIC_PROCESSOR);
     }
 
     @Override
     public int getMaxProgress() {
-        return 60;
+        return 9;
     }
 
     @Override
     public int getPowerPerProgress() {
-        return 150;
+        return 1000;
     }
 
     @Override
@@ -82,8 +63,12 @@ public class AuraCascadingProcessorTile extends BaseAuraConsumerTile {
                 for (int j = 0; j < combinations.size(); j++) {
                     List<ItemEntity> list = combinations.get(j);
 
-                    //if the current combination is a valid recipe
-                    if(isValidCascadingRecipe(list)) {
+                    //if the current combination is a valid prismatic recipe
+                    if(isValidPrismaticRecipe(list)) {
+                        processPrismaticRecipe(list);
+                        validRecipe = true;
+                        break;
+                    } else if (isValidCascadingRecipe(list)) { //if the current combination is a valid cascading recipe
                         processCascadingRecipe(list);
                         validRecipe = true;
                         break;
@@ -97,7 +82,7 @@ public class AuraCascadingProcessorTile extends BaseAuraConsumerTile {
      * @param itemEntities the list of item entities to test for a valid recipe
      * @return true if the input list is a valid recipe
      */
-    protected boolean isValidCascadingRecipe(List<ItemEntity> itemEntities) {
+    private boolean isValidPrismaticRecipe(List<ItemEntity> itemEntities) {
         //instantiates the Inventory for the recipe
         Inventory inventory = new Inventory(itemEntities.size());
 
@@ -107,9 +92,9 @@ public class AuraCascadingProcessorTile extends BaseAuraConsumerTile {
         }
 
         //creates the recipe
-        Optional<CascadingProcessingRecipe> optionalCascadingRecipe = world.getRecipeManager().getRecipe(ModRecipes.CASCADING_PROCESSING_TYPE, inventory, world);
+        Optional<PrismaticProcessingRecipe> optionalPrismaticRecipe = world.getRecipeManager().getRecipe(ModRecipes.PRISMATIC_PROCESSING_TYPE, inventory, world);
 
-        return optionalCascadingRecipe.isPresent();
+        return optionalPrismaticRecipe.isPresent();
     }
 
     /**
@@ -118,7 +103,7 @@ public class AuraCascadingProcessorTile extends BaseAuraConsumerTile {
      *
      * @param itemEntities the list of item entities that make a valid recipe
      */
-    protected void processCascadingRecipe(List<ItemEntity> itemEntities) {
+    private void processPrismaticRecipe(List<ItemEntity> itemEntities) {
         //instantiates the Inventory for the recipe
         Inventory inventory = new Inventory(itemEntities.size());
 
@@ -134,53 +119,13 @@ public class AuraCascadingProcessorTile extends BaseAuraConsumerTile {
         }
 
         //creates the recipe
-        Optional<CascadingProcessingRecipe> optionalCascadingRecipe = world.getRecipeManager().getRecipe(ModRecipes.CASCADING_PROCESSING_TYPE, inventory, world);
+        Optional<PrismaticProcessingRecipe> optionalPrismaticRecipe = world.getRecipeManager().getRecipe(ModRecipes.PRISMATIC_PROCESSING_TYPE, inventory, world);
 
         //get the result of the crafting operation
-        ItemStack result = optionalCascadingRecipe.get().getRecipeOutput().copy();
+        ItemStack result = optionalPrismaticRecipe.get().getRecipeOutput().copy();
 
         //spawn the new item item in the world
         ItemEntity newItemEntity = new ItemEntity(world, pos.getX(), pos.getY() + 1, pos.getZ(), result);
         world.addEntity(newItemEntity);
     }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (!world.isRemote && world.getGameTime() % TICKS_PER_SECOND * 120 == 0) {
-            Common.keepItemsAlive(this, RANGE);
-        } else if (world.isRemote && world.getGameTime() % TICKS_PER_SECOND == 2) {
-            burnParticles();
-        }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public void burnParticles() {
-        if (!itemsConsumedList.isEmpty()) {
-            for (Vec3d vec3d : itemsConsumedList) {
-                ParticleHelper.itemBurningParticles(this.world, vec3d);
-            }
-        }
-    }
-
-    @Override
-    public void read(CompoundNBT nbt) {
-        super.read(nbt);
-
-        itemsConsumedList.clear();
-        this.itemsConsumedList = (ArrayList<Vec3d>) CONSUMED_LIST_NBT.read(nbt);
-    }
-
-    @Override
-    public CompoundNBT write(CompoundNBT nbt) {
-        CONSUMED_LIST_NBT.write(itemsConsumedList, nbt);
-
-        return super.write(nbt);
-    }
-
-    private NBTListHelper<Vec3d> CONSUMED_LIST_NBT = new NBTListHelper<Vec3d>(
-            CONSUMED_LIST,
-            (nbt, vec) -> nbt.put("items_consumed", Common.writeVec3D(vec)),
-            nbt -> Common.readVec3D(nbt.getCompound("items_consumed"))
-    );
 }
