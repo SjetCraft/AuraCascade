@@ -1,0 +1,62 @@
+# ROADMAP:
+- [x] Aura Flow/Distribution
+	- [x] Aura Colors
+	- [ ] Aura Color Effects
+		- [x] White
+		- [x] Yellow
+		- [ ] Orange
+		- [ ] Red
+		- [x] Green
+		- [x] Blue
+		- [x] Violet
+		- [x] Black
+    - [x] Aura Manipulators
+        - [x] Orange
+        - [x] Black
+    - [x] Capacitor
+    - [x] Conserving Node
+    - [ ] Emit Redstone level from Aura Nodes/Pumps
+    - [ ] Aura Monitor
+    - [x] Aura Pumps
+        - [x] Creative
+        - [x] Burning
+        - [x] Momentum
+        - [x] Illumination
+        - [x] Projectile
+        - [x] Redstone
+- [ ] Aura Consumers
+    - [x] Colorer
+    - [x] Brewer
+    - [x] Fisher
+    - [x] Grower
+    - [x] Looter
+    - [x] Spawner
+    - [x] Smelter
+        - [x] Recipes from Vanilla Furnace/Blast Furnace
+    - [x] Processor
+        - [x] JSON Recipe System 
+    - [x] Prismatic Processor
+        - [x] JSON Recipe System 
+    - [ ] Vortex Infusion
+        - [ ] JSON Recipe System
+        - [ ] Aura colors in recipe
+        - [ ] Pedestals
+    - [ ] Synthesizer
+    - [ ] Kaleidoscopic Enchanter
+        - [ ] Enchanting System
+    - [ ] Nether Ritual
+    - [ ] End Ritual
+- [ ] Enchantments
+- [x] Materials
+    - [x] Arcane Ingots
+    - [x] Arcane Gems
+- [ ] Fairies
+- [ ] Baubles
+- [ ] Tools
+    - [ ] Angelsteel Tools
+    - [ ] Prismatic Wand
+- [ ] Storage System
+- [ ] Other
+- [ ] Integrations
+    - [ ] Patchouli
+    - [ ] JEI
