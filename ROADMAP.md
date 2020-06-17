@@ -44,8 +44,8 @@
     - [ ] Synthesizer
     - [ ] Kaleidoscopic Enchanter
         - [ ] Enchanting System
-    - [ ] Nether Ritual
-    - [ ] End Ritual
+    - [ ] ~~Nether Ritual~~
+    - [ ] ~~End Ritual~~
 - [ ] Enchantments
 - [x] Materials
     - [x] Arcane Ingots
