@@ -55,7 +55,7 @@
 - [ ] Tools
     - [ ] Angelsteel Tools
     - [ ] Prismatic Wand
-- [ ] Storage System
+- [ ] ~~Storage System~~
 - [ ] Other
 - [ ] Integrations
     - [ ] Patchouli
