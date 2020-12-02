@@ -36,18 +36,18 @@ public abstract class BaseAuraNodePumpTile extends BaseAuraNodeTile implements I
     public void findNodes() {
         connectedNodesList = new ArrayList<>();
 
-        boolean blocked = false; //allows for early exit of search
-        for (int i = 1; i <= MAX_DISTANCE && !blocked; i++) {
+        for (int i = 1; i <= MAX_DISTANCE; i++) {
             BlockPos targetBlock = getPos().offset(Direction.UP, i);
 
             //if block is not transparent/air stop checking in this direction
             if (canAuraFlow(targetBlock)) {
-                blocked = true;
-            }
-            //if block is an AuraTile, connect and stop checking in this direction
-            if (isAuraTile(targetBlock)) {
-                connectNode(targetBlock);
-                blocked = true; //aura can no longer pass through this block as it is a terminating node
+                //if block is an AuraTile, connect and stop checking in this direction
+                if (isAuraTile(targetBlock)) {
+                    connectNode(targetBlock);
+                    break; //aura can no longer pass through this block as it is a terminating node
+                }
+            } else { //if block is not transparent/air stop checking in this direction
+                break;
             }
         }
     }

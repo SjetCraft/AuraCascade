@@ -67,17 +67,16 @@ public abstract class BaseAuraNodeTile extends TileEntity implements IBaseAuraNo
         connectedNodesList = new ArrayList<>();
         //search for connected nodes in each direction
         for (Direction direction : Direction.values()) {
-            boolean blocked = false; //allows for early exit of search
-            for (int i = 1; i <= MAX_DISTANCE && !blocked; i++) {
+            for (int i = 1; i <= MAX_DISTANCE; i++) {
                 BlockPos targetBlock = getPos().offset(direction, i);
-                //if block is not transparent/air stop checking in this direction
                 if (canAuraFlow(targetBlock)) {
-                    blocked = true;
-                }
-                //if block is an AuraTile, connect and stop checking in this direction
-                if (isAuraTile(targetBlock)) {
-                    connectNode(targetBlock);
-                    blocked = true; //aura can no longer pass through this block as it is a terminating node
+                    //if block is an AuraTile, connect and stop checking in this direction
+                    if (isAuraTile(targetBlock)) {
+                        connectNode(targetBlock);
+                        break; //aura can no longer pass through this block as it is a terminating node
+                    }
+                } else { //if block is not transparent/air stop checking in this direction
+                    break;
                 }
             }
         }
@@ -102,9 +101,8 @@ public abstract class BaseAuraNodeTile extends TileEntity implements IBaseAuraNo
     public boolean canAuraFlow(BlockPos target) {
         Block block = world.getBlockState(target).getBlock();
 
-        //false if block is not air and if block is not transparent or an aura node
-        return !block.isAir(block.getDefaultState(), world, target) &&
-                !(isAuraTile(target) || !block.isSolid(block.getDefaultState()));
+        //true if block is air OR if it is an aura node OR transparent/(not solid)F
+        return block.isAir(block.getDefaultState()) || (isAuraTile(target) || !block.isSolid(block.getDefaultState()));
     }
 
     public boolean isAuraTile(BlockPos target) {
@@ -297,7 +295,7 @@ public abstract class BaseAuraNodeTile extends TileEntity implements IBaseAuraNo
     @OnlyIn(Dist.CLIENT)
     public void transferAuraParticles() {
         for (Map.Entry<BlockPos, String> target : sentNodesMap.entrySet()) {
-            String array[] = target.getValue().split(";");
+            String[] array = target.getValue().split(";");
              ParticleHelper.transferAuraParticles(this.world, this.pos, target.getKey(), IAuraColor.valueOf(array[0]), Integer.parseInt(array[1]));
         }
     }
@@ -374,21 +372,21 @@ public abstract class BaseAuraNodeTile extends TileEntity implements IBaseAuraNo
         this.read(packet.getNbtCompound());
     }
 
-    private NBTListHelper<BlockPos> CONNECTED_LIST_NBT = new NBTListHelper<BlockPos>(
+    private final NBTListHelper<BlockPos> CONNECTED_LIST_NBT = new NBTListHelper<BlockPos>(
             CONNECTED_LIST,
             (nbt, pos) -> nbt.put("connected_node", NBTUtil.writeBlockPos(pos)),
             nbt -> NBTUtil.readBlockPos(nbt.getCompound("connected_node"))
     );
 
-    private NBTMapHelper<IAuraColor, Integer> AURA_MAP_NBT = new NBTMapHelper<IAuraColor, Integer>(
+    private final NBTMapHelper<IAuraColor, Integer> AURA_MAP_NBT = new NBTMapHelper<IAuraColor, Integer>(
             AURA_MAP,
             (nbt, auraColor) -> nbt.putString("aura_color", auraColor.name()),
             nbt -> IAuraColor.valueOf(nbt.getString("aura_color")),
-            (nbt, auraAmount) -> nbt.putInt("aura_amount_now", (int) auraAmount),
+            (nbt, auraAmount) -> nbt.putInt("aura_amount_now", auraAmount),
             nbt -> nbt.getInt("aura_amount_now")
     );
 
-    private NBTMapHelper<BlockPos, String> SENT_AURA_NBT = new NBTMapHelper<BlockPos, String>(
+    private final NBTMapHelper<BlockPos, String> SENT_AURA_NBT = new NBTMapHelper<BlockPos, String>(
             SENT_AURA,
             (nbt, pos) -> nbt.put("position", NBTUtil.writeBlockPos(pos)),
             nbt -> NBTUtil.readBlockPos(nbt.getCompound("position")),
