@@ -27,7 +27,8 @@ public class AuraNodeCapacitorTile extends BaseAuraNodeTile {
 
     public static int[] storageValues = new int[]{100, 1000, 10000, 100000};
     public int storageValueIndex = 1;
-    public int ticksDisabled = 0;
+    public int ticksDisabled = MAX_TICKS_DISABLED;
+    public static final int MAX_TICKS_DISABLED = 410;
 
     public AuraNodeCapacitorTile() {
         super(TYPE_CAPACITOR);
@@ -95,7 +96,7 @@ public class AuraNodeCapacitorTile extends BaseAuraNodeTile {
                 int totalAura = Common.getTotalAura(auraMap);
                 if (totalAura >= storageValues[storageValueIndex] && ticksDisabled <= 0) {
                     discharge();
-                    ticksDisabled = 410;
+                    ticksDisabled = MAX_TICKS_DISABLED;
                 }
                 this.world.notifyBlockUpdate(this.pos, this.world.getBlockState(this.pos), this.world.getBlockState(this.pos), 2);
             }
@@ -130,7 +131,7 @@ public class AuraNodeCapacitorTile extends BaseAuraNodeTile {
         boolean burst = false;
         for (Map.Entry<BlockPos, String> target : sentNodesMap.entrySet()) {
             burst = true;
-            String array[] = target.getValue().split(";");
+            String[] array = target.getValue().split(";");
             ParticleHelper.transferAuraParticles(this.world, this.pos, target.getKey(), IAuraColor.valueOf(array[0]), Integer.parseInt(array[1]));
         }
         if (burst) {

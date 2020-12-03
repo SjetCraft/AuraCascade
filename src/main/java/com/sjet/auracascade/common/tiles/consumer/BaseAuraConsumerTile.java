@@ -2,10 +2,8 @@ package com.sjet.auracascade.common.tiles.consumer;
 
 import com.sjet.auracascade.client.HUDHelper;
 import com.sjet.auracascade.client.particles.ParticleHelper;
-import com.sjet.auracascade.common.api.IAuraColor;
 import com.sjet.auracascade.common.api.IBaseAuraConsumerTile;
 import com.sjet.auracascade.common.tiles.node.AuraNodeTile;
-import com.sjet.auracascade.common.util.Common;
 import com.sjet.auracascade.common.util.NBTListHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;
@@ -159,7 +157,7 @@ public abstract class BaseAuraConsumerTile extends TileEntity implements IBaseAu
         this.read(packet.getNbtCompound());
     }
 
-    private NBTListHelper<BlockPos> CONNECTED_LIST_NBT = new NBTListHelper<BlockPos>(
+    private final NBTListHelper<BlockPos> CONNECTED_LIST_NBT = new NBTListHelper<BlockPos>(
             CONNECTED_LIST,
             (nbt, pos) -> nbt.put("connected_node", NBTUtil.writeBlockPos(pos)),
             nbt -> NBTUtil.readBlockPos(nbt.getCompound("connected_node"))

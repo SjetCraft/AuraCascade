@@ -37,17 +37,11 @@ public class Common {
     }
 
     public static boolean isHorizontal(BlockPos source, BlockPos target) {
-        if  (target.getY() == source.getY()) {
-            return true;
-        }
-        return false;
+        return target.getY() == source.getY();
     }
 
     public static boolean isVertical(BlockPos source, BlockPos target) {
-        if  (target.getY() != source.getY()) {
-            return true;
-        }
-        return false;
+        return target.getY() != source.getY();
     }
 
     public static int getTotalAura(HashMap<IAuraColor, Integer> auraMap) {

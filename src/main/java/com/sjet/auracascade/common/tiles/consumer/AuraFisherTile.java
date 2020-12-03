@@ -2,7 +2,6 @@ package com.sjet.auracascade.common.tiles.consumer;
 
 import com.sjet.auracascade.AuraCascade;
 import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;

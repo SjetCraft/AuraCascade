@@ -2,18 +2,14 @@ package com.sjet.auracascade.common.tiles.pump;
 
 import com.sjet.auracascade.AuraCascade;
 import com.sjet.auracascade.client.HUDHelper;
-import com.sjet.auracascade.client.particles.ParticleHelper;
 import com.sjet.auracascade.common.api.IAuraColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Random;
 
 public class AuraNodePumpCreativeTile extends BaseAuraNodePumpTile {
 

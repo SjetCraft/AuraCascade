@@ -3,18 +3,11 @@ package com.sjet.auracascade.common.tiles.consumer;
 import com.sjet.auracascade.AuraCascade;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.CropsBlock;
 import net.minecraft.block.IGrowable;
-import net.minecraft.item.BoneMealItem;
-import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ObjectHolder;
-
-import java.util.Random;
-
-import static com.sjet.auracascade.AuraCascade.TICKS_PER_SECOND;
 
 public class AuraGrowerTile extends BaseAuraConsumerTile {
 

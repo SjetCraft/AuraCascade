@@ -18,8 +18,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.ArrayList;
-
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = AuraCascade.MODID)
 public final class HUDHandler {
 

@@ -1,7 +1,6 @@
 package com.sjet.auracascade.common.tiles.consumer;
 
 import com.sjet.auracascade.AuraCascade;
-import com.sjet.auracascade.common.util.Common;
 import net.minecraft.entity.*;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.AxisAlignedBB;

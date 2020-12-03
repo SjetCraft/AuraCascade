@@ -2,11 +2,9 @@ package com.sjet.auracascade.client.particles;
 
 import com.sjet.auracascade.client.particles.auratransferparticle.AuraTransferParticleData;
 import com.sjet.auracascade.client.particles.nodeconnectionparticle.NodeConnectionParticleData;
-import com.sjet.auracascade.client.particles.pumptransferparticle.PumpTransferParticle;
 import com.sjet.auracascade.client.particles.pumptransferparticle.PumpTransferParticleData;
 import com.sjet.auracascade.common.api.IAuraColor;
 import com.sjet.auracascade.common.util.Common;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;

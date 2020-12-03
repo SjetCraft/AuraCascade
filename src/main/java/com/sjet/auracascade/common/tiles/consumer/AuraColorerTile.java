@@ -1,7 +1,6 @@
 package com.sjet.auracascade.common.tiles.consumer;
 
 import com.sjet.auracascade.AuraCascade;
-import com.sjet.auracascade.common.util.Common;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.tileentity.TileEntityType;
@@ -10,8 +9,6 @@ import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.List;
 import java.util.Random;
-
-import static com.sjet.auracascade.AuraCascade.TICKS_PER_SECOND;
 
 public class AuraColorerTile extends BaseAuraConsumerTile {
 

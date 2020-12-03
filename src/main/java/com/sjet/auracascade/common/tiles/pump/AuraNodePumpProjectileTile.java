@@ -1,20 +1,13 @@
 package com.sjet.auracascade.common.tiles.pump;
 
 import com.sjet.auracascade.AuraCascade;
-import com.sjet.auracascade.client.particles.ParticleHelper;
-import com.sjet.auracascade.common.api.IAuraColor;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.entity.projectile.EggEntity;
 import net.minecraft.entity.projectile.SnowballEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.registries.ObjectHolder;
-
-import java.util.Map;
 
 public class AuraNodePumpProjectileTile extends BaseAuraNodePumpTile {
 

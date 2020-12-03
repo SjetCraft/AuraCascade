@@ -1,20 +1,12 @@
 package com.sjet.auracascade.common.tiles.pump;
 
 import com.sjet.auracascade.AuraCascade;
-import com.sjet.auracascade.client.particles.ParticleHelper;
-import com.sjet.auracascade.common.api.IAuraColor;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ObjectHolder;
-
-import java.util.Map;
-
-import static com.sjet.auracascade.AuraCascade.TICKS_PER_SECOND;
 
 public class AuraNodePumpLightTile extends BaseAuraNodePumpTile {
 

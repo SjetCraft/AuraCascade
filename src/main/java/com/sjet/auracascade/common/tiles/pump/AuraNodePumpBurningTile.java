@@ -2,14 +2,12 @@ package com.sjet.auracascade.common.tiles.pump;
 
 import com.sjet.auracascade.AuraCascade;
 import com.sjet.auracascade.client.particles.ParticleHelper;
-import com.sjet.auracascade.common.api.IAuraColor;
 import com.sjet.auracascade.common.util.Common;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -17,7 +15,6 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.sjet.auracascade.AuraCascade.TICKS_PER_SECOND;
 

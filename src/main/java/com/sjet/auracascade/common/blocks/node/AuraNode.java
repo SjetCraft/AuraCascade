@@ -9,7 +9,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.registries.ObjectHolder;
 
-
 public class AuraNode extends BaseAuraNode {
 
     @ObjectHolder(AuraCascade.MODID + ":aura_node")
