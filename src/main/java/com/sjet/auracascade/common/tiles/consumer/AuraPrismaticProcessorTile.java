@@ -124,8 +124,8 @@ public class AuraPrismaticProcessorTile extends AuraCascadingProcessorTile {
         //get the result of the crafting operation
         ItemStack result = optionalPrismaticRecipe.get().getRecipeOutput().copy();
 
-        //spawn the new item item in the world
-        ItemEntity newItemEntity = new ItemEntity(world, pos.getX(), pos.getY() + 1, pos.getZ(), result);
+        //spawn the new item in the world
+        ItemEntity newItemEntity = new ItemEntity(world, pos.getX() + 0.5D, pos.getY() + 1, pos.getZ() + 0.5D, result);
         world.addEntity(newItemEntity);
     }
 }
