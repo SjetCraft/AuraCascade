@@ -85,14 +85,17 @@ public abstract class BaseAuraNode extends Block {
             Item item = ((ItemEntity) entityIn).getItem().getItem();
 
             if (item instanceof IBaseAuraCrystalItem) {
-                node.addAura(pos, ((IBaseAuraCrystalItem) item).getColor(), ((IBaseAuraCrystalItem) item).getAura());
-                ((ItemEntity) entityIn).getItem().shrink(1);
+                int auraToAdd = ((ItemEntity) entityIn).getItem().getStack().getCount();
+                node.addAura(pos, ((IBaseAuraCrystalItem) item).getColor(), ((IBaseAuraCrystalItem) item).getAura() * auraToAdd);
+                ((ItemEntity) entityIn).getItem().shrink(auraToAdd);
+
                 if (worldIn.isRemote) {
                     ParticleHelper.itemBurningParticles(worldIn, entityIn.getPositionVector());
                 }
             }
-        } else {
-            super.onEntityCollision(state, worldIn, pos, entityIn);
+            else {
+                super.onEntityCollision(state, worldIn, pos, entityIn);
+            }
         }
     }
 }

@@ -47,7 +47,7 @@ public class AuraNodeCapacitorTile extends BaseAuraNodeTile {
             BlockPos targetBlock = getPos().offset(Direction.DOWN, i);
 
             //if block is not transparent/air stop checking in this direction
-            if (canAuraFlow(targetBlock)) {
+            if (!canAuraFlow(targetBlock)) {
                 blocked = true;
             }
             //if block is an AuraTile, connect and stop checking in this direction
