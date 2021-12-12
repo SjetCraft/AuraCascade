@@ -58,6 +58,8 @@
   "block.auracascade.aura_cascading_processor": "Cascading Processor",
   "block.auracascade.aura_prismatic_processor": "Prismatic Processor",
 
+  "_blocks4": "Vortex",
+  "block.auracascade.aura_node_pedestal": "Vortex Pedestal",
 
   "_comment": "Creative Tabs",
   "itemGroup.auracascade": "Aura Cascade"

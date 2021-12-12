@@ -35,6 +35,8 @@ public class CommonSetup {
         e.getRegistry().register(new AuraNodePumpProjectile());
         e.getRegistry().register(new AuraNodePumpFall());
         e.getRegistry().register(new AuraNodePumpCreative());
+        //Vortex Infusion
+        e.getRegistry().register(new AuraNodePedestal());
         //Consumers
         e.getRegistry().register(new AuraColorer());
         e.getRegistry().register(new AuraGrower());
@@ -49,18 +51,21 @@ public class CommonSetup {
 
     @SubscribeEvent
     public void onRegisterItems(RegistryEvent.Register<Item> e) {
+        //Nodes
         e.getRegistry().register(new BlockItem(AuraNode.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_node"));
         e.getRegistry().register(new BlockItem(AuraNodeCapacitor.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_node_capacitor"));
         e.getRegistry().register(new BlockItem(AuraNodeConserve.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_node_conserve"));
         e.getRegistry().register(new BlockItem(AuraNodeManipulatorOrange.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_node_manipulator_orange"));
         e.getRegistry().register(new BlockItem(AuraNodeManipulatorBlack.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_node_manipulator_black"));
+        //Pumps
         e.getRegistry().register(new BlockItem(AuraNodePumpBurning.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_node_pump_burning"));
         e.getRegistry().register(new BlockItem(AuraNodePumpRedstone.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_node_pump_redstone"));
         e.getRegistry().register(new BlockItem(AuraNodePumpLight.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_node_pump_light"));
         e.getRegistry().register(new BlockItem(AuraNodePumpProjectile.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_node_pump_projectile"));
         e.getRegistry().register(new BlockItem(AuraNodePumpFall.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_node_pump_fall"));
         e.getRegistry().register(new BlockItem(AuraNodePumpCreative.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_node_pump_creative"));
-
+        //Vortex Infusion
+        e.getRegistry().register(new BlockItem(AuraNodePedestal.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_node_pedestal"));
         //Consumers
         e.getRegistry().register(new BlockItem(AuraColorer.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_colorer"));
         e.getRegistry().register(new BlockItem(AuraGrower.BLOCK, new Item.Properties().group(AuraCascade.MAIN_GROUP)).setRegistryName(AuraCascade.MODID, "aura_grower"));
@@ -81,6 +86,7 @@ public class CommonSetup {
         e.getRegistry().register(new AuraCrystalBlueItem());
         e.getRegistry().register(new AuraCrystalVioletItem());
         e.getRegistry().register(new AuraCrystalBlackItem());
+
         //Ingots
         e.getRegistry().register(new AuraIngotWhiteItem());
         e.getRegistry().register(new AuraIngotYellowItem());
@@ -90,6 +96,7 @@ public class CommonSetup {
         e.getRegistry().register(new AuraIngotBlueItem());
         e.getRegistry().register(new AuraIngotVioletItem());
         e.getRegistry().register(new AuraIngotBlackItem());
+
         //Gems
         e.getRegistry().register(new AuraGemWhiteItem());
         e.getRegistry().register(new AuraGemYellowItem());
@@ -99,34 +106,39 @@ public class CommonSetup {
         e.getRegistry().register(new AuraGemBlueItem());
         e.getRegistry().register(new AuraGemVioletItem());
         e.getRegistry().register(new AuraGemBlackItem());
+
         //Misc
         e.getRegistry().register(new ArcanePrismItem());
     }
 
     @SubscribeEvent
     public void onRegisterTiles(RegistryEvent.Register<TileEntityType<?>> e) {
-        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraNodeTile(), AuraNode.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node"));
-        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraNodeCapacitorTile(), AuraNodeCapacitor.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_capacitor"));
-        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraNodeConserveTile(), AuraNodeConserve.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_conserve"));
-        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraNodeManipulatorOrangeTile(), AuraNodeManipulatorOrange.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_manipulator_orange"));
-        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraNodeManipulatorBlackTile(), AuraNodeManipulatorBlack.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_manipulator_black"));
-        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraNodePumpBurningTile(), AuraNodePumpBurning.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pump_burning"));
-        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraNodePumpRedstoneTile(), AuraNodePumpRedstone.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pump_redstone"));
-        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraNodePumpLightTile(), AuraNodePumpLight.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pump_light"));
-        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraNodePumpProjectileTile(), AuraNodePumpProjectile.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pump_projectile"));
-        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraNodePumpFallTile(), AuraNodePumpFall.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pump_fall"));
-        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraNodePumpCreativeTile(), AuraNodePumpCreative.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pump_creative"));
+        //Nodes
+        e.getRegistry().register(TileEntityType.Builder.create(AuraNodeTile::new, AuraNode.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node"));
+        e.getRegistry().register(TileEntityType.Builder.create(AuraNodeCapacitorTile::new, AuraNodeCapacitor.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_capacitor"));
+        e.getRegistry().register(TileEntityType.Builder.create(AuraNodeConserveTile::new, AuraNodeConserve.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_conserve"));
+        e.getRegistry().register(TileEntityType.Builder.create(AuraNodeManipulatorOrangeTile::new, AuraNodeManipulatorOrange.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_manipulator_orange"));
+        e.getRegistry().register(TileEntityType.Builder.create(AuraNodeManipulatorBlackTile::new, AuraNodeManipulatorBlack.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_manipulator_black"));
+        //Pumps
+        e.getRegistry().register(TileEntityType.Builder.create(AuraNodePumpBurningTile::new, AuraNodePumpBurning.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pump_burning"));
+        e.getRegistry().register(TileEntityType.Builder.create(AuraNodePumpRedstoneTile::new, AuraNodePumpRedstone.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pump_redstone"));
+        e.getRegistry().register(TileEntityType.Builder.create(AuraNodePumpLightTile::new, AuraNodePumpLight.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pump_light"));
+        e.getRegistry().register(TileEntityType.Builder.create(AuraNodePumpProjectileTile::new, AuraNodePumpProjectile.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pump_projectile"));
+        e.getRegistry().register(TileEntityType.Builder.create(AuraNodePumpFallTile::new, AuraNodePumpFall.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pump_fall"));
+        e.getRegistry().register(TileEntityType.Builder.create(AuraNodePumpCreativeTile::new, AuraNodePumpCreative.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pump_creative"));
+        //Vortex
+        e.getRegistry().register(TileEntityType.Builder.create(AuraNodePedestalTile::new, AuraNodePumpCreative.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pedestal"));
 
         //Consumers
-        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraColorerTile(), AuraColorer.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_colorer"));
-        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraGrowerTile(), AuraGrower.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_grower"));
-        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraBrewerTile(), AuraBrewer.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_brewer"));
-        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraFisherTile(), AuraFisher.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_fisher"));
-        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraLooterTile(), AuraLooter.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_looter"));
-        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraMobSpawnerTile(), AuraMobSpawner.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_mob_spawner"));
-        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraFurnaceTile(), AuraFurnace.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_furnace"));
-        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraCascadingProcessorTile(), AuraCascadingProcessor.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_cascading_processor"));
-        e.getRegistry().register(TileEntityType.Builder.create(() -> new AuraPrismaticProcessorTile(), AuraPrismaticProcessor.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_prismatic_processor"));
+        e.getRegistry().register(TileEntityType.Builder.create(AuraColorerTile::new, AuraColorer.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_colorer"));
+        e.getRegistry().register(TileEntityType.Builder.create(AuraGrowerTile::new, AuraGrower.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_grower"));
+        e.getRegistry().register(TileEntityType.Builder.create(AuraBrewerTile::new, AuraBrewer.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_brewer"));
+        e.getRegistry().register(TileEntityType.Builder.create(AuraFisherTile::new, AuraFisher.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_fisher"));
+        e.getRegistry().register(TileEntityType.Builder.create(AuraLooterTile::new, AuraLooter.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_looter"));
+        e.getRegistry().register(TileEntityType.Builder.create(AuraMobSpawnerTile::new, AuraMobSpawner.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_mob_spawner"));
+        e.getRegistry().register(TileEntityType.Builder.create(AuraFurnaceTile::new, AuraFurnace.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_furnace"));
+        e.getRegistry().register(TileEntityType.Builder.create(AuraCascadingProcessorTile::new, AuraCascadingProcessor.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_cascading_processor"));
+        e.getRegistry().register(TileEntityType.Builder.create(AuraPrismaticProcessorTile::new, AuraPrismaticProcessor.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_prismatic_processor"));
     }
 }
 
