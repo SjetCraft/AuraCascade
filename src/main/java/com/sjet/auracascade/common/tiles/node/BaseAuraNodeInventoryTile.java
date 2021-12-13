@@ -20,7 +20,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import javax.annotation.Nullable;
 
 
-public abstract class BaseAuraNodeInventoryTile extends BaseAuraNodeTile implements IInventory{
+public abstract class BaseAuraNodeInventoryTile extends BaseAuraNodeTile implements IInventory {
 
     @SuppressWarnings("WeakerAccess")
     protected ItemStack item;

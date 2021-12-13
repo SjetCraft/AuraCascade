@@ -127,7 +127,7 @@ public class CommonSetup {
         e.getRegistry().register(TileEntityType.Builder.create(AuraNodePumpFallTile::new, AuraNodePumpFall.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pump_fall"));
         e.getRegistry().register(TileEntityType.Builder.create(AuraNodePumpCreativeTile::new, AuraNodePumpCreative.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pump_creative"));
         //Vortex
-        e.getRegistry().register(TileEntityType.Builder.create(AuraNodePedestalTile::new, AuraNodePumpCreative.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pedestal"));
+        e.getRegistry().register(TileEntityType.Builder.create(AuraNodePedestalTile::new, AuraNodePedestal.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_node_pedestal"));
 
         //Consumers
         e.getRegistry().register(TileEntityType.Builder.create(AuraColorerTile::new, AuraColorer.BLOCK).build(null).setRegistryName(AuraCascade.MODID, "aura_colorer"));
