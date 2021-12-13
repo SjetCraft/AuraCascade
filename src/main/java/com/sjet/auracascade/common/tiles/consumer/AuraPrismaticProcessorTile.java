@@ -4,11 +4,13 @@ import com.sjet.auracascade.AuraCascade;
 import com.sjet.auracascade.common.crafting.ModRecipes;
 import com.sjet.auracascade.common.crafting.PrismaticProcessingRecipe;
 import com.sjet.auracascade.common.util.Common;
+import net.minecraft.client.renderer.Vector3d;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.List;
@@ -126,6 +128,7 @@ public class AuraPrismaticProcessorTile extends AuraCascadingProcessorTile {
 
         //spawn the new item in the world
         ItemEntity newItemEntity = new ItemEntity(world, pos.getX() + 0.5D, pos.getY() + 1, pos.getZ() + 0.5D, result);
+        newItemEntity.setMotion(Vec3d.ZERO);
         world.addEntity(newItemEntity);
     }
 }

@@ -141,6 +141,7 @@ public class AuraCascadingProcessorTile extends BaseAuraConsumerTile {
 
         //spawn the new item item in the world
         ItemEntity newItemEntity = new ItemEntity(world, pos.getX() + 0.5D, pos.getY() + 1, pos.getZ() + 0.5D, result);
+        newItemEntity.setMotion(Vec3d.ZERO);
         world.addEntity(newItemEntity);
     }
 
